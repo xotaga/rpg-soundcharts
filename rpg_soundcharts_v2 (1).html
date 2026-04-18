@@ -1,0 +1,4201 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RPG·SoundCharts Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+:root {
+  --blue: #0057FF;
+  --blue2: #1E90FF;
+  --purple: #7C3AED;
+  --cyan: #00D2FF;
+  --bg: #F4F7FC;
+  --white: #FFFFFF;
+  --red: #EF4444;
+  --green: #10B981;
+  --dark: #0F172A;
+  --dark2: #1E293B;
+  --gray: #64748B;
+  --gray2: #CBD5E1;
+  --gray3: #E2E8F0;
+  --gold: #F59E0B;
+  --font-title: 'Sora', sans-serif;
+  --font-body: 'IBM Plex Sans', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--dark);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--gray2); border-radius: 3px; }
+
+/* ===== LOGIN ===== */
+#loginScreen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0F172A 0%, #1E293B 40%, #0057FF22 100%);
+  position: relative;
+  overflow: hidden;
+}
+#loginScreen::before {
+  content: '';
+  position: absolute;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, #0057FF33 0%, transparent 70%);
+  top: -200px; right: -200px;
+  animation: pulse 6s ease-in-out infinite;
+}
+#loginScreen::after {
+  content: '';
+  position: absolute;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, #7C3AED22 0%, transparent 70%);
+  bottom: -100px; left: -100px;
+  animation: pulse 8s ease-in-out infinite reverse;
+}
+@keyframes pulse { 0%,100%{transform:scale(1);opacity:.6} 50%{transform:scale(1.2);opacity:1} }
+
+.login-card {
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 28px;
+  padding: 52px 48px;
+  width: 480px;
+  max-width: 95vw;
+  position: relative;
+  z-index: 10;
+  box-shadow: 0 40px 80px rgba(0,0,0,0.5);
+}
+.login-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 36px;
+  justify-content: center;
+}
+.login-logo-icon {
+  width: 52px; height: 52px;
+  background: linear-gradient(135deg, var(--blue), var(--purple));
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: 22px;
+  box-shadow: 0 8px 24px #0057FF66;
+}
+.login-logo-text {
+  font-family: var(--font-title);
+  font-size: 26px; font-weight: 800;
+  color: white;
+  letter-spacing: -0.5px;
+}
+.login-logo-text span { color: var(--cyan); }
+.login-subtitle {
+  text-align: center;
+  color: rgba(255,255,255,0.45);
+  font-size: 13px;
+  margin-bottom: 36px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.form-group { margin-bottom: 20px; }
+.form-group label {
+  display: block;
+  color: rgba(255,255,255,0.6);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%;
+  padding: 14px 18px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px;
+  color: white;
+  font-family: var(--font-body);
+  font-size: 15px;
+  transition: all .2s;
+  outline: none;
+}
+.form-group input::placeholder { color: rgba(255,255,255,0.3); }
+.form-group input:focus {
+  border-color: var(--blue);
+  background: rgba(0,87,255,0.1);
+  box-shadow: 0 0 0 3px rgba(0,87,255,0.2);
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, var(--blue), var(--blue2));
+  border: none;
+  border-radius: 40px;
+  color: white;
+  font-family: var(--font-title);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .2s;
+  box-shadow: 0 8px 24px rgba(0,87,255,0.4);
+  margin-bottom: 12px;
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(0,87,255,0.5); }
+.btn-secondary {
+  width: 100%;
+  padding: 14px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 40px;
+  color: rgba(255,255,255,0.8);
+  font-family: var(--font-body);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all .2s;
+}
+.btn-secondary:hover { background: rgba(255,255,255,0.1); }
+
+/* ===== DASHBOARD ===== */
+#dashboardScreen { display: none; flex-direction: column; min-height: 100vh; }
+
+/* HEADER */
+.header {
+  background: var(--dark);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding: 0 28px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.header-logo {
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--font-title);
+  font-size: 18px; font-weight: 800;
+  color: white;
+}
+.header-logo-icon {
+  width: 34px; height: 34px;
+  background: linear-gradient(135deg, var(--blue), var(--purple));
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: 14px;
+}
+.header-logo span { color: var(--cyan); }
+.header-right { display: flex; align-items: center; gap: 16px; }
+.user-badge {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 24px;
+  padding: 6px 14px;
+  color: rgba(255,255,255,0.85);
+  font-size: 13px;
+}
+.user-badge i { color: var(--cyan); }
+.btn-logout {
+  background: none; border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 8px;
+  padding: 8px 14px;
+  color: rgba(255,255,255,0.6);
+  cursor: pointer;
+  font-size: 13px;
+  transition: all .2s;
+}
+.btn-logout:hover { border-color: var(--red); color: var(--red); }
+
+/* KPIs */
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1px;
+  background: rgba(0,0,0,0.1);
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+}
+.kpi-card {
+  background: var(--dark2);
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: background .2s;
+}
+.kpi-card:hover { background: #263354; }
+.kpi-icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.kpi-icon.blue { background: rgba(0,87,255,0.2); color: var(--blue2); }
+.kpi-icon.purple { background: rgba(124,58,237,0.2); color: #A78BFA; }
+.kpi-icon.cyan { background: rgba(0,210,255,0.15); color: var(--cyan); }
+.kpi-icon.gold { background: rgba(245,158,11,0.2); color: var(--gold); }
+.kpi-icon.green { background: rgba(16,185,129,0.2); color: var(--green); }
+.kpi-data { flex: 1; }
+.kpi-label {
+  font-size: 11px;
+  color: rgba(255,255,255,0.4);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+.kpi-value {
+  font-family: var(--font-mono);
+  font-size: 22px;
+  font-weight: 600;
+  color: white;
+  letter-spacing: -0.5px;
+}
+.kpi-sub { font-size: 11px; color: rgba(255,255,255,0.35); margin-top: 2px; }
+
+/* TABS */
+.tabs-wrapper {
+  background: var(--dark);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  overflow-x: auto;
+  padding: 0 20px;
+}
+.tabs {
+  display: flex;
+  gap: 2px;
+  white-space: nowrap;
+  padding: 8px 0;
+}
+.tab-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 18px;
+  border: none;
+  background: transparent;
+  color: rgba(255,255,255,0.45);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all .2s;
+  white-space: nowrap;
+}
+.tab-btn:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.8); }
+.tab-btn.active { background: rgba(0,87,255,0.2); color: var(--blue2); }
+.tab-btn i { font-size: 12px; }
+
+/* CONTENT */
+.content { flex: 1; padding: 28px; overflow-y: auto; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* CARDS */
+.card {
+  background: var(--white);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  border: 1px solid var(--gray3);
+}
+.card-dark {
+  background: var(--dark2);
+  border-radius: 20px;
+  padding: 24px;
+  border: 1px solid rgba(255,255,255,0.07);
+}
+.card-title {
+  font-family: var(--font-title);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--dark);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card-title i { color: var(--blue); }
+
+/* GRID UTILITIES */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+
+/* SECTION TITLE */
+.section-title {
+  font-family: var(--font-title);
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--dark);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.section-title i { color: var(--blue); }
+.section-sub {
+  font-size: 13px;
+  color: var(--gray);
+  margin-bottom: 24px;
+}
+
+/* BADGE */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 24px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--font-mono);
+}
+.badge-blue { background: rgba(0,87,255,0.1); color: var(--blue); border: 1px solid rgba(0,87,255,0.2); }
+.badge-green { background: rgba(16,185,129,0.1); color: var(--green); border: 1px solid rgba(16,185,129,0.2); }
+.badge-red { background: rgba(239,68,68,0.1); color: var(--red); border: 1px solid rgba(239,68,68,0.2); }
+.badge-gold { background: rgba(245,158,11,0.1); color: var(--gold); border: 1px solid rgba(245,158,11,0.2); }
+.badge-purple { background: rgba(124,58,237,0.1); color: var(--purple); border: 1px solid rgba(124,58,237,0.2); }
+.badge-cyan { background: rgba(0,210,255,0.1); color: #0099BB; border: 1px solid rgba(0,210,255,0.3); }
+
+/* STAT METRIC CARD */
+.metric-card {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 20px;
+  border: 1px solid var(--gray3);
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.metric-val {
+  font-family: var(--font-mono);
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--dark);
+  margin: 8px 0 4px;
+}
+.metric-label { font-size: 12px; color: var(--gray); }
+.metric-icon {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 4px;
+  font-size: 16px;
+}
+
+/* FORMS */
+.form-section {
+  background: var(--white);
+  border-radius: 20px;
+  padding: 28px;
+  border: 1px solid var(--gray3);
+  margin-bottom: 20px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+}
+.form-section h3 {
+  font-family: var(--font-title);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--dark);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--gray3);
+}
+.form-section h3 i { color: var(--blue); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.form-col { display: flex; flex-direction: column; gap: 6px; }
+.form-col label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--dark2);
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+.form-col input, .form-col select, .form-col textarea {
+  padding: 11px 14px;
+  border: 1.5px solid var(--gray3);
+  border-radius: 10px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--dark);
+  outline: none;
+  transition: all .2s;
+  background: #FAFBFD;
+}
+.form-col input:focus, .form-col select:focus {
+  border-color: var(--blue);
+  background: white;
+  box-shadow: 0 0 0 3px rgba(0,87,255,0.08);
+}
+.form-col-full { grid-column: 1/-1; }
+
+.btn-save {
+  padding: 13px 28px;
+  background: linear-gradient(135deg, var(--blue), var(--blue2));
+  border: none;
+  border-radius: 40px;
+  color: white;
+  font-family: var(--font-title);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .2s;
+  box-shadow: 0 4px 16px rgba(0,87,255,0.3);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-save:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,87,255,0.4); }
+.btn-save.purple {
+  background: linear-gradient(135deg, var(--purple), #A855F7);
+  box-shadow: 0 4px 16px rgba(124,58,237,0.3);
+}
+.btn-save.green {
+  background: linear-gradient(135deg, #059669, var(--green));
+  box-shadow: 0 4px 16px rgba(16,185,129,0.3);
+}
+.btn-save.gold {
+  background: linear-gradient(135deg, #D97706, var(--gold));
+  box-shadow: 0 4px 16px rgba(245,158,11,0.3);
+}
+.btn-save.red {
+  background: linear-gradient(135deg, #DC2626, var(--red));
+  box-shadow: 0 4px 16px rgba(239,68,68,0.25);
+}
+
+/* TABLE */
+.data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.data-table th {
+  padding: 11px 16px;
+  background: #F8FAFC;
+  color: var(--gray);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-align: left;
+  border-bottom: 1px solid var(--gray3);
+}
+.data-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--gray3);
+  color: var(--dark2);
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: #F8FAFC; }
+.table-wrapper { overflow-x: auto; border-radius: 16px; border: 1px solid var(--gray3); }
+
+/* INSIGHT CARDS */
+.insight-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: var(--bg);
+  border-left: 4px solid var(--blue);
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: var(--dark2);
+  line-height: 1.5;
+}
+.insight-item.green { border-left-color: var(--green); }
+.insight-item.red { border-left-color: var(--red); }
+.insight-item.gold { border-left-color: var(--gold); }
+.insight-item i { color: var(--blue); margin-top: 1px; font-size: 14px; flex-shrink: 0; }
+.insight-item.green i { color: var(--green); }
+.insight-item.red i { color: var(--red); }
+.insight-item.gold i { color: var(--gold); }
+
+/* PROGRESS BAR */
+.progress-wrap { background: var(--gray3); border-radius: 100px; height: 8px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 100px; background: linear-gradient(90deg, var(--blue), var(--cyan)); transition: width .5s ease; }
+.progress-fill.purple { background: linear-gradient(90deg, var(--purple), #A855F7); }
+.progress-fill.gold { background: linear-gradient(90deg, #D97706, var(--gold)); }
+.progress-fill.green { background: linear-gradient(90deg, #059669, var(--green)); }
+
+/* SOCIAL CARDS */
+.social-card {
+  background: var(--white);
+  border-radius: 20px;
+  padding: 22px 20px;
+  border: 1px solid var(--gray3);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+  transition: all .2s;
+}
+.social-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+.social-icon {
+  width: 48px; height: 48px;
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+}
+.social-name { font-size: 12px; color: var(--gray); font-weight: 500; }
+.social-count {
+  font-family: var(--font-mono);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--dark);
+}
+.social-change {
+  font-size: 12px;
+  font-weight: 600;
+  display: flex; align-items: center; gap: 3px;
+}
+.social-change.up { color: var(--green); }
+.social-change.down { color: var(--red); }
+
+/* ACHIEVEMENT CARD */
+.achievement-card {
+  background: var(--white);
+  border-radius: 20px;
+  padding: 24px 20px;
+  border: 1px solid var(--gray3);
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  transition: all .2s;
+  position: relative;
+  overflow: hidden;
+}
+.achievement-card.unlocked { border-color: #FCD34D; box-shadow: 0 4px 20px rgba(245,158,11,0.15); }
+.achievement-card.locked { opacity: 0.45; filter: grayscale(1); }
+.achievement-card.unlocked::after {
+  content: '✓';
+  position: absolute; top: 10px; right: 12px;
+  color: var(--gold); font-size: 16px; font-weight: 800;
+}
+.achievement-icon { font-size: 36px; margin-bottom: 8px; }
+.achievement-title { font-family: var(--font-title); font-size: 13px; font-weight: 700; color: var(--dark); }
+.achievement-desc { font-size: 11px; color: var(--gray); margin-top: 4px; }
+.achievement-date { font-size: 10px; color: var(--blue); font-family: var(--font-mono); margin-top: 6px; }
+
+/* MODAL */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity .2s;
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal-box {
+  background: var(--white);
+  border-radius: 24px;
+  padding: 36px;
+  width: 680px;
+  max-width: 95vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 40px 80px rgba(0,0,0,0.3);
+  transform: translateY(20px);
+  transition: transform .2s;
+}
+.modal-overlay.open .modal-box { transform: translateY(0); }
+.modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 24px;
+}
+.modal-title { font-family: var(--font-title); font-size: 20px; font-weight: 800; color: var(--dark); }
+.modal-close { background: none; border: none; font-size: 20px; color: var(--gray); cursor: pointer; }
+
+/* PRESS KIT */
+.presskit-preview {
+  background: linear-gradient(135deg, var(--dark) 0%, var(--dark2) 100%);
+  border-radius: 16px;
+  padding: 40px;
+  color: white;
+  margin-bottom: 20px;
+}
+.presskit-header { display: flex; align-items: center; gap: 20px; margin-bottom: 28px; }
+.presskit-avatar {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--blue), var(--purple));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 32px;
+}
+.presskit-name { font-family: var(--font-title); font-size: 28px; font-weight: 800; }
+.presskit-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 20px;
+}
+.presskit-stat { text-align: center; }
+.presskit-stat-val { font-family: var(--font-mono); font-size: 22px; font-weight: 600; color: var(--cyan); }
+.presskit-stat-label { font-size: 11px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1px; }
+
+/* TOAST */
+.toast {
+  position: fixed;
+  bottom: 24px; right: 24px;
+  background: var(--dark);
+  color: white;
+  padding: 14px 20px;
+  border-radius: 12px;
+  font-size: 14px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  z-index: 9999;
+  transform: translateY(80px);
+  opacity: 0;
+  transition: all .3s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 320px;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast i { color: var(--green); }
+.toast.error i { color: var(--red); }
+
+/* INFLUENCE SCORE */
+.influence-score {
+  background: linear-gradient(135deg, var(--dark), var(--dark2));
+  border-radius: 20px;
+  padding: 28px;
+  text-align: center;
+  color: white;
+}
+.score-ring {
+  width: 120px; height: 120px;
+  margin: 0 auto 16px;
+  position: relative;
+}
+.score-ring svg { transform: rotate(-90deg); }
+.score-val {
+  font-family: var(--font-mono);
+  font-size: 36px;
+  font-weight: 600;
+  color: var(--cyan);
+}
+.score-label { font-size: 13px; color: rgba(255,255,255,0.5); }
+
+/* CHART HEIGHT */
+.chart-container { position: relative; }
+.chart-container canvas { max-height: 280px; }
+
+/* AIRPLAY */
+.airplay-card {
+  background: linear-gradient(135deg, #0F172A, #1E293B);
+  border-radius: 16px;
+  padding: 20px;
+  color: white;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+/* ERA CARD */
+.era-card {
+  background: var(--white);
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid var(--gray3);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  transition: all .2s;
+}
+.era-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+.era-header {
+  height: 120px;
+  background: linear-gradient(135deg, var(--blue), var(--purple));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 40px;
+  overflow: hidden;
+  position: relative;
+}
+.era-header img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  position: absolute; inset: 0;
+}
+.era-body { padding: 16px; }
+.era-name { font-family: var(--font-title); font-size: 15px; font-weight: 700; color: var(--dark); }
+.era-meta { font-size: 12px; color: var(--gray); margin-top: 4px; }
+.era-stats { display: flex; gap: 12px; margin-top: 12px; flex-wrap: wrap; }
+
+/* FORECAST */
+.forecast-card {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 20px;
+  border-left: 4px solid var(--blue);
+  border: 1px solid var(--gray3);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.forecast-val {
+  font-family: var(--font-mono);
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--blue);
+}
+
+/* RESPONSIVE */
+@media (max-width: 1100px) {
+  .kpis { grid-template-columns: repeat(3, 1fr); }
+  .grid-4, .grid-5 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+  .kpis { grid-template-columns: repeat(2, 1fr); }
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  .form-row, .form-row-3 { grid-template-columns: 1fr; }
+  .content { padding: 16px; }
+}
+
+/* CHIP SELECTOR */
+.chip-group { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+.chip {
+  padding: 6px 14px;
+  border-radius: 24px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1.5px solid var(--gray2);
+  background: white;
+  color: var(--gray);
+  transition: all .15s;
+}
+.chip.active { background: var(--blue); border-color: var(--blue); color: white; }
+.chip:hover:not(.active) { border-color: var(--blue); color: var(--blue); }
+
+/* SCROLL TOP indicator */
+.section-divider { height: 1px; background: var(--gray3); margin: 28px 0; }
+
+/* Number formatting */
+.num-positive { color: var(--green); font-weight: 600; }
+.num-negative { color: var(--red); font-weight: 600; }
+
+/* ===== COVER IMAGE ===== */
+.cover-upload-box {
+  border: 2px dashed var(--gray2);
+  border-radius: 14px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all .2s;
+  background: #FAFBFD;
+  position: relative;
+}
+.cover-upload-box:hover { border-color: var(--blue); background: rgba(0,87,255,.03); }
+.cover-upload-box input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+.cover-preview {
+  width: 90px; height: 90px;
+  border-radius: 12px;
+  object-fit: cover;
+  border: 2px solid var(--gray3);
+  display: none;
+  margin: 0 auto 8px;
+}
+.cover-preview.show { display: block; }
+.cover-placeholder { font-size: 32px; margin-bottom: 6px; }
+.cover-upload-label { font-size: 12px; color: var(--gray); }
+
+/* ===== ZIP IMPORT ===== */
+.zip-drop-zone {
+  border: 2px dashed var(--blue);
+  border-radius: 16px;
+  padding: 40px 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: all .25s;
+  background: rgba(0,87,255,.02);
+  position: relative;
+}
+.zip-drop-zone:hover, .zip-drop-zone.dragover { background: rgba(0,87,255,.06); border-color: var(--blue2); }
+.zip-drop-zone input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+.zip-progress-bar {
+  width: 100%;
+  height: 8px;
+  background: var(--gray3);
+  border-radius: 99px;
+  overflow: hidden;
+  margin-top: 14px;
+  display: none;
+}
+.zip-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--blue), var(--cyan));
+  border-radius: 99px;
+  width: 0%;
+  transition: width .3s;
+}
+.zip-log {
+  margin-top: 14px;
+  font-size: 12px;
+  color: var(--gray);
+  line-height: 1.7;
+  display: none;
+}
+.zip-cover-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+.zip-cover-thumb {
+  width: 70px; height: 70px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 2px solid var(--gray3);
+}
+
+/* ===== MULTI-ARTIST / LABEL ===== */
+.artist-selector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 24px;
+  padding: 5px 12px;
+  cursor: pointer;
+  transition: all .2s;
+}
+.artist-selector select {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.85);
+  font-size: 13px;
+  outline: none;
+  cursor: pointer;
+  font-family: var(--font-body);
+}
+.artist-selector select option { background: var(--dark2); color: white; }
+
+.artist-card {
+  background: var(--white);
+  border-radius: 20px;
+  border: 1px solid var(--gray3);
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,.05);
+  transition: all .2s;
+}
+.artist-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.1); }
+.artist-card-header {
+  height: 100px;
+  background: linear-gradient(135deg, var(--blue), var(--purple));
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+}
+.artist-card-avatar {
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  border: 3px solid rgba(255,255,255,.3);
+  object-fit: cover;
+  background: rgba(255,255,255,.15);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px;
+  color: white;
+  overflow: hidden;
+}
+.artist-card-body { padding: 16px; }
+.artist-card-name { font-family: var(--font-title); font-size: 16px; font-weight: 700; }
+.artist-card-meta { font-size: 12px; color: var(--gray); margin-top: 3px; }
+.artist-card-stats { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+
+.label-kpi-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: rgba(0,0,0,.06);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+.label-kpi {
+  background: var(--dark2);
+  padding: 20px;
+  text-align: center;
+}
+.label-kpi-val { font-family: var(--font-mono); font-size: 24px; font-weight: 600; color: white; }
+.label-kpi-label { font-size: 11px; color: rgba(255,255,255,.4); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+
+.alert-milestone {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  background: rgba(245,158,11,.08);
+  border: 1px solid rgba(245,158,11,.2);
+  margin-bottom: 10px;
+  font-size: 13px;
+}
+.alert-milestone i { color: var(--gold); font-size: 18px; flex-shrink: 0; }
+
+.label-add-artist-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 2px dashed var(--blue);
+  border-radius: 20px;
+  padding: 20px;
+  color: var(--blue);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  background: rgba(0,87,255,.03);
+  transition: all .2s;
+  width: 100%;
+}
+.label-add-artist-btn:hover { background: rgba(0,87,255,.08); }
+
+.ranking-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--gray3);
+  transition: background .15s;
+}
+.ranking-row:last-child { border-bottom: none; }
+.ranking-row:hover { background: var(--bg); }
+.ranking-num {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--blue);
+  color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-size: 13px; font-weight: 600;
+  flex-shrink: 0;
+}
+.ranking-num.gold-bg { background: var(--gold); }
+.ranking-num.silver-bg { background: #9CA3AF; }
+.ranking-num.bronze-bg { background: #B45309; }
+
+/* new artist modal */
+.modal-box-lg { max-width: 560px; width: 95vw; }
+
+/* ===== OBRA CHART CARD ===== */
+.obra-chart-card {
+  background: var(--white);
+  border-radius: 20px;
+  border: 1px solid var(--gray3);
+  box-shadow: 0 2px 10px rgba(0,0,0,.05);
+  overflow: hidden;
+  transition: all .2s;
+  cursor: pointer;
+}
+.obra-chart-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 28px rgba(0,87,255,.12);
+  border-color: rgba(0,87,255,.25);
+}
+.obra-chart-card-header {
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid var(--gray3);
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+.obra-chart-cover {
+  width: 56px; height: 56px;
+  border-radius: 10px;
+  object-fit: cover;
+  background: linear-gradient(135deg, var(--blue), var(--purple));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.obra-chart-cover img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
+.obra-chart-title {
+  font-family: var(--font-title);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--dark);
+  margin-bottom: 3px;
+}
+.obra-chart-meta { font-size: 12px; color: var(--gray); }
+.obra-peak-crown {
+  margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+}
+.obra-peak-number {
+  font-family: var(--font-mono);
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+}
+.obra-peak-number.pos1 { color: var(--gold); }
+.obra-peak-number.pos2 { color: #9CA3AF; }
+.obra-peak-number.pos3 { color: #B45309; }
+.obra-peak-number.pos-other { color: var(--blue); }
+.obra-peak-label { font-size: 10px; color: var(--gray); text-transform: uppercase; letter-spacing: .8px; margin-top: 1px; }
+
+.obra-chart-platforms {
+  padding: 14px 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.platform-peak-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--bg);
+  border: 1px solid var(--gray3);
+  transition: all .15s;
+}
+.platform-peak-badge.is-one {
+  background: rgba(245,158,11,.1);
+  border-color: rgba(245,158,11,.3);
+  color: #B45309;
+}
+.platform-peak-badge.is-top3 {
+  background: rgba(0,87,255,.07);
+  border-color: rgba(0,87,255,.2);
+  color: var(--blue);
+}
+.platform-peak-badge .peak-pos {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+}
+.obra-chart-footer {
+  padding: 10px 20px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--gray3);
+}
+.btn-view-history {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  background: var(--blue);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: all .15s;
+}
+.btn-view-history:hover { background: var(--blue2); }
+
+/* OBRA HISTORY MODAL PEAKS */
+.history-peak-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+  margin-bottom: 4px;
+}
+.history-peak-card {
+  background: var(--bg);
+  border-radius: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--gray3);
+  text-align: center;
+}
+.history-peak-card.is-one { background: rgba(245,158,11,.08); border-color: rgba(245,158,11,.3); }
+.history-peak-plat { font-size: 12px; color: var(--gray); margin-bottom: 4px; font-weight: 600; }
+.history-peak-pos {
+  font-family: var(--font-mono);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--dark);
+  line-height: 1;
+}
+.history-peak-card.is-one .history-peak-pos { color: var(--gold); }
+.history-peak-country { font-size: 11px; color: var(--gray); margin-top: 3px; }
+.history-peak-date { font-size: 10px; color: var(--gray2); margin-top: 2px; }
+
+</style>
+</head>
+<body>
+
+<!-- ===== LOGIN ===== -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-logo-icon"><i class="fas fa-chart-line"></i></div>
+      <div class="login-logo-text">RPG·<span>SoundCharts</span></div>
+    </div>
+    <div class="login-subtitle">Analytics Pro — Music Career</div>
+    <div class="form-group">
+      <label>Usuário</label>
+      <input type="text" id="loginUser" value="RPG" placeholder="Seu nome de artista">
+    </div>
+    <div class="form-group">
+      <label>E-mail</label>
+      <input type="email" id="loginEmail" value="rpg@music.com" placeholder="E-mail">
+    </div>
+    <button class="btn-primary" onclick="doLogin()">
+      <i class="fas fa-rocket" style="margin-right:8px"></i> Entrar no Dashboard
+    </button>
+    <button class="btn-secondary" onclick="loadDemoData()">
+      <i class="fas fa-database" style="margin-right:8px"></i> Carregar Dados de Demonstração
+    </button>
+  </div>
+</div>
+
+<!-- ===== DASHBOARD ===== -->
+<div id="dashboardScreen">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-logo">
+      <div class="header-logo-icon"><i class="fas fa-chart-line"></i></div>
+      RPG·<span>SoundCharts</span>
+    </div>
+    <div class="header-right">
+      <div id="labelArtistSelector" class="artist-selector" style="display:none">
+        <i class="fas fa-users" style="color:var(--cyan);font-size:12px"></i>
+        <select id="headerArtistSelect" onchange="switchActiveArtist(this.value)"></select>
+      </div>
+      <div class="user-badge">
+        <i class="fas fa-user-astronaut"></i>
+        <span id="headerUser">RPG</span>
+      </div>
+      <button class="btn-logout" onclick="doLogout()">
+        <i class="fas fa-sign-out-alt"></i> Sair
+      </button>
+    </div>
+  </header>
+
+  <!-- KPIs -->
+  <div class="kpis">
+    <div class="kpi-card">
+      <div class="kpi-icon blue"><i class="fas fa-play-circle"></i></div>
+      <div class="kpi-data">
+        <div class="kpi-label">Streams Totais</div>
+        <div class="kpi-value" id="kpiStreams">0</div>
+        <div class="kpi-sub">todas as plataformas</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon purple"><i class="fas fa-shopping-cart"></i></div>
+      <div class="kpi-data">
+        <div class="kpi-label">Vendas Totais (equiv.)</div>
+        <div class="kpi-value" id="kpiVendas">0</div>
+        <div class="kpi-sub">unidades equivalentes</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon gold"><i class="fas fa-trophy"></i></div>
+      <div class="kpi-data">
+        <div class="kpi-label">#1 em Charts</div>
+        <div class="kpi-value" id="kpiCharts">0</div>
+        <div class="kpi-sub">posições #1 conquistadas</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon cyan"><i class="fas fa-medal"></i></div>
+      <div class="kpi-data">
+        <div class="kpi-label">Certificações</div>
+        <div class="kpi-value" id="kpiCerts">0</div>
+        <div class="kpi-sub">ouro, platina, diamante</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon green"><i class="fas fa-record-vinyl"></i></div>
+      <div class="kpi-data">
+        <div class="kpi-label">Recordes</div>
+        <div class="kpi-value" id="kpiRecords">0</div>
+        <div class="kpi-sub">marcos históricos</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs-wrapper">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab(0)" data-tab="0">
+        <i class="fas fa-home"></i> Visão Geral
+      </button>
+      <button class="tab-btn" onclick="switchTab(1)" data-tab="1">
+        <i class="fas fa-plus-circle"></i> Adicionar Dados
+      </button>
+      <button class="tab-btn" onclick="switchTab(2)" data-tab="2">
+        <i class="fas fa-wave-square"></i> Streams
+      </button>
+      <button class="tab-btn" onclick="switchTab(3)" data-tab="3">
+        <i class="fas fa-shopping-bag"></i> Vendas
+      </button>
+      <button class="tab-btn" onclick="switchTab(4)" data-tab="4">
+        <i class="fas fa-medal"></i> Certificações
+      </button>
+      <button class="tab-btn" onclick="switchTab(5)" data-tab="5">
+        <i class="fas fa-chart-bar"></i> Charts & Peaks ⭐
+      </button>
+      <button class="tab-btn" onclick="switchTab(6)" data-tab="6">
+        <i class="fas fa-record-vinyl"></i> Recordes
+      </button>
+      <button class="tab-btn" onclick="switchTab(7)" data-tab="7">
+        <i class="fas fa-layer-group"></i> Projetos / Eras
+      </button>
+      <button class="tab-btn" onclick="switchTab(8)" data-tab="8">
+        <i class="fas fa-share-alt"></i> Redes Sociais
+      </button>
+      <button class="tab-btn" onclick="switchTab(9)" data-tab="9">
+        <i class="fas fa-brain"></i> Insights / Forecast
+      </button>
+      <button class="tab-btn" onclick="switchTab(10)" data-tab="10">
+        <i class="fas fa-building"></i> Gravadora / Global
+      </button>
+    </div>
+  </div>
+
+  <!-- CONTENT AREA -->
+  <div class="content">
+
+    <!-- TAB 0: VISÃO GERAL -->
+    <div class="tab-panel active" id="tab0">
+      <div class="section-title"><i class="fas fa-home"></i> Visão Geral</div>
+      <div class="section-sub">Resumo consolidado de desempenho em todas as plataformas</div>
+
+      <div class="grid-2" style="margin-bottom:20px">
+        <div class="card">
+          <div class="card-title"><i class="fas fa-chart-line"></i> Evolução de Streams (30d)</div>
+          <div class="chart-container"><canvas id="chartStreamsLine"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="fas fa-circle-half-stroke"></i> Distribuição por Plataforma</div>
+          <div class="chart-container" style="max-width:280px;margin:0 auto"><canvas id="chartDoughnut"></canvas></div>
+        </div>
+      </div>
+
+      <div class="grid-3" style="margin-bottom:20px">
+        <div class="card">
+          <div class="card-title"><i class="fas fa-globe"></i> Top Países</div>
+          <div id="topCountriesTable"></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="fas fa-fire"></i> Mapa de Calor por País</div>
+          <div id="countryHeatmap"></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="fas fa-lightbulb"></i> Insights Automáticos</div>
+          <div id="autoInsights"></div>
+        </div>
+      </div>
+
+      <!-- Airplay Card -->
+      <div class="airplay-card" style="margin-bottom:20px">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+          <div>
+            <div style="font-family:var(--font-title);font-size:16px;font-weight:700;color:white;margin-bottom:4px">
+              <i class="fas fa-radio" style="color:var(--cyan);margin-right:8px"></i> Airplay Reach
+            </div>
+            <div style="font-size:12px;color:rgba(255,255,255,.4)">Estimativa de execuções em rádios</div>
+          </div>
+          <div style="display:flex;gap:28px;flex-wrap:wrap">
+            <div style="text-align:center">
+              <div class="kpi-value" id="airplayBR" style="font-size:18px">—</div>
+              <div style="font-size:11px;color:rgba(255,255,255,.4)">Brasil</div>
+            </div>
+            <div style="text-align:center">
+              <div class="kpi-value" id="airplayUS" style="font-size:18px">—</div>
+              <div style="font-size:11px;color:rgba(255,255,255,.4)">EUA</div>
+            </div>
+            <div style="text-align:center">
+              <div class="kpi-value" id="airplayGlobal" style="font-size:18px">—</div>
+              <div style="font-size:11px;color:rgba(255,255,255,.4)">Global</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 1: ADICIONAR DADOS -->
+    <div class="tab-panel" id="tab1">
+      <div class="section-title"><i class="fas fa-plus-circle"></i> Adicionar Dados</div>
+      <div class="section-sub">Insira dados brutos — o sistema calcula tudo automaticamente</div>
+
+      <!-- Artista -->
+      <div class="form-section">
+        <h3><i class="fas fa-user-music"></i> Artista</h3>
+        <div class="form-row">
+          <div class="form-col">
+            <label>Nome do Artista</label>
+            <input type="text" id="artistName" value="RPG">
+          </div>
+          <div class="form-col">
+            <label>País de Origem</label>
+            <select id="artistCountry">
+              <option value="BR">🇧🇷 Brasil</option>
+              <option value="US">🇺🇸 Estados Unidos</option>
+              <option value="GB">🇬🇧 Reino Unido</option>
+              <option value="KR">🇰🇷 Coreia do Sul</option>
+              <option value="JP">🇯🇵 Japão</option>
+              <option value="DE">🇩🇪 Alemanha</option>
+              <option value="FR">🇫🇷 França</option>
+              <option value="AR">🇦🇷 Argentina</option>
+              <option value="MX">🇲🇽 México</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn-save" onclick="saveArtist()"><i class="fas fa-save"></i> Salvar Artista</button>
+      </div>
+
+      <!-- Obra -->
+      <div class="form-section">
+        <h3><i class="fas fa-music"></i> Cadastrar Obra</h3>
+        <div class="form-row">
+          <div class="form-col">
+            <label>Título *</label>
+            <input type="text" id="obraTitle" placeholder="Nome da música/álbum">
+          </div>
+          <div class="form-col">
+            <label>Tipo *</label>
+            <select id="obraTipo">
+              <option value="Single">Single</option>
+              <option value="Álbum">Álbum</option>
+              <option value="EP">EP</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-col">
+            <label>Era</label>
+            <input type="text" id="obraEra" placeholder="Ex: Debut Era">
+          </div>
+          <div class="form-col">
+            <label>Data de Lançamento *</label>
+            <input type="date" id="obraDate">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-col">
+            <label>Gravadora</label>
+            <input type="text" id="obraLabel" placeholder="Nome da gravadora">
+          </div>
+          <div class="form-col">
+            <label>Gênero</label>
+            <input type="text" id="obraGenre" placeholder="Ex: Pop, Hip-Hop">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-col">
+            <label>ISRC</label>
+            <input type="text" id="obraISRC" placeholder="BR-XXX-00-00000">
+          </div>
+          <div class="form-col">
+            <label>Status</label>
+            <select id="obraStatus">
+              <option value="Ativo">Ativo</option>
+              <option value="Encerrado">Encerrado</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-col form-col-full">
+            <label>Capa / Artwork</label>
+            <div class="cover-upload-box" onclick="document.getElementById('obraCoverInput').click()">
+              <input type="file" id="obraCoverInput" accept="image/*" style="display:none" onchange="previewObraCover(this)">
+              <img id="obraCoverPreview" class="cover-preview" src="" alt="Capa">
+              <div class="cover-placeholder" id="coverPlaceholderIcon">🖼️</div>
+              <div class="cover-upload-label">Clique para selecionar imagem (JPG, PNG, WEBP)</div>
+            </div>
+          </div>
+        </div>
+        <button class="btn-save" onclick="addObra()"><i class="fas fa-plus"></i> Cadastrar Obra</button>
+      </div>
+
+      <!-- Streams -->
+      <div class="form-section">
+        <h3><i class="fas fa-wave-square"></i> Registrar Streams</h3>
+        <div class="form-row">
+          <div class="form-col">
+            <label>Obra *</label>
+            <select id="streamObra" class="obra-select"></select>
+          </div>
+          <div class="form-col">
+            <label>Plataforma *</label>
+            <select id="streamPlat">
+              <option value="Spotify">Spotify</option>
+              <option value="Apple Music">Apple Music</option>
+              <option value="YouTube">YouTube</option>
+              <option value="Deezer">Deezer</option>
+              <option value="Tidal">Tidal</option>
+              <option value="Amazon Music">Amazon Music</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-col">
+            <label>País</label>
+            <select id="streamCountry">
+              <option value="BR">🇧🇷 Brasil</option>
+              <option value="US">🇺🇸 EUA</option>
+              <option value="GB">🇬🇧 Reino Unido</option>
+              <option value="MX">🇲🇽 México</option>
+              <option value="AR">🇦🇷 Argentina</option>
+              <option value="JP">🇯🇵 Japão</option>
+              <option value="KR">🇰🇷 Coreia do Sul</option>
+              <option value="DE">🇩🇪 Alemanha</option>
+              <option value="FR">🇫🇷 França</option>
+              <option value="OTHER">Outros</option>
+            </select>
+          </div>
+          <div class="form-col">
+            <label>Quantidade *</label>
+            <input type="number" id="streamQty" placeholder="Ex: 500000" min="0">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-col">
+            <label>Tipo de Stream</label>
+            <select id="streamType">
+              <option value="Premium">Premium</option>
+              <option value="Free">Free / Ad-supported</option>
+            </select>
+          </div>
+          <div class="form-col">
+            <label>Fonte</label>
+            <input type="text" id="streamSource" placeholder="Ex: Playlist, Viral">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-col">
+            <label>Playlist (opcional)</label>
+            <input type="text" id="streamPlaylist" placeholder="Nome da playlist">
+          </div>
+          <div class="form-col">
+            <label>Data *</label>
+            <input type="date" id="streamDate">
+          </div>
+        </div>
+        <button class="btn-save purple" onclick="addStream()"><i class="fas fa-wave-square"></i> Registrar Streams</button>
+      </div>
+
+      <!-- Vendas -->
+      <div class="form-section">
+        <h3><i class="fas fa-shopping-cart"></i> Registrar Vendas</h3>
+        <div class="form-row">
+          <div class="form-col">
+            <label>Obra *</label>
+            <select id="vendaObra" class="obra-select"></select>
+          </div>
+          <div class="form-col">
+            <label>Tipo</label>
+            <select id="vendaTipo">
+              <option value="Física">Física</option>
+              <option value="Digital">Digital / Download</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-col">
+            <label>Formato</label>
+            <select id="vendaFormato">
+              <option value="CD">CD</option>
+              <option value="Vinil">Vinil</option>
+              <option value="Download">Download</option>
+              <option value="Outro">Outro</option>
+            </select>
+          </div>
+          <div class="form-col">
+            <label>País</label>
+            <input type="text" id="vendaCountry" placeholder="BR, US, etc.">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-col">
+            <label>Unidades *</label>
+            <input type="number" id="vendaUnits" placeholder="Quantidade vendida" min="0">
+          </div>
+          <div class="form-col">
+            <label>Preço Médio (R$)</label>
+            <input type="number" id="vendaPrice" placeholder="Ex: 39.90" step="0.01">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-col">
+            <label>Loja / Canal</label>
+            <input type="text" id="vendaLoja" placeholder="Ex: iTunes, Amazon">
+          </div>
+          <div class="form-col">
+            <label>Data *</label>
+            <input type="date" id="vendaDate">
+          </div>
+        </div>
+        <button class="btn-save green" onclick="addVenda()"><i class="fas fa-shopping-bag"></i> Registrar Venda</button>
+      </div>
+
+      <!-- Certificação Manual -->
+      <div class="form-section">
+        <h3><i class="fas fa-medal"></i> Registrar Certificação Manual</h3>
+        <div class="form-row">
+          <div class="form-col">
+            <label>Obra</label>
+            <select id="certObra" class="obra-select"></select>
+          </div>
+          <div class="form-col">
+            <label>País</label>
+            <select id="certCountry">
+              <option value="BR">Brasil</option>
+              <option value="US">EUA</option>
+              <option value="GB">Reino Unido</option>
+              <option value="Global">Global</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-col">
+            <label>Nível</label>
+            <select id="certLevel">
+              <option value="Ouro">🥇 Ouro</option>
+              <option value="Platina">🏆 Platina</option>
+              <option value="Platina Duplo">🏆🏆 Platina Duplo</option>
+              <option value="Diamante">💎 Diamante</option>
+            </select>
+          </div>
+          <div class="form-col">
+            <label>Data</label>
+            <input type="date" id="certDate">
+          </div>
+        </div>
+        <button class="btn-save gold" onclick="addCertificacao()"><i class="fas fa-award"></i> Registrar Certificação</button>
+      </div>
+
+      <!-- Chart Position -->
+      <div class="form-section">
+        <h3><i class="fas fa-chart-bar"></i> Registrar Posição em Chart</h3>
+        <div class="form-row">
+          <div class="form-col">
+            <label>Obra</label>
+            <select id="chartObra" class="obra-select"></select>
+          </div>
+          <div class="form-col">
+            <label>Chart / Plataforma</label>
+            <select id="chartName">
+              <option value="Spotify Top 200">Spotify Top 200</option>
+              <option value="Apple Music Top 100">Apple Music Top 100</option>
+              <option value="Billboard Hot 100">Billboard Hot 100</option>
+              <option value="YouTube Charts">YouTube Charts</option>
+              <option value="Deezer Top 100">Deezer Top 100</option>
+              <option value="IFPI Global">IFPI Global</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-col">
+            <label>País</label>
+            <select id="chartCountry">
+              <option value="Global">Global</option>
+              <option value="BR">Brasil</option>
+              <option value="US">EUA</option>
+              <option value="GB">Reino Unido</option>
+            </select>
+          </div>
+          <div class="form-col">
+            <label>Posição (#)</label>
+            <input type="number" id="chartPos" placeholder="1 = topo" min="1">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-col">
+            <label>Data</label>
+            <input type="date" id="chartDate">
+          </div>
+          <div class="form-col"></div>
+        </div>
+        <button class="btn-save" onclick="addChartPos()"><i class="fas fa-chart-line"></i> Registrar Posição</button>
+      </div>
+
+      <!-- Recorde -->
+      <div class="form-section">
+        <h3><i class="fas fa-record-vinyl"></i> Registrar Recorde</h3>
+        <div class="form-row">
+          <div class="form-col form-col-full">
+            <label>Descrição do Recorde</label>
+            <input type="text" id="recDesc" placeholder="Ex: Artista brasileiro mais rápido a atingir 1B de streams">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-col">
+            <label>Valor / Dado</label>
+            <input type="text" id="recVal" placeholder="Ex: 1.000.000.000">
+          </div>
+          <div class="form-col">
+            <label>Data</label>
+            <input type="date" id="recDate">
+          </div>
+        </div>
+        <button class="btn-save red" onclick="addRecord()"><i class="fas fa-trophy"></i> Registrar Recorde</button>
+      </div>
+
+      <!-- Projeto / Era -->
+      <div class="form-section">
+        <h3><i class="fas fa-layer-group"></i> Projetos / Eras</h3>
+        <div class="form-row">
+          <div class="form-col">
+            <label>Nome do Projeto</label>
+            <input type="text" id="projName" placeholder="Ex: DEBUT ÁLBUM">
+          </div>
+          <div class="form-col">
+            <label>Era</label>
+            <input type="text" id="projEra" placeholder="Ex: Debut Era">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-col">
+            <label>Tipo</label>
+            <input type="text" id="projTipo" placeholder="Ex: Álbum, Tour, Campanha">
+          </div>
+          <div class="form-col">
+            <label>Data</label>
+            <input type="date" id="projDate">
+          </div>
+        </div>
+        <button class="btn-save purple" onclick="addProjeto()"><i class="fas fa-plus"></i> Adicionar Projeto</button>
+      </div>
+
+      <!-- ZIP IMPORT -->
+      <div class="form-section">
+        <h3><i class="fas fa-file-archive"></i> Importação em Lote (ZIP)</h3>
+        <p style="font-size:13px;color:var(--gray);margin-bottom:16px">
+          Importe múltiplos CSVs, JSONs e imagens de capa em um único arquivo .zip. 
+          Estrutura esperada: <code style="background:var(--bg);padding:2px 6px;border-radius:4px">streams.csv</code>, 
+          <code style="background:var(--bg);padding:2px 6px;border-radius:4px">vendas.csv</code>, 
+          <code style="background:var(--bg);padding:2px 6px;border-radius:4px">charts.csv</code>, imagens .jpg/.png.
+        </p>
+        <div class="zip-drop-zone" id="zipDropZone">
+          <input type="file" id="zipFileInput" accept=".zip" onchange="handleZipUpload(this.files[0])">
+          <div style="font-size:40px;margin-bottom:10px">📦</div>
+          <div style="font-family:var(--font-title);font-weight:700;font-size:15px;color:var(--dark);margin-bottom:4px">Arraste o arquivo .zip aqui</div>
+          <div style="font-size:13px;color:var(--gray)">ou clique para selecionar — máx. 50 MB</div>
+          <div class="zip-progress-bar" id="zipProgressBar">
+            <div class="zip-progress-fill" id="zipProgressFill"></div>
+          </div>
+        </div>
+        <div class="zip-log" id="zipLog"></div>
+        <div class="zip-cover-preview" id="zipCoverPreview"></div>
+        <div style="margin-top:14px;display:flex;gap:10px;align-items:center">
+          <label style="font-size:13px;display:flex;align-items:center;gap:8px;cursor:pointer">
+            <input type="checkbox" id="zipMergeMode" checked style="width:16px;height:16px">
+            <span>Adicionar aos dados existentes (desmarcar = substituir)</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: STREAMS DETALHADO -->
+    <div class="tab-panel" id="tab2">
+      <div class="section-title"><i class="fas fa-wave-square"></i> Streams Detalhado</div>
+      <div class="section-sub">Análise completa de consumo por plataforma</div>
+
+      <div id="streamsMetrics" class="grid-5" style="margin-bottom:20px"></div>
+
+      <div class="grid-2" style="margin-bottom:20px">
+        <div class="card">
+          <div class="card-title"><i class="fas fa-bars"></i> Streams por Plataforma (acumulado)</div>
+          <div class="chart-container"><canvas id="chartPlatBars"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="fas fa-chart-line"></i> Comparativo Mensal por Plataforma</div>
+          <div class="chart-container"><canvas id="chartMonthlyLines"></canvas></div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:20px">
+        <div class="card-title"><i class="fas fa-table"></i> Histórico de Streams (últimos 20)</div>
+        <div class="table-wrapper">
+          <table class="data-table" id="streamsTable">
+            <thead><tr>
+              <th>Obra</th><th>Plataforma</th><th>País</th><th>Streams</th><th>Tipo</th><th>Fonte</th><th>Data</th>
+            </tr></thead>
+            <tbody id="streamsTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: VENDAS -->
+    <div class="tab-panel" id="tab3">
+      <div class="section-title"><i class="fas fa-shopping-bag"></i> Vendas</div>
+      <div class="section-sub">Físico, digital e unidades equivalentes totais</div>
+
+      <div id="vendasMetrics" class="grid-5" style="margin-bottom:20px"></div>
+
+      <div class="grid-2" style="margin-bottom:20px">
+        <div class="card">
+          <div class="card-title"><i class="fas fa-chart-bar"></i> Receita por Tipo (mensal)</div>
+          <div class="chart-container"><canvas id="chartVendasBar"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="fas fa-circle-half-stroke"></i> Streams vs Vendas (equiv.)</div>
+          <div class="chart-container" style="max-width:280px;margin:0 auto"><canvas id="chartVendasDoughnut"></canvas></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><i class="fas fa-table"></i> Detalhamento de Vendas</div>
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead><tr><th>Obra</th><th>Tipo</th><th>Formato</th><th>País</th><th>Unidades</th><th>Equiv.</th><th>Receita</th><th>Data</th></tr></thead>
+            <tbody id="vendasTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: CERTIFICAÇÕES -->
+    <div class="tab-panel" id="tab4">
+      <div class="section-title"><i class="fas fa-medal"></i> Certificações</div>
+      <div class="section-sub">Automáticas por threshold + registros manuais</div>
+
+      <div id="certsList" style="margin-bottom:20px"></div>
+      <div id="certsProgress"></div>
+    </div>
+
+    <!-- TAB 5: CHARTS & PEAKS -->
+    <div class="tab-panel" id="tab5">
+      <div class="section-title"><i class="fas fa-chart-bar"></i> Charts & Peaks ⭐</div>
+      <div class="section-sub">Peaks por plataforma em destaque — clique em uma obra para ver o histórico completo</div>
+
+      <!-- Summary stats -->
+      <div id="chartsStatsSummary" class="grid-5" style="margin-bottom:24px"></div>
+
+      <!-- Obra cards grid -->
+      <div id="obraChartsGrid" style="margin-bottom:24px"></div>
+
+      <!-- Global history chart (all obras) -->
+      <div class="card" style="margin-bottom:20px">
+        <div class="card-title"><i class="fas fa-chart-line"></i> Histórico Global de Posições (todas as obras)</div>
+        <div class="chart-container"><canvas id="chartChartHistory"></canvas></div>
+      </div>
+    </div>
+
+    <!-- TAB 6: RECORDES -->
+    <div class="tab-panel" id="tab6">
+      <div class="section-title"><i class="fas fa-record-vinyl"></i> Recordes</div>
+      <div class="section-sub">Marcos históricos e conquistas únicas</div>
+      <div id="recordsList"></div>
+    </div>
+
+    <!-- TAB 7: PROJETOS / ERAS -->
+    <div class="tab-panel" id="tab7">
+      <div class="section-title"><i class="fas fa-layer-group"></i> Projetos / Eras</div>
+      <div class="section-sub">Obras agrupadas por fase criativa do artista</div>
+      <div id="erasList"></div>
+    </div>
+
+    <!-- TAB 8: REDES SOCIAIS -->
+    <div class="tab-panel" id="tab8">
+      <div class="section-title"><i class="fas fa-share-alt"></i> Redes Sociais</div>
+      <div class="section-sub">Estimativa automática baseada em streams, vendas e país de origem</div>
+      <div style="background:linear-gradient(135deg,rgba(0,87,255,.08),rgba(124,58,237,.06));border:1.5px solid rgba(0,87,255,.2);border-radius:14px;padding:14px 18px;margin-bottom:24px;font-size:13px;color:var(--dark2);display:flex;align-items:center;gap:10px">
+        <i class="fas fa-robot" style="color:var(--blue);font-size:18px"></i>
+        <span>Seguidores calculados automaticamente pelo modelo de distribuição. Sem necessidade de entrada manual.</span>
+      </div>
+
+      <div class="grid-2" style="margin-bottom:20px">
+        <div class="influence-score">
+          <div style="font-family:var(--font-title);font-size:14px;font-weight:700;color:rgba(255,255,255,.7);margin-bottom:16px;text-transform:uppercase;letter-spacing:1px">
+            <i class="fas fa-bolt" style="color:var(--cyan);margin-right:6px"></i> Índice de Influência
+          </div>
+          <div class="score-val" id="influenceScore">—</div>
+          <div class="score-label" style="margin-top:4px;color:rgba(255,255,255,.5)">de 1.000</div>
+          <div style="margin-top:16px">
+            <div class="progress-wrap" style="height:10px">
+              <div class="progress-fill" id="influenceBar" style="width:0%;background:linear-gradient(90deg,var(--blue),var(--cyan))"></div>
+            </div>
+          </div>
+          <div id="influenceBreakdown" style="margin-top:16px;font-size:12px;color:rgba(255,255,255,.4);line-height:1.8"></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="fas fa-chart-bar"></i> Distribuição de Audiência</div>
+          <div class="chart-container"><canvas id="chartSocialBar"></canvas></div>
+        </div>
+      </div>
+
+      <div class="grid-5" id="socialCards" style="margin-bottom:20px"></div>
+
+      <div class="card">
+        <div class="card-title"><i class="fas fa-chart-line"></i> Evolução Estimada (Principais Redes)</div>
+        <div class="chart-container"><canvas id="chartSocialLine"></canvas></div>
+      </div>
+    </div>
+
+    <!-- TAB 9: INSIGHTS / FORECAST -->
+    <div class="tab-panel" id="tab9">
+      <div class="section-title"><i class="fas fa-brain"></i> Insights & Forecast</div>
+      <div class="section-sub">Previsões, comparativos e análise preditiva simulada</div>
+
+      <!-- Forecast -->
+      <div style="margin-bottom:20px">
+        <h3 style="font-family:var(--font-title);font-size:17px;font-weight:700;color:var(--dark);margin-bottom:14px">
+          <i class="fas fa-chart-line" style="color:var(--blue);margin-right:8px"></i> Projeções (Forecasting)
+        </h3>
+        <div class="grid-3" id="forecastCards" style="margin-bottom:16px"></div>
+        <div class="card">
+          <div class="card-title"><i class="fas fa-chart-area"></i> Projeção de Streams com Intervalo de Confiança</div>
+          <div class="chart-container"><canvas id="chartForecast"></canvas></div>
+        </div>
+      </div>
+
+      <!-- ML Alerts -->
+      <div style="margin-bottom:20px">
+        <h3 style="font-family:var(--font-title);font-size:17px;font-weight:700;color:var(--dark);margin-bottom:14px">
+          <i class="fas fa-robot" style="color:var(--purple);margin-right:8px"></i> Análise Preditiva (ML Simulado)
+        </h3>
+        <div id="mlAlerts" class="grid-3"></div>
+      </div>
+
+      <!-- Touring -->
+      <div style="margin-bottom:20px">
+        <h3 style="font-family:var(--font-title);font-size:17px;font-weight:700;color:var(--dark);margin-bottom:14px">
+          <i class="fas fa-map-marker-alt" style="color:var(--cyan);margin-right:8px"></i> Touring Insights — Top Cidades
+        </h3>
+        <div class="card">
+          <div class="card-title"><i class="fas fa-city"></i> Cidades Recomendadas para Turnê</div>
+          <div id="touringList"></div>
+        </div>
+      </div>
+
+      <!-- Comparativo -->
+      <div style="margin-bottom:20px">
+        <h3 style="font-family:var(--font-title);font-size:17px;font-weight:700;color:var(--dark);margin-bottom:14px">
+          <i class="fas fa-balance-scale" style="color:var(--blue);margin-right:8px"></i> Comparativo entre Obras
+        </h3>
+        <div class="card">
+          <div class="card-title"><i class="fas fa-chart-bar"></i> Streams: Primeiros 7 / 30 / 90 dias</div>
+          <div class="chart-container"><canvas id="chartCompare"></canvas></div>
+        </div>
+      </div>
+
+      <!-- Insights Automáticos -->
+      <div>
+        <h3 style="font-family:var(--font-title);font-size:17px;font-weight:700;color:var(--dark);margin-bottom:14px">
+          <i class="fas fa-lightbulb" style="color:var(--gold);margin-right:8px"></i> Insights Automáticos
+        </h3>
+        <div id="insightsList"></div>
+      </div>
+
+      <!-- Hall da Fama -->
+      <div style="margin-top:28px">
+        <h3 style="font-family:var(--font-title);font-size:17px;font-weight:700;color:var(--dark);margin-bottom:14px">
+          <i class="fas fa-trophy" style="color:var(--gold);margin-right:8px"></i> Hall da Fama — Conquistas
+        </h3>
+        <div class="grid-4" id="achievementsGrid"></div>
+      </div>
+
+      <!-- Press Kit -->
+      <div style="margin-top:28px">
+        <h3 style="font-family:var(--font-title);font-size:17px;font-weight:700;color:var(--dark);margin-bottom:14px">
+          <i class="fas fa-file-alt" style="color:var(--purple);margin-right:8px"></i> Press Kit / One Sheet
+        </h3>
+        <div class="card">
+          <p style="font-size:14px;color:var(--gray);margin-bottom:16px">Gere um one-sheet profissional com todos os dados do artista compilados automaticamente.</p>
+          <button class="btn-save purple" onclick="openPressKit()">
+            <i class="fas fa-file-pdf"></i> Gerar Press Kit
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 10: GRAVADORA / GLOBAL -->
+    <div class="tab-panel" id="tab10">
+      <div class="section-title"><i class="fas fa-building"></i> Gravadora / Visão Global</div>
+      <div class="section-sub">Gestão de múltiplos artistas — visão consolidada do elenco</div>
+
+      <!-- Label KPIs bar -->
+      <div class="label-kpi-bar" id="labelKpiBar" style="margin-bottom:24px"></div>
+
+      <!-- Milestone Alerts -->
+      <div id="milestoneAlerts" style="margin-bottom:20px"></div>
+
+      <!-- Artists Grid + Ranking -->
+      <div class="grid-2" style="margin-bottom:20px">
+        <div class="card">
+          <div class="card-title"><i class="fas fa-users"></i> Elenco de Artistas</div>
+          <div id="artistsGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px"></div>
+          <button class="label-add-artist-btn" onclick="openNewArtistModal()">
+            <i class="fas fa-plus"></i> Adicionar Artista ao Elenco
+          </button>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="fas fa-trophy"></i> Ranking de Performance</div>
+          <div id="artistRanking"></div>
+        </div>
+      </div>
+
+      <!-- Portfolio Charts -->
+      <div class="grid-2" style="margin-bottom:20px">
+        <div class="card">
+          <div class="card-title"><i class="fas fa-chart-pie"></i> Streams por Artista</div>
+          <div class="chart-container" style="max-width:300px;margin:0 auto"><canvas id="chartLabelDoughnut"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="fas fa-chart-bar"></i> Comparativo de Certificações</div>
+          <div class="chart-container"><canvas id="chartLabelCerts"></canvas></div>
+        </div>
+      </div>
+
+      <!-- Side-by-side comparison -->
+      <div class="card" style="margin-bottom:20px">
+        <div class="card-title"><i class="fas fa-balance-scale"></i> Comparativo Detalhado</div>
+        <div class="table-wrapper">
+          <table class="data-table" id="labelCompareTable">
+            <thead><tr>
+              <th>Artista</th><th>País</th><th>Streams Totais</th><th>Vendas Equiv.</th><th>Certificações</th><th>Charts #1</th><th>Obras</th><th>Influência</th>
+            </tr></thead>
+            <tbody id="labelCompareBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /dashboard -->
+
+<!-- MODAL: OBRA CHART HISTORY -->
+<div class="modal-overlay" id="obraHistoryModal">
+  <div class="modal-box" style="max-width:780px;width:95vw;max-height:90vh;overflow-y:auto">
+    <div class="modal-header" style="position:sticky;top:0;background:white;z-index:10;padding-bottom:12px;border-bottom:1px solid var(--gray3);margin-bottom:20px">
+      <div>
+        <div class="modal-title" id="obraHistoryTitle">Histórico de Charts</div>
+        <div style="font-size:12px;color:var(--gray);margin-top:3px" id="obraHistorySubtitle"></div>
+      </div>
+      <button class="modal-close" onclick="closeObraHistory()"><i class="fas fa-times"></i></button>
+    </div>
+
+    <!-- Peak highlights per platform -->
+    <div id="obraHistoryPeaks" style="margin-bottom:24px"></div>
+
+    <!-- Timeline chart -->
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-title"><i class="fas fa-chart-line"></i> Evolução de Posição por Chart</div>
+      <div class="chart-container"><canvas id="chartObraHistory"></canvas></div>
+    </div>
+
+    <!-- Full history table -->
+    <div class="card">
+      <div class="card-title"><i class="fas fa-list"></i> Todas as Entradas em Chart</div>
+      <div class="table-wrapper">
+        <table class="data-table">
+          <thead><tr><th>Chart</th><th>País</th><th>Posição</th><th>Data</th><th>Status</th></tr></thead>
+          <tbody id="obraHistoryTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" id="newArtistModal">
+  <div class="modal-box modal-box-lg">
+    <div class="modal-header">
+      <div class="modal-title">➕ Adicionar Artista ao Elenco</div>
+      <button class="modal-close" onclick="closeNewArtistModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="form-col" style="margin-bottom:14px">
+      <label>Nome do Artista *</label>
+      <input type="text" id="newArtistName" placeholder="Nome artístico">
+    </div>
+    <div class="form-row">
+      <div class="form-col">
+        <label>País</label>
+        <select id="newArtistCountry">
+          <option value="BR">🇧🇷 Brasil</option>
+          <option value="US">🇺🇸 EUA</option>
+          <option value="GB">🇬🇧 Reino Unido</option>
+          <option value="MX">🇲🇽 México</option>
+          <option value="AR">🇦🇷 Argentina</option>
+        </select>
+      </div>
+      <div class="form-col">
+        <label>Gênero Principal</label>
+        <input type="text" id="newArtistGenre" placeholder="Ex: Pop, Funk, Sertanejo">
+      </div>
+    </div>
+    <div class="form-col" style="margin-bottom:14px">
+      <label>Foto / Avatar do Artista</label>
+      <div class="cover-upload-box" onclick="document.getElementById('newArtistPhoto').click()">
+        <input type="file" id="newArtistPhoto" accept="image/*" style="display:none" onchange="previewNewArtistPhoto(this)">
+        <img id="newArtistPhotoPreview" class="cover-preview" src="" alt="">
+        <div class="cover-placeholder" id="newArtistPhotoIcon">🎤</div>
+        <div class="cover-upload-label">Clique para carregar foto</div>
+      </div>
+    </div>
+    <div style="margin-top:8px;font-size:12px;color:var(--gray);margin-bottom:16px">
+      O novo artista terá perfil independente. Você pode alternar entre eles pelo seletor no cabeçalho.
+    </div>
+    <button class="btn-save" onclick="confirmAddArtist()"><i class="fas fa-user-plus"></i> Adicionar ao Elenco</button>
+  </div>
+</div>
+
+<!-- MODAL: PRESS KIT -->
+<div class="modal-overlay" id="presskitModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">📋 Press Kit — One Sheet</div>
+      <button class="modal-close" onclick="closePressKit()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="presskit-preview" id="presskitContent"></div>
+    <button class="btn-save purple" onclick="downloadPressKit()">
+      <i class="fas fa-download"></i> Exportar como Imagem
+    </button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg"></span></div>
+
+<script>
+// ============================================================
+// STATE
+// ============================================================
+const STORAGE_KEY = 'rpg_soundcharts_state';
+
+let state = {
+  user: { name: 'RPG', email: 'rpg@music.com', country: 'BR' },
+  obras: [],
+  streams: [],
+  vendas: [],
+  certificacoes: [],
+  chartPositions: [],
+  records: [],
+  projetos: [],
+  covers: {},
+  artists: [],
+  importLogs: []
+};
+
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+function loadState() {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) {
+    try { state = JSON.parse(saved); } catch(e) { console.warn('State parse error'); }
+  }
+}
+
+// ============================================================
+// FORMATTING
+// ============================================================
+function fmtNum(n) {
+  if (n >= 1e9) return (n/1e9).toFixed(2).replace(/\.?0+$/, '') + 'B';
+  if (n >= 1e6) return (n/1e6).toFixed(2).replace(/\.?0+$/, '') + 'M';
+  if (n >= 1e3) return (n/1e3).toFixed(1).replace(/\.?0+$/, '') + 'K';
+  return n.toLocaleString('pt-BR');
+}
+
+function fmtFull(n) {
+  return Math.round(n).toLocaleString('pt-BR');
+}
+
+function fmtDate(d) {
+  if (!d) return '—';
+  return new Date(d).toLocaleDateString('pt-BR');
+}
+
+function today() {
+  return new Date().toISOString().split('T')[0];
+}
+
+// ============================================================
+// LOGIN
+// ============================================================
+function doLogin() {
+  const name = document.getElementById('loginUser').value.trim() || 'RPG';
+  const email = document.getElementById('loginEmail').value.trim() || 'rpg@music.com';
+  state.user = { name, email, country: state.user?.country || 'BR' };
+  saveState();
+  showDashboard();
+}
+
+function loadDemoData() {
+  state = generateDemoData();
+  saveState();
+  showDashboard();
+}
+
+function doLogout() {
+  localStorage.removeItem(STORAGE_KEY);
+  document.getElementById('dashboardScreen').style.display = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+  state = { user: {name:'RPG', email:'rpg@music.com', country:'BR'}, obras:[], streams:[], vendas:[], certificacoes:[], chartPositions:[], records:[], projetos:[], covers:{}, artists:[], importLogs:[] };
+}
+
+function showDashboard() {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('dashboardScreen').style.display = 'flex';
+  document.getElementById('headerUser').textContent = state.user.name;
+  if (!state.covers) state.covers = {};
+  if (!state.artists) state.artists = [];
+  if (!state.importLogs) state.importLogs = [];
+  updateObraSelects();
+  updateLabelSelector();
+  updateAll();
+}
+
+// ============================================================
+// DEMO DATA
+// ============================================================
+function generateDemoData() {
+  const obras = [
+    { id: 'o1', title: 'Galáxia', tipo: 'Single', era: 'Debut Era', date: '2023-05-10', label: 'SoundWave', genre: 'Pop', status: 'Ativo', isrc: 'BRRPG2300001' },
+    { id: 'o2', title: 'Neon Dreams', tipo: 'Single', era: 'Debut Era', date: '2023-09-15', label: 'SoundWave', genre: 'Pop/Eletrônico', status: 'Ativo', isrc: 'BRRPG2300002' },
+    { id: 'o3', title: 'COSMOS', tipo: 'Álbum', era: 'COSMOS Era', date: '2024-02-28', label: 'SoundWave', genre: 'Pop', status: 'Ativo', isrc: 'BRRPG2400003' },
+    { id: 'o4', title: 'Supernova', tipo: 'Single', era: 'COSMOS Era', date: '2024-07-04', label: 'SoundWave', genre: 'Funk Pop', status: 'Ativo', isrc: 'BRRPG2400004' },
+    { id: 'o5', title: 'HYPERSPEED EP', tipo: 'EP', era: 'HYPERSPEED Era', date: '2025-01-20', label: 'SoundWave', genre: 'Pop/R&B', status: 'Ativo', isrc: 'BRRPG2500005' },
+  ];
+
+  const plats = ['Spotify','Apple Music','YouTube','Deezer','Tidal','Amazon Music'];
+  const countries = ['BR','US','GB','MX','AR','JP','KR','DE','FR'];
+  const streams = [];
+  let streamId = 1;
+
+  // Generate 60 days of stream data
+  for (let d = 60; d >= 0; d--) {
+    const dt = new Date(); dt.setDate(dt.getDate() - d);
+    const dateStr = dt.toISOString().split('T')[0];
+    
+    obras.forEach(o => {
+      const obraAge = Math.max(0, Math.floor((new Date(dateStr) - new Date(o.date))/(1000*86400)));
+      if (obraAge < 0) return;
+      
+      // Base popularity by obra
+      const basePop = { o1: 0.4, o2: 0.6, o3: 0.9, o4: 0.75, o5: 1.0 }[o.id] || 0.5;
+      const decayFactor = Math.max(0.1, 1 - obraAge * 0.003);
+      
+      plats.forEach(plat => {
+        const platFactor = { Spotify: 0.35, 'Apple Music': 0.15, YouTube: 0.25, Deezer: 0.1, Tidal: 0.08, 'Amazon Music': 0.07 }[plat];
+        const baseStreams = Math.floor(80000 * basePop * platFactor * decayFactor * (1 + Math.random() * 0.3));
+        if (baseStreams < 100) return;
+        
+        // Pick 1-2 countries per day
+        const cntry = countries[Math.floor(Math.random() * countries.length)];
+        streams.push({
+          id: `s${streamId++}`,
+          obraId: o.id,
+          obraTitle: o.title,
+          plataforma: plat,
+          country: cntry,
+          quantidade: baseStreams,
+          tipo: plat === 'YouTube' ? 'Free' : (Math.random() > 0.3 ? 'Premium' : 'Free'),
+          source: ['Playlist','Direto','Viral','Rádio'][Math.floor(Math.random()*4)],
+          date: dateStr
+        });
+      });
+    });
+  }
+
+  const vendas = [];
+  let vid = 1;
+  obras.forEach(o => {
+    for (let i = 0; i < 8; i++) {
+      const dt = new Date(o.date); dt.setDate(dt.getDate() + i * 15);
+      const tipo = Math.random() > 0.4 ? 'Física' : 'Digital';
+      vendas.push({
+        id: `v${vid++}`,
+        obraId: o.id,
+        obraTitle: o.title,
+        tipo,
+        formato: tipo === 'Física' ? (Math.random() > 0.5 ? 'CD' : 'Vinil') : 'Download',
+        country: ['BR','US','GB'][Math.floor(Math.random()*3)],
+        units: Math.floor(Math.random() * 5000) + 500,
+        price: tipo === 'Física' ? 39.90 : 9.99,
+        loja: tipo === 'Física' ? 'Lojas Americanas' : 'iTunes',
+        date: dt.toISOString().split('T')[0]
+      });
+    }
+  });
+
+  const certificacoes = [
+    { id: 'c1', obraId: 'o1', obraTitle: 'Galáxia', country: 'BR', level: 'Platina', date: '2023-09-01', auto: false },
+    { id: 'c2', obraId: 'o2', obraTitle: 'Neon Dreams', country: 'BR', level: 'Platina Duplo', date: '2024-01-15', auto: false },
+    { id: 'c3', obraId: 'o3', obraTitle: 'COSMOS', country: 'BR', level: 'Diamante', date: '2024-08-20', auto: false },
+    { id: 'c4', obraId: 'o4', obraTitle: 'Supernova', country: 'BR', level: 'Platina', date: '2024-10-10', auto: false },
+    { id: 'c5', obraId: 'o5', obraTitle: 'HYPERSPEED EP', country: 'BR', level: 'Ouro', date: '2025-03-01', auto: false },
+    { id: 'c6', obraId: 'o3', obraTitle: 'COSMOS', country: 'US', level: 'Ouro', date: '2024-06-10', auto: false },
+    { id: 'c7', obraId: 'o1', obraTitle: 'Galáxia', country: 'US', level: 'Ouro', date: '2023-12-01', auto: false },
+  ];
+
+  const chartPositions = [
+    { id: 'cp1', obraId: 'o1', obraTitle: 'Galáxia', chart: 'Spotify Top 200', country: 'BR', posicao: 3, date: '2023-06-01' },
+    { id: 'cp2', obraId: 'o2', obraTitle: 'Neon Dreams', chart: 'Spotify Top 200', country: 'BR', posicao: 1, date: '2023-10-05' },
+    { id: 'cp3', obraId: 'o3', obraTitle: 'COSMOS', chart: 'Spotify Top 200', country: 'BR', posicao: 1, date: '2024-03-01' },
+    { id: 'cp4', obraId: 'o3', obraTitle: 'COSMOS', chart: 'Apple Music Top 100', country: 'BR', posicao: 2, date: '2024-03-02' },
+    { id: 'cp5', obraId: 'o4', obraTitle: 'Supernova', chart: 'Spotify Top 200', country: 'BR', posicao: 1, date: '2024-07-10' },
+    { id: 'cp6', obraId: 'o4', obraTitle: 'Supernova', chart: 'Spotify Top 200', country: 'Global', posicao: 8, date: '2024-07-15' },
+    { id: 'cp7', obraId: 'o5', obraTitle: 'HYPERSPEED EP', chart: 'Spotify Top 200', country: 'BR', posicao: 1, date: '2025-01-21' },
+    { id: 'cp8', obraId: 'o5', obraTitle: 'HYPERSPEED EP', chart: 'Billboard Hot 100', country: 'US', posicao: 42, date: '2025-02-01' },
+    { id: 'cp9', obraId: 'o2', obraTitle: 'Neon Dreams', chart: 'YouTube Charts', country: 'BR', posicao: 1, date: '2023-10-10' },
+    { id: 'cp10', obraId: 'o3', obraTitle: 'COSMOS', chart: 'Spotify Top 200', country: 'US', posicao: 15, date: '2024-04-01' },
+  ];
+
+  const records = [
+    { id: 'r1', desc: 'Artista brasileiro mais rápido a atingir 500M de streams no Spotify', val: '500.000.000 streams em 145 dias', date: '2024-06-15' },
+    { id: 'r2', desc: 'Single com maior estreia em chart brasileiro da história do Spotify', val: '#1 com 2.3M streams no primeiro dia', date: '2023-10-05' },
+    { id: 'r3', desc: 'Primeiro artista da geração Z a atingir Diamante no Brasil', val: '300.000 unidades equivalentes', date: '2024-08-20' },
+    { id: 'r4', desc: 'Álbum de estreia com mais semanas no Top 5 Spotify Brasil', val: '18 semanas consecutivas', date: '2024-09-30' },
+    { id: 'r5', desc: 'Maior TikTok reach em 7 dias para artista BR', val: '450M plays em 7 dias', date: '2025-02-10' },
+  ];
+
+  const projetos = [
+    { id: 'pr1', name: 'Debut EP + Shows', era: 'Debut Era', tipo: 'Tour + Lançamento', date: '2023-05-01' },
+    { id: 'pr2', name: 'COSMOS Álbum + Turnê Nacional', era: 'COSMOS Era', tipo: 'Álbum + Tour', date: '2024-02-28' },
+    { id: 'pr3', name: 'HYPERSPEED World Tour', era: 'HYPERSPEED Era', tipo: 'Tour Internacional', date: '2025-03-01' },
+    { id: 'pr4', name: 'Colab com DJ XYZ', era: 'COSMOS Era', tipo: 'Feat / Single', date: '2024-05-20' },
+  ];
+
+  return {
+    user: { name: 'RPG', email: 'rpg@music.com', country: 'BR' },
+    obras, streams, vendas, certificacoes, chartPositions, records, projetos,
+    covers: {},
+    artists: [
+      { id: 'a_demo1', name: 'Luna Vox', country: 'BR', genre: 'Pop/R&B', photo: null, totalStreams: 320000000, totalCerts: 4, top1s: 2, obras_count: 6 },
+      { id: 'a_demo2', name: 'DJ Krios', country: 'US', genre: 'Eletrônico', photo: null, totalStreams: 185000000, totalCerts: 2, top1s: 1, obras_count: 4 },
+    ],
+    importLogs: []
+  };
+}
+
+// ============================================================
+// CALCULATIONS
+// ============================================================
+function totalStreams() {
+  return state.streams.reduce((s, x) => s + (x.quantidade || 0), 0);
+}
+
+function totalEquivUnits() {
+  let fromStreams = state.streams.reduce((s, x) => {
+    const divisor = (x.tipo === 'Premium') ? 1250 : 3750;
+    return s + (x.quantidade || 0) / divisor;
+  }, 0);
+  let fromSales = state.vendas.reduce((s, x) => {
+    const mult = x.tipo === 'Física' ? 1 : 0.1;
+    return s + (x.units || 0) * mult;
+  }, 0);
+  return fromStreams + fromSales;
+}
+
+function calcSocialFollowers() {
+  const totalS = totalStreams();
+  const spotifyS = state.streams.filter(x => x.plataforma === 'Spotify').reduce((s,x) => s+x.quantidade, 0);
+  const ytS = state.streams.filter(x => x.plataforma === 'YouTube').reduce((s,x) => s+x.quantidade, 0);
+  const totalSalesEquiv = state.vendas.reduce((s,x) => s + x.units * (x.tipo==='Física'?1:0.1), 0);
+  const isBR = (state.user?.country || 'BR') === 'BR';
+
+  return {
+    Instagram:  Math.round(50000  + (totalS/1000)*0.8   + totalSalesEquiv*5 + (isBR ? 20000 : 0)),
+    TikTok:     Math.round(5000   + (totalS/500)*2.0    + totalSalesEquiv*3),
+    YouTube:    Math.round(15000  + (ytS/200)*0.9       + totalSalesEquiv*2),
+    Spotify:    Math.round(10000  + (spotifyS/100)*0.5  + totalSalesEquiv*2),
+    Twitter:    Math.round(20000  + (totalS/2000)*0.6   + totalSalesEquiv*1.5),
+    Facebook:   Math.round(30000  + (totalS/3000)*0.4   + totalSalesEquiv*1),
+    SoundCloud: Math.round(3000   + (totalS/5000)*0.3),
+    Twitch:     Math.round(2000   + (totalS/10000)*0.2),
+    Snapchat:   Math.round(1000   + (totalS/8000)*0.1),
+    WhatsApp:   Math.round(500    + Math.min(totalS/50000, 50000)),
+  };
+}
+
+function calcInfluenceScore() {
+  const followers = calcSocialFollowers();
+  const totalF = Object.values(followers).reduce((a,b) => a+b, 0);
+  const maxF = 50e6;
+  const normF = Math.min(totalF / maxF, 1);
+
+  const last30 = getLast30DaysStreams();
+  const totalL30 = last30.reduce((a,b) => a+b, 0);
+  const normS = Math.min(totalL30 / 10e6, 1);
+
+  const salesEquiv = totalEquivUnits();
+  const normV = Math.min(salesEquiv / 500000, 1);
+
+  const score = Math.round((normF * 0.4 + normS * 0.4 + normV * 0.2) * 1000);
+  return { score, normF, normS, normV };
+}
+
+function getLast30DaysStreams() {
+  const vals = [];
+  for (let i = 29; i >= 0; i--) {
+    const dt = new Date(); dt.setDate(dt.getDate() - i);
+    const ds = dt.toISOString().split('T')[0];
+    const sum = state.streams.filter(x => x.date === ds).reduce((s,x) => s+x.quantidade, 0);
+    vals.push(sum);
+  }
+  return vals;
+}
+
+function getStreamsByPlatform() {
+  const result = {};
+  state.streams.forEach(s => {
+    result[s.plataforma] = (result[s.plataforma] || 0) + s.quantidade;
+  });
+  return result;
+}
+
+function getStreamsByCountry() {
+  const result = {};
+  state.streams.forEach(s => {
+    result[s.country] = (result[s.country] || 0) + s.quantidade;
+  });
+  const sorted = Object.entries(result).sort((a,b) => b[1]-a[1]);
+  return sorted;
+}
+
+// ============================================================
+// KPIs
+// ============================================================
+function updateKPIs() {
+  const ts = totalStreams();
+  const tv = totalEquivUnits();
+  const c1 = state.chartPositions.filter(x => x.posicao === 1).length;
+  const tc = state.certificacoes.length;
+  const tr = state.records.length;
+
+  document.getElementById('kpiStreams').textContent = fmtNum(ts);
+  document.getElementById('kpiVendas').textContent = fmtNum(tv);
+  document.getElementById('kpiCharts').textContent = c1;
+  document.getElementById('kpiCerts').textContent = tc;
+  document.getElementById('kpiRecords').textContent = tr;
+
+  // Airplay (simulated)
+  const af = Math.floor(ts * 0.00003);
+  document.getElementById('airplayBR').textContent = fmtNum(Math.floor(af * 0.6));
+  document.getElementById('airplayUS').textContent = fmtNum(Math.floor(af * 0.2));
+  document.getElementById('airplayGlobal').textContent = fmtNum(af);
+}
+
+// ============================================================
+// CHARTS INSTANCES
+// ============================================================
+const charts = {};
+
+function destroyChart(id) {
+  if (charts[id]) { charts[id].destroy(); delete charts[id]; }
+}
+
+const PLAT_COLORS = {
+  'Spotify': '#1DB954',
+  'Apple Music': '#FA243C',
+  'YouTube': '#FF0000',
+  'Deezer': '#EF5466',
+  'Tidal': '#1C1C1C',
+  'Amazon Music': '#FF9900'
+};
+
+function platColor(p) { return PLAT_COLORS[p] || '#0057FF'; }
+
+// ============================================================
+// TAB 0 CHARTS
+// ============================================================
+function renderTab0() {
+  // Line chart
+  destroyChart('chartStreamsLine');
+  const labels30 = [];
+  for (let i = 29; i >= 0; i--) {
+    const dt = new Date(); dt.setDate(dt.getDate() - i);
+    labels30.push(dt.toLocaleDateString('pt-BR', {day:'2-digit',month:'2-digit'}));
+  }
+  const data30 = getLast30DaysStreams();
+  const ctx1 = document.getElementById('chartStreamsLine').getContext('2d');
+  const grad = ctx1.createLinearGradient(0,0,0,200);
+  grad.addColorStop(0,'rgba(0,87,255,0.3)'); grad.addColorStop(1,'rgba(0,87,255,0)');
+  charts['chartStreamsLine'] = new Chart(ctx1, {
+    type: 'line',
+    data: {
+      labels: labels30,
+      datasets: [{ label: 'Streams', data: data30, borderColor: '#0057FF', backgroundColor: grad, fill: true, tension: 0.4, pointRadius: 2, pointBackgroundColor: '#0057FF' }]
+    },
+    options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { ticks: { callback: v => fmtNum(v) } } } }
+  });
+
+  // Doughnut
+  destroyChart('chartDoughnut');
+  const byPlat = getStreamsByPlatform();
+  const plats = Object.keys(byPlat);
+  const ctx2 = document.getElementById('chartDoughnut').getContext('2d');
+  charts['chartDoughnut'] = new Chart(ctx2, {
+    type: 'doughnut',
+    data: {
+      labels: plats,
+      datasets: [{ data: plats.map(p => byPlat[p]), backgroundColor: plats.map(p => platColor(p)), borderWidth: 2, borderColor: '#fff' }]
+    },
+    options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } } }
+  });
+
+  // Top countries
+  const countries = getStreamsByCountry().slice(0, 5);
+  const total = totalStreams();
+  const countryNames = { BR: '🇧🇷 Brasil', US: '🇺🇸 EUA', GB: '🇬🇧 UK', MX: '🇲🇽 México', AR: '🇦🇷 Argentina', JP: '🇯🇵 Japão', KR: '🇰🇷 Coreia', DE: '🇩🇪 Alemanha', FR: '🇫🇷 França', OTHER: '🌍 Outros' };
+  const tc = document.getElementById('topCountriesTable');
+  tc.innerHTML = countries.map((c,i) => {
+    const pct = total > 0 ? ((c[1]/total)*100).toFixed(1) : 0;
+    return `<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+      <div style="font-family:var(--font-mono);font-size:13px;font-weight:600;color:var(--blue);width:18px">${i+1}</div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:500;margin-bottom:4px">${countryNames[c[0]]||c[0]}</div>
+        <div class="progress-wrap"><div class="progress-fill" style="width:${pct}%"></div></div>
+      </div>
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--gray)">${pct}%</div>
+    </div>`;
+  }).join('') || '<div style="color:var(--gray);font-size:13px">Sem dados</div>';
+
+  // Heatmap countries
+  const allCountries = getStreamsByCountry().slice(0, 8);
+  const maxC = allCountries[0] ? allCountries[0][1] : 1;
+  document.getElementById('countryHeatmap').innerHTML = allCountries.map(c => {
+    const w = ((c[1]/maxC)*100).toFixed(0);
+    return `<div style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+        <span>${countryNames[c[0]]||c[0]}</span>
+        <span style="font-family:var(--font-mono)">${fmtNum(c[1])}</span>
+      </div>
+      <div class="progress-wrap"><div class="progress-fill" style="width:${w}%;background:linear-gradient(90deg,var(--cyan),var(--blue))"></div></div>
+    </div>`;
+  }).join('') || '<div style="color:var(--gray);font-size:13px">Sem dados</div>';
+
+  // Auto insights
+  renderInsights(document.getElementById('autoInsights'), 5);
+}
+
+function renderInsights(container, max) {
+  const insights = generateInsights();
+  container.innerHTML = insights.slice(0, max).map(i => `
+    <div class="insight-item ${i.type}">
+      <i class="${i.icon}"></i>
+      <span>${i.text}</span>
+    </div>
+  `).join('') || '<div style="color:var(--gray);font-size:13px">Adicione dados para ver insights.</div>';
+}
+
+function generateInsights() {
+  const insights = [];
+  const total = totalStreams();
+  const byPlat = getStreamsByPlatform();
+  const last30 = getLast30DaysStreams();
+  const sum30 = last30.reduce((a,b)=>a+b,0);
+  const sum7 = last30.slice(-7).reduce((a,b)=>a+b,0);
+  const sum7prev = last30.slice(-14,-7).reduce((a,b)=>a+b,0);
+
+  if (total > 1e9) insights.push({ type:'', icon:'fas fa-star', text:`🎉 Marco histórico: ${fmtNum(total)} streams totais acumulados!` });
+  if (total > 500e6) insights.push({ type:'green', icon:'fas fa-chart-line', text:`Artista atingiu ${fmtNum(total)} streams — elegível para Diamante nos EUA.` });
+
+  const pct7 = sum7prev > 0 ? ((sum7-sum7prev)/sum7prev*100).toFixed(1) : 0;
+  if (pct7 > 20) insights.push({ type:'green', icon:'fas fa-fire', text:`Streams cresceram ${pct7}% nos últimos 7 dias — possível viralização em andamento.` });
+  else if (pct7 < -20) insights.push({ type:'red', icon:'fas fa-arrow-down', text:`Queda de ${Math.abs(pct7)}% nos últimos 7 dias — possível saída de playlist importante.` });
+
+  const topPlat = Object.entries(byPlat).sort((a,b)=>b[1]-a[1])[0];
+  if (topPlat) insights.push({ type:'', icon:'fab fa-spotify', text:`${topPlat[0]} lidera com ${fmtNum(topPlat[1])} streams (${(topPlat[1]/total*100).toFixed(1)}% do total).` });
+
+  const top1s = state.chartPositions.filter(x=>x.posicao===1);
+  if (top1s.length > 0) {
+    const last = top1s[top1s.length-1];
+    insights.push({ type:'gold', icon:'fas fa-trophy', text:`Novo #1 conquistado: "${last.obraTitle}" no ${last.chart} (${fmtDate(last.date)}).` });
+  }
+
+  const certs = state.certificacoes.filter(x=>x.level==='Diamante');
+  if (certs.length > 0) insights.push({ type:'gold', icon:'fas fa-gem', text:`💎 Certificação Diamante: "${certs[0].obraTitle}" no ${certs[0].country}.` });
+
+  if (state.obras.length > 0) {
+    const lastObra = state.obras[state.obras.length-1];
+    insights.push({ type:'', icon:'fas fa-compact-disc', text:`Obra recente: "${lastObra.title}" (${lastObra.tipo}) lançada em ${fmtDate(lastObra.date)}.` });
+  }
+
+  if (insights.length === 0) {
+    insights.push({ type:'', icon:'fas fa-info-circle', text:'Adicione dados de streams, vendas e charts para ver insights automáticos aqui.' });
+  }
+
+  return insights;
+}
+
+// ============================================================
+// TAB 2: STREAMS
+// ============================================================
+function renderTab2() {
+  const total = totalStreams();
+  const last30 = getLast30DaysStreams();
+  const sum30 = last30.reduce((a,b)=>a+b,0);
+  const sum7 = last30.slice(-7).reduce((a,b)=>a+b,0);
+  const sum7prev = last30.slice(-14,-7).reduce((a,b)=>a+b,0);
+  const maxDay = Math.max(...last30);
+  const avgWeek = sum30 / 4;
+  const growth = sum7prev > 0 ? ((sum7-sum7prev)/sum7prev*100).toFixed(1) : 0;
+
+  const metrics = [
+    { label: 'Total Global', val: fmtNum(total), icon: 'fa-globe', color: 'blue' },
+    { label: 'Últimos 30 dias', val: fmtNum(sum30), icon: 'fa-calendar', color: 'purple' },
+    { label: 'Pico Diário', val: fmtNum(maxDay), icon: 'fa-bolt', color: 'gold' },
+    { label: 'Média Semanal', val: fmtNum(avgWeek), icon: 'fa-chart-line', color: 'cyan' },
+    { label: 'Crescimento 7d', val: `${growth}%`, icon: 'fa-arrow-trend-up', color: growth>=0?'green':'red' },
+  ];
+
+  document.getElementById('streamsMetrics').innerHTML = metrics.map(m => `
+    <div class="metric-card">
+      <div class="metric-icon ${m.color==='blue'?'kpi-icon blue':m.color==='purple'?'kpi-icon purple':m.color==='gold'?'kpi-icon gold':m.color==='cyan'?'kpi-icon cyan':'kpi-icon green'}" style="background:rgba(0,87,255,.08)">
+        <i class="fas ${m.icon}" style="color:var(--blue)"></i>
+      </div>
+      <div class="metric-val">${m.val}</div>
+      <div class="metric-label">${m.label}</div>
+    </div>
+  `).join('');
+
+  // Platform bars
+  destroyChart('chartPlatBars');
+  const byPlat = getStreamsByPlatform();
+  const platKeys = Object.keys(byPlat).sort((a,b) => byPlat[b]-byPlat[a]);
+  const ctxBars = document.getElementById('chartPlatBars').getContext('2d');
+  charts['chartPlatBars'] = new Chart(ctxBars, {
+    type: 'bar',
+    data: {
+      labels: platKeys,
+      datasets: [{ label: 'Streams', data: platKeys.map(p=>byPlat[p]), backgroundColor: platKeys.map(p=>platColor(p)+'CC'), borderRadius: 6 }]
+    },
+    options: { indexAxis: 'y', responsive: true, plugins: { legend: {display:false} }, scales: { x: { ticks: { callback: v => fmtNum(v) } } } }
+  });
+
+  // Monthly lines
+  destroyChart('chartMonthlyLines');
+  const months = [];
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(); d.setMonth(d.getMonth()-i);
+    months.push(d.toLocaleDateString('pt-BR',{month:'short',year:'2-digit'}));
+  }
+  const topPlats = platKeys.slice(0,4);
+  const monthlyDatasets = topPlats.map(p => {
+    const data = [];
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(); d.setMonth(d.getMonth()-i);
+      const m = d.getMonth(); const y = d.getFullYear();
+      const sum = state.streams.filter(s => s.plataforma===p && new Date(s.date).getMonth()===m && new Date(s.date).getFullYear()===y).reduce((a,b)=>a+b.quantidade,0);
+      data.push(sum);
+    }
+    return { label: p, data, borderColor: platColor(p), backgroundColor: 'transparent', tension: 0.4, pointRadius: 3 };
+  });
+  const ctxLines = document.getElementById('chartMonthlyLines').getContext('2d');
+  charts['chartMonthlyLines'] = new Chart(ctxLines, {
+    type: 'line',
+    data: { labels: months, datasets: monthlyDatasets },
+    options: { responsive: true, scales: { y: { ticks: { callback: v => fmtNum(v) } } }, plugins: { legend: { labels: { font: { size: 11 } } } } }
+  });
+
+  // Table
+  const tbody = document.getElementById('streamsTableBody');
+  const recent = [...state.streams].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,20);
+  tbody.innerHTML = recent.map(s => `
+    <tr>
+      <td>${s.obraTitle||'—'}</td>
+      <td><span class="badge badge-blue">${s.plataforma}</span></td>
+      <td>${s.country||'—'}</td>
+      <td><strong>${fmtFull(s.quantidade)}</strong></td>
+      <td><span class="badge ${s.tipo==='Premium'?'badge-purple':'badge-cyan'}">${s.tipo||'—'}</span></td>
+      <td>${s.source||'—'}</td>
+      <td>${fmtDate(s.date)}</td>
+    </tr>
+  `).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--gray);padding:24px">Nenhum stream registrado</td></tr>';
+}
+
+// ============================================================
+// TAB 3: VENDAS
+// ============================================================
+function renderTab3() {
+  const totalUnits = state.vendas.reduce((s,x) => s + (x.units||0), 0);
+  const totalEquiv = totalEquivUnits();
+  const totalReceita = state.vendas.reduce((s,x) => s + (x.units||0)*(x.price||0), 0);
+  const ticket = state.vendas.length > 0 ? totalReceita/state.vendas.length : 0;
+  const fisico = state.vendas.filter(x=>x.tipo==='Física').reduce((s,x)=>s+x.units,0);
+  const digital = state.vendas.filter(x=>x.tipo==='Digital').reduce((s,x)=>s+x.units,0);
+
+  document.getElementById('vendasMetrics').innerHTML = [
+    { label: 'Unidades Totais', val: fmtNum(totalUnits), icon: 'fa-boxes' },
+    { label: 'Equiv. Totais', val: fmtNum(totalEquiv), icon: 'fa-calculator' },
+    { label: 'Receita Total (R$)', val: fmtNum(totalReceita), icon: 'fa-dollar-sign' },
+    { label: 'Físico', val: fmtNum(fisico), icon: 'fa-compact-disc' },
+    { label: 'Ticket Médio (R$)', val: ticket.toFixed(2), icon: 'fa-tag' },
+  ].map(m => `
+    <div class="metric-card">
+      <div style="font-size:22px;margin-bottom:6px"><i class="fas ${m.icon}" style="color:var(--purple)"></i></div>
+      <div class="metric-val">${m.val}</div>
+      <div class="metric-label">${m.label}</div>
+    </div>
+  `).join('');
+
+  // Bar chart vendas
+  destroyChart('chartVendasBar');
+  const months = [];
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(); d.setMonth(d.getMonth()-i);
+    months.push(d.toLocaleDateString('pt-BR',{month:'short'}));
+  }
+  const fisicoData = [], digitalData = [];
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(); d.setMonth(d.getMonth()-i);
+    const m = d.getMonth(); const y = d.getFullYear();
+    fisicoData.push(state.vendas.filter(v=>v.tipo==='Física'&&new Date(v.date).getMonth()===m&&new Date(v.date).getFullYear()===y).reduce((s,x)=>s+x.units,0));
+    digitalData.push(state.vendas.filter(v=>v.tipo==='Digital'&&new Date(v.date).getMonth()===m&&new Date(v.date).getFullYear()===y).reduce((s,x)=>s+x.units,0));
+  }
+  const ctxVB = document.getElementById('chartVendasBar').getContext('2d');
+  charts['chartVendasBar'] = new Chart(ctxVB, {
+    type: 'bar',
+    data: {
+      labels: months,
+      datasets: [
+        { label: 'Físico', data: fisicoData, backgroundColor: '#7C3AED99', borderRadius: 4 },
+        { label: 'Digital', data: digitalData, backgroundColor: '#0057FF99', borderRadius: 4 }
+      ]
+    },
+    options: { responsive: true, scales: { x: { stacked: true }, y: { stacked: true, ticks: { callback: v=>fmtNum(v) } } } }
+  });
+
+  // Doughnut vendas vs streams
+  destroyChart('chartVendasDoughnut');
+  const streamEquiv = state.streams.reduce((s,x)=>s+(x.quantidade||0)/((x.tipo==='Premium')?1250:3750),0);
+  const salesEquiv = state.vendas.reduce((s,x)=>s+x.units*(x.tipo==='Física'?1:0.1),0);
+  const ctxVD = document.getElementById('chartVendasDoughnut').getContext('2d');
+  charts['chartVendasDoughnut'] = new Chart(ctxVD, {
+    type: 'doughnut',
+    data: {
+      labels: ['Streams', 'Vendas'],
+      datasets: [{ data: [Math.round(streamEquiv), Math.round(salesEquiv)], backgroundColor: ['#0057FF','#7C3AED'], borderWidth: 2, borderColor: '#fff' }]
+    },
+    options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+  });
+
+  // Table
+  const recent = [...state.vendas].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,20);
+  document.getElementById('vendasTableBody').innerHTML = recent.map(v => {
+    const equiv = v.tipo==='Física' ? v.units : v.units*0.1;
+    return `<tr>
+      <td>${v.obraTitle||'—'}</td>
+      <td><span class="badge ${v.tipo==='Física'?'badge-purple':'badge-blue'}">${v.tipo}</span></td>
+      <td>${v.formato||'—'}</td>
+      <td>${v.country||'—'}</td>
+      <td>${fmtFull(v.units||0)}</td>
+      <td>${fmtNum(equiv)}</td>
+      <td>R$ ${fmtNum((v.units||0)*(v.price||0))}</td>
+      <td>${fmtDate(v.date)}</td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="8" style="text-align:center;color:var(--gray);padding:24px">Nenhuma venda registrada</td></tr>';
+}
+
+// ============================================================
+// TAB 4: CERTIFICAÇÕES
+// ============================================================
+const CERT_THRESHOLDS = {
+  BR: { Ouro: 40000, Platina: 80000, 'Platina Duplo': 160000, Diamante: 300000 },
+  US: { Ouro: 500000, Platina: 1000000, 'Platina Duplo': 2000000, Diamante: 10000000 }
+};
+
+const CERT_ICONS = { Ouro: '🥇', Platina: '🏆', 'Platina Duplo': '🏆🏆', Diamante: '💎' };
+
+function checkAutoCerts() {
+  const countries = ['BR','US'];
+  countries.forEach(c => {
+    state.obras.forEach(o => {
+      const streamsBR = state.streams.filter(s => s.obraId===o.id && s.country===c).reduce((a,b)=>a+b.quantidade,0);
+      const levels = CERT_THRESHOLDS[c];
+      Object.entries(levels).forEach(([level, threshold]) => {
+        if (streamsBR >= threshold) {
+          const exists = state.certificacoes.find(x => x.obraId===o.id && x.country===c && x.level===level);
+          if (!exists) {
+            state.certificacoes.push({
+              id: 'auto_'+Date.now()+'_'+Math.random(),
+              obraId: o.id,
+              obraTitle: o.title,
+              country: c,
+              level,
+              date: today(),
+              auto: true
+            });
+          }
+        }
+      });
+    });
+  });
+}
+
+function renderTab4() {
+  checkAutoCerts();
+  const certs = state.certificacoes;
+
+  if (certs.length === 0) {
+    document.getElementById('certsList').innerHTML = '<div class="card" style="text-align:center;padding:40px;color:var(--gray)"><i class="fas fa-medal" style="font-size:40px;margin-bottom:12px;color:var(--gray2)"></i><br>Nenhuma certificação ainda. Registre streams e vendas para gerar automaticamente.</div>';
+    document.getElementById('certsProgress').innerHTML = '';
+    return;
+  }
+
+  // Certs table
+  document.getElementById('certsList').innerHTML = `
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-title"><i class="fas fa-medal"></i> Certificações Conquistadas</div>
+      <div class="table-wrapper">
+        <table class="data-table">
+          <thead><tr><th>Obra</th><th>País</th><th>Nível</th><th>Data</th><th>Origem</th></tr></thead>
+          <tbody>
+            ${certs.map(c => `<tr>
+              <td>${c.obraTitle||'—'}</td>
+              <td><span class="badge badge-blue">${c.country}</span></td>
+              <td><span class="badge ${c.level==='Diamante'?'badge-cyan':c.level.includes('Platina')?'badge-purple':'badge-gold'}">${CERT_ICONS[c.level]||''} ${c.level}</span></td>
+              <td>${fmtDate(c.date)}</td>
+              <td><span class="badge ${c.auto?'badge-green':'badge-blue'}">${c.auto?'Auto':'Manual'}</span></td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+
+  // Progress to next cert
+  const countries = ['BR','US'];
+  let progressHTML = '<div class="grid-2">';
+  state.obras.forEach(o => {
+    countries.forEach(c => {
+      const streams = state.streams.filter(s=>s.obraId===o.id&&s.country===c).reduce((a,b)=>a+b.quantidade,0);
+      if (streams === 0) return;
+      const levels = CERT_THRESHOLDS[c];
+      const levOrder = ['Ouro','Platina','Platina Duplo','Diamante'];
+      let nextLevel = null, nextThreshold = 0, currentThreshold = 0;
+      for (const lev of levOrder) {
+        if (streams < levels[lev]) { nextLevel = lev; nextThreshold = levels[lev]; break; }
+        currentThreshold = levels[lev];
+      }
+      if (!nextLevel) return;
+      const pct = Math.min(100, ((streams - currentThreshold)/(nextThreshold - currentThreshold)*100)).toFixed(0);
+      progressHTML += `
+        <div class="card">
+          <div style="font-size:14px;font-weight:700;margin-bottom:4px">${o.title} — ${c}</div>
+          <div style="font-size:12px;color:var(--gray);margin-bottom:12px">${fmtNum(streams)} / ${fmtNum(nextThreshold)} para ${CERT_ICONS[nextLevel]} ${nextLevel}</div>
+          <div class="progress-wrap" style="margin-bottom:6px">
+            <div class="progress-fill purple" style="width:${pct}%"></div>
+          </div>
+          <div style="font-size:12px;color:var(--purple);font-weight:600">${pct}% concluído</div>
+        </div>`;
+    });
+  });
+  progressHTML += '</div>';
+  document.getElementById('certsProgress').innerHTML = progressHTML;
+}
+
+// ============================================================
+// TAB 5: CHARTS & PEAKS — por obra
+// ============================================================
+const CHART_COLORS_MAP = {
+  'Spotify Top 200': '#1DB954',
+  'Apple Music Top 100': '#FA243C',
+  'Billboard Hot 100': '#C8102E',
+  'YouTube Charts': '#FF0000',
+  'Deezer Top 100': '#EF5466',
+  'IFPI Global': '#0057FF',
+};
+function chartColor(name) { return CHART_COLORS_MAP[name] || '#7C3AED'; }
+
+function renderTab5() {
+  const covers = state.covers || {};
+  const allPositions = state.chartPositions;
+
+  // ── Summary bar ──────────────────────────────────────────────
+  const top1s   = allPositions.filter(x => x.posicao === 1).length;
+  const top3s   = allPositions.filter(x => x.posicao <= 3).length;
+  const top10s  = allPositions.filter(x => x.posicao <= 10).length;
+  const top50s  = allPositions.filter(x => x.posicao <= 50).length;
+  const chartsCount = [...new Set(allPositions.map(x => x.chart))].length;
+
+  document.getElementById('chartsStatsSummary').innerHTML = [
+    { icon: '👑', label: 'Posições #1',    val: top1s,      color: 'gold'   },
+    { icon: '🥉', label: 'Top 3',          val: top3s,      color: 'blue'   },
+    { icon: '⭐', label: 'Top 10',          val: top10s,     color: 'purple' },
+    { icon: '📊', label: 'Top 50',          val: top50s,     color: 'cyan'   },
+    { icon: '🗂️', label: 'Charts Monit.',  val: chartsCount, color: 'green' },
+  ].map(s => `
+    <div class="metric-card">
+      <div style="font-size:26px;margin-bottom:4px">${s.icon}</div>
+      <div class="metric-val" style="color:var(--${s.color==='gold'?'gold':s.color==='purple'?'purple':s.color==='cyan'?'cyan':s.color==='green'?'green':'blue'})">${s.val}</div>
+      <div class="metric-label">${s.label}</div>
+    </div>
+  `).join('');
+
+  // ── Build peaks per obra per chart/country ────────────────────
+  // peaks[obraId][chart_country] = best entry
+  const peaksByObra = {};
+  allPositions.forEach(cp => {
+    if (!peaksByObra[cp.obraId]) peaksByObra[cp.obraId] = {};
+    const key = `${cp.chart}||${cp.country}`;
+    if (!peaksByObra[cp.obraId][key] || cp.posicao < peaksByObra[cp.obraId][key].posicao) {
+      peaksByObra[cp.obraId][key] = cp;
+    }
+  });
+
+  // Obras com pelo menos 1 chart position, sorted by best peak
+  const obrasWithCharts = state.obras.filter(o => peaksByObra[o.id]).sort((a, b) => {
+    const bestA = Math.min(...Object.values(peaksByObra[a.id]).map(x => x.posicao));
+    const bestB = Math.min(...Object.values(peaksByObra[b.id]).map(x => x.posicao));
+    return bestA - bestB;
+  });
+
+  if (obrasWithCharts.length === 0) {
+    document.getElementById('obraChartsGrid').innerHTML = `
+      <div class="card" style="text-align:center;padding:48px;color:var(--gray)">
+        <i class="fas fa-chart-bar" style="font-size:48px;color:var(--gray2);margin-bottom:16px"></i><br>
+        Nenhuma posição em chart registrada ainda. Adicione na aba <strong>Adicionar Dados</strong>.
+      </div>`;
+  } else {
+    document.getElementById('obraChartsGrid').innerHTML = `<div class="grid-2">${obrasWithCharts.map(obra => {
+      const obraPeaks = peaksByObra[obra.id];
+      const allPeakEntries = Object.values(obraPeaks);
+      const bestPeak = Math.min(...allPeakEntries.map(x => x.posicao));
+      const bestEntry = allPeakEntries.find(x => x.posicao === bestPeak);
+      const totalEntries = allPositions.filter(x => x.obraId === obra.id).length;
+      const top1Count = allPositions.filter(x => x.obraId === obra.id && x.posicao === 1).length;
+      const coverSrc = covers[obra.id];
+
+      const peakClass = bestPeak === 1 ? 'pos1' : bestPeak <= 3 ? 'pos2' : bestPeak <= 10 ? 'pos3' : 'pos-other';
+
+      // Platform/chart peak badges — one per unique chart name (best peak)
+      const byChartName = {};
+      allPeakEntries.forEach(e => {
+        if (!byChartName[e.chart] || e.posicao < byChartName[e.chart].posicao) byChartName[e.chart] = e;
+      });
+      const platBadges = Object.values(byChartName).sort((a,b) => a.posicao - b.posicao).map(e => {
+        const cls = e.posicao === 1 ? 'is-one' : e.posicao <= 3 ? 'is-top3' : '';
+        const icon = e.posicao === 1 ? '👑 ' : '';
+        return `<div class="platform-peak-badge ${cls}" title="${e.chart} · ${e.country} · ${fmtDate(e.date)}">
+          <span style="width:8px;height:8px;border-radius:50%;background:${chartColor(e.chart)};display:inline-block;flex-shrink:0"></span>
+          <span style="font-size:11px;color:var(--gray);max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${e.chart.replace(' Top 200','').replace(' Top 100','').replace(' Hot 100','')}</span>
+          <span class="peak-pos">${icon}#${e.posicao}</span>
+        </div>`;
+      }).join('');
+
+      return `
+        <div class="obra-chart-card" onclick="openObraHistory('${obra.id}')">
+          <div class="obra-chart-card-header">
+            <div class="obra-chart-cover">
+              ${coverSrc ? `<img src="${coverSrc}" alt="${obra.title}">` : '🎵'}
+            </div>
+            <div style="flex:1;min-width:0">
+              <div class="obra-chart-title">${obra.title}</div>
+              <div class="obra-chart-meta">${obra.tipo} · ${obra.era || '—'} · ${fmtDate(obra.date)}</div>
+              <div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap">
+                ${top1Count > 0 ? `<span class="badge badge-gold">👑 ${top1Count}× #1</span>` : ''}
+                <span class="badge badge-blue">${totalEntries} entradas</span>
+                ${obra.genre ? `<span class="badge badge-purple">${obra.genre}</span>` : ''}
+              </div>
+            </div>
+            <div class="obra-peak-crown">
+              <div class="obra-peak-number ${peakClass}">#${bestPeak}</div>
+              <div class="obra-peak-label">Peak Global</div>
+              ${bestEntry ? `<div style="font-size:10px;color:var(--gray);margin-top:2px;text-align:center;max-width:70px;line-height:1.3">${bestEntry.chart.replace(' Top 200','').replace(' Top 100','')}<br>${bestEntry.country}</div>` : ''}
+            </div>
+          </div>
+          <div class="obra-chart-platforms">
+            ${platBadges || '<span style="font-size:12px;color:var(--gray)">Sem entradas</span>'}
+          </div>
+          <div class="obra-chart-footer">
+            <div style="font-size:12px;color:var(--gray)">
+              <i class="fas fa-globe" style="margin-right:4px"></i>
+              ${[...new Set(allPeakEntries.map(x=>x.country))].join(', ')}
+            </div>
+            <button class="btn-view-history" onclick="event.stopPropagation();openObraHistory('${obra.id}')">
+              <i class="fas fa-history"></i> Ver Histórico
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('')}</div>`;
+  }
+
+  // ── Global history chart ──────────────────────────────────────
+  destroyChart('chartChartHistory');
+  const topObras = obrasWithCharts.slice(0, 5);
+  const OBRA_COLORS = ['#0057FF','#7C3AED','#10B981','#F59E0B','#EF4444'];
+  const datasets = topObras.map((o, i) => {
+    const pts = allPositions.filter(cp => cp.obraId === o.id).sort((a,b) => a.date.localeCompare(b.date));
+    return {
+      label: o.title,
+      data: pts.map(p => ({ x: p.date, y: p.posicao })),
+      borderColor: OBRA_COLORS[i],
+      backgroundColor: OBRA_COLORS[i] + '22',
+      tension: 0.3, fill: false, pointRadius: 5, pointHoverRadius: 7,
+      pointBackgroundColor: OBRA_COLORS[i],
+    };
+  }).filter(d => d.data.length > 0);
+
+  if (datasets.length > 0) {
+    const ctxCH = document.getElementById('chartChartHistory').getContext('2d');
+    charts['chartChartHistory'] = new Chart(ctxCH, {
+      type: 'line',
+      data: { datasets },
+      options: {
+        responsive: true,
+        scales: {
+          x: { type: 'category', ticks: { font: { size: 10 }, maxTicksLimit: 12 } },
+          y: { reverse: true, min: 1, suggestedMax: 50, ticks: { callback: v => `#${v}`, stepSize: 10 } }
+        },
+        plugins: { legend: { labels: { font: { size: 11 } } }, tooltip: { callbacks: {
+          label: ctx => ` ${ctx.dataset.label}: #${ctx.raw.y}`
+        }}}
+      }
+    });
+  } else {
+    document.getElementById('chartChartHistory').parentElement.innerHTML = '<div style="padding:40px;text-align:center;color:var(--gray)">Registre posições em charts para ver o histórico.</div>';
+  }
+}
+
+// ── OBRA HISTORY MODAL ────────────────────────────────────────
+function openObraHistory(obraId) {
+  const obra = state.obras.find(o => o.id === obraId);
+  if (!obra) return;
+  const covers = state.covers || {};
+  const positions = state.chartPositions.filter(cp => cp.obraId === obraId).sort((a,b) => a.date.localeCompare(b.date));
+
+  document.getElementById('obraHistoryTitle').textContent = obra.title;
+  document.getElementById('obraHistorySubtitle').textContent = `${obra.tipo} · ${obra.era || ''} · ${fmtDate(obra.date)} · ${positions.length} entradas em chart`;
+
+  // ── Peaks per chart×country ─────────────────────────────────
+  const peaksMap = {};
+  positions.forEach(cp => {
+    const key = `${cp.chart}||${cp.country}`;
+    if (!peaksMap[key] || cp.posicao < peaksMap[key].posicao) peaksMap[key] = cp;
+  });
+  const peaksList = Object.values(peaksMap).sort((a,b) => a.posicao - b.posicao);
+
+  document.getElementById('obraHistoryPeaks').innerHTML = `
+    <div style="margin-bottom:10px;font-size:13px;font-weight:700;color:var(--dark);display:flex;align-items:center;gap:8px">
+      <i class="fas fa-crown" style="color:var(--gold)"></i> Peaks por Plataforma / País
+    </div>
+    <div class="history-peak-grid">
+      ${peaksList.map(p => `
+        <div class="history-peak-card ${p.posicao === 1 ? 'is-one' : ''}">
+          <div style="width:10px;height:10px;border-radius:50%;background:${chartColor(p.chart)};margin:0 auto 6px"></div>
+          <div class="history-peak-plat">${p.chart.replace(' Top 200','').replace(' Top 100','').replace(' Hot 100','')}</div>
+          <div class="history-peak-pos">${p.posicao === 1 ? '👑' : '#'}${p.posicao}</div>
+          <div class="history-peak-country">${p.country}</div>
+          <div class="history-peak-date">${fmtDate(p.date)}</div>
+        </div>
+      `).join('') || '<div style="color:var(--gray);font-size:13px">Sem peaks registrados</div>'}
+    </div>
+  `;
+
+  // ── Chart: position over time, split by chart name ──────────
+  destroyChart('chartObraHistory');
+  const chartNames = [...new Set(positions.map(x => x.chart))];
+  const MODAL_COLORS = ['#0057FF','#7C3AED','#10B981','#F59E0B','#EF4444','#00D2FF','#EC4899'];
+  const datasets = chartNames.map((chartName, i) => {
+    const pts = positions.filter(p => p.chart === chartName).sort((a,b) => a.date.localeCompare(b.date));
+    return {
+      label: chartName,
+      data: pts.map(p => ({ x: p.date, y: p.posicao })),
+      borderColor: MODAL_COLORS[i % MODAL_COLORS.length],
+      backgroundColor: MODAL_COLORS[i % MODAL_COLORS.length] + '22',
+      tension: 0.3, fill: false,
+      pointRadius: 6, pointHoverRadius: 9,
+      pointBackgroundColor: MODAL_COLORS[i % MODAL_COLORS.length],
+    };
+  });
+
+  if (datasets.length > 0 && positions.length > 0) {
+    setTimeout(() => {
+      const ctxOH = document.getElementById('chartObraHistory').getContext('2d');
+      charts['chartObraHistory'] = new Chart(ctxOH, {
+        type: 'line',
+        data: { datasets },
+        options: {
+          responsive: true,
+          scales: {
+            x: { type: 'category', ticks: { font: { size: 10 } } },
+            y: {
+              reverse: true, min: 1, suggestedMax: 50,
+              ticks: { callback: v => `#${v}`, stepSize: 5 }
+            }
+          },
+          plugins: {
+            legend: { labels: { font: { size: 11 } } },
+            tooltip: { callbacks: { label: ctx => ` ${ctx.dataset.label} · ${ctx.raw.x}: #${ctx.raw.y}` } }
+          }
+        }
+      });
+    }, 80);
+  } else {
+    document.getElementById('chartObraHistory').parentElement.innerHTML = '<div style="padding:30px;text-align:center;color:var(--gray)">Sem dados de histórico para exibir.</div>';
+  }
+
+  // ── Full table ───────────────────────────────────────────────
+  const sorted = [...positions].sort((a,b) => b.date.localeCompare(a.date));
+  document.getElementById('obraHistoryTableBody').innerHTML = sorted.map(p => {
+    const isPeak = peaksList.some(pk => pk.chart === p.chart && pk.country === p.country && pk.posicao === p.posicao && pk.date === p.date);
+    const isTop1 = p.posicao === 1;
+    const isTop3 = p.posicao <= 3;
+    const posColor = isTop1 ? 'var(--gold)' : isTop3 ? 'var(--blue)' : p.posicao <= 10 ? 'var(--purple)' : 'var(--dark)';
+    return `<tr>
+      <td>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="width:10px;height:10px;border-radius:50%;background:${chartColor(p.chart)};display:inline-block;flex-shrink:0"></span>
+          <span>${p.chart}</span>
+        </div>
+      </td>
+      <td><span class="badge badge-blue">${p.country}</span></td>
+      <td>
+        <strong style="color:${posColor};font-size:16px;font-family:var(--font-mono)">
+          ${isTop1 ? '👑 ' : ''}#${p.posicao}
+        </strong>
+        ${isPeak ? '<span class="badge badge-gold" style="margin-left:6px">PEAK</span>' : ''}
+      </td>
+      <td>${fmtDate(p.date)}</td>
+      <td>
+        ${isTop1 ? '<span class="badge badge-gold">Nº 1</span>' :
+          isTop3 ? '<span class="badge badge-blue">Top 3</span>' :
+          p.posicao <= 10 ? '<span class="badge badge-purple">Top 10</span>' :
+          p.posicao <= 50 ? '<span class="badge badge-cyan">Top 50</span>' : '—'}
+      </td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--gray)">Nenhuma entrada registrada.</td></tr>';
+
+  document.getElementById('obraHistoryModal').classList.add('open');
+}
+
+function closeObraHistory() {
+  document.getElementById('obraHistoryModal').classList.remove('open');
+  destroyChart('chartObraHistory');
+}
+
+// ============================================================
+// TAB 6: RECORDES
+// ============================================================
+function renderTab6() {
+  const recs = state.records;
+  if (recs.length === 0) {
+    document.getElementById('recordsList').innerHTML = '<div class="card" style="text-align:center;padding:40px;color:var(--gray)"><i class="fas fa-record-vinyl" style="font-size:40px;margin-bottom:12px;color:var(--gray2)"></i><br>Nenhum recorde registrado ainda.</div>';
+    return;
+  }
+  document.getElementById('recordsList').innerHTML = '<div class="grid-2">' + recs.map((r,i) => `
+    <div class="card" style="border-left:4px solid var(--gold)">
+      <div style="display:flex;align-items:flex-start;gap:14px">
+        <div style="width:44px;height:44px;border-radius:12px;background:rgba(245,158,11,.15);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">🏆</div>
+        <div style="flex:1">
+          <div style="font-family:var(--font-title);font-size:14px;font-weight:700;margin-bottom:4px">${r.desc||'Recorde'}</div>
+          <div style="font-family:var(--font-mono);font-size:15px;font-weight:600;color:var(--blue);margin-bottom:6px">${r.val||'—'}</div>
+          <div style="font-size:11px;color:var(--gray)">${fmtDate(r.date)}</div>
+        </div>
+      </div>
+    </div>
+  `).join('') + '</div>';
+}
+
+// ============================================================
+// TAB 7: PROJETOS / ERAS
+// ============================================================
+function renderTab7() {
+  const covers = state.covers || {};
+  const eras = {};
+  state.projetos.forEach(p => {
+    const era = p.era || 'Sem Era';
+    if (!eras[era]) eras[era] = [];
+    eras[era].push(p);
+  });
+
+  // Also show obras with no project but with eras
+  state.obras.forEach(o => {
+    if (!o.era) return;
+    const eraKey = o.era;
+    if (!eras[eraKey]) eras[eraKey] = [];
+  });
+
+  const colors = ['#0057FF','#7C3AED','#10B981','#F59E0B','#EF4444'];
+  let html = '';
+  Object.entries(eras).forEach(([era, projs], ei) => {
+    const totalStreamsEra = state.streams.filter(s => {
+      const obra = state.obras.find(o=>o.id===s.obraId);
+      return obra && obra.era === era;
+    }).reduce((a,b)=>a+b.quantidade,0);
+
+    // Get obras for this era for cover display
+    const obrasEra = state.obras.filter(o => o.era === era);
+
+    html += `<div style="margin-bottom:32px">
+      <div style="font-family:var(--font-title);font-size:18px;font-weight:800;color:var(--dark);margin-bottom:14px;display:flex;align-items:center;gap:8px">
+        <div style="width:14px;height:14px;border-radius:50%;background:${colors[ei%colors.length]}"></div>
+        ${era}
+        <span class="badge badge-blue" style="margin-left:8px">${fmtNum(totalStreamsEra)} streams</span>
+        ${obrasEra.length > 0 ? `<span class="badge badge-purple">${obrasEra.length} obra(s)</span>` : ''}
+      </div>
+      <div class="grid-4">
+        ${projs.map(p => {
+          // Find an obra from this era to get a cover
+          const relObra = obrasEra.find(o => covers[o.id]);
+          const coverSrc = relObra ? covers[relObra.id] : null;
+          return `
+          <div class="era-card">
+            <div class="era-header" style="background:linear-gradient(135deg,${colors[ei%colors.length]},${colors[(ei+1)%colors.length]})">
+              ${coverSrc ? `<img src="${coverSrc}" alt="Capa">` : '🎵'}
+            </div>
+            <div class="era-body">
+              <div class="era-name">${p.name||'—'}</div>
+              <div class="era-meta">${p.tipo||'—'} · ${fmtDate(p.date)}</div>
+              <div class="era-stats">
+                <span class="badge badge-blue">${p.tipo||'—'}</span>
+              </div>
+            </div>
+          </div>`;
+        }).join('')}
+        ${obrasEra.map(o => {
+          const coverSrc = covers[o.id];
+          const obraStreams = state.streams.filter(s=>s.obraId===o.id).reduce((a,b)=>a+b.quantidade,0);
+          return `
+          <div class="era-card">
+            <div class="era-header" style="background:linear-gradient(135deg,${colors[ei%colors.length]}99,${colors[(ei+1)%colors.length]}99)">
+              ${coverSrc ? `<img src="${coverSrc}" alt="${o.title}">` : '🎵'}
+            </div>
+            <div class="era-body">
+              <div class="era-name">${o.title}</div>
+              <div class="era-meta">${o.tipo} · ${fmtDate(o.date)}</div>
+              <div class="era-stats">
+                <span class="badge badge-cyan">${fmtNum(obraStreams)} streams</span>
+                ${o.genre ? `<span class="badge badge-purple">${o.genre}</span>` : ''}
+              </div>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  });
+
+  document.getElementById('erasList').innerHTML = html || '<div class="card" style="text-align:center;padding:40px;color:var(--gray)"><i class="fas fa-layer-group" style="font-size:40px;margin-bottom:12px;color:var(--gray2)"></i><br>Nenhum projeto registrado ainda.</div>';
+}
+
+// ============================================================
+// TAB 8: REDES SOCIAIS
+// ============================================================
+const SOCIAL_CONFIG = [
+  { key: 'Instagram', icon: 'fa-instagram', color: '#E1306C', bg: '#E1306C22' },
+  { key: 'TikTok', icon: 'fa-tiktok', color: '#010101', bg: '#01010122' },
+  { key: 'YouTube', icon: 'fa-youtube', color: '#FF0000', bg: '#FF000022' },
+  { key: 'Spotify', icon: 'fa-spotify', color: '#1DB954', bg: '#1DB95422' },
+  { key: 'Twitter', icon: 'fa-twitter', color: '#1DA1F2', bg: '#1DA1F222' },
+  { key: 'Facebook', icon: 'fa-facebook', color: '#1877F2', bg: '#1877F222' },
+  { key: 'SoundCloud', icon: 'fa-soundcloud', color: '#FF5500', bg: '#FF550022' },
+  { key: 'Twitch', icon: 'fa-twitch', color: '#9146FF', bg: '#9146FF22' },
+  { key: 'Snapchat', icon: 'fa-snapchat', color: '#FFFC00', bg: '#FFFC0033' },
+  { key: 'WhatsApp', icon: 'fa-whatsapp', color: '#25D366', bg: '#25D36622' },
+];
+
+function renderTab8() {
+  const followers = calcSocialFollowers();
+  const total = Object.values(followers).reduce((a,b)=>a+b,0);
+  const prevFollowers = {};
+  Object.keys(followers).forEach(k => { prevFollowers[k] = Math.floor(followers[k] * 0.92); });
+
+  // Cards
+  document.getElementById('socialCards').innerHTML = SOCIAL_CONFIG.map(s => {
+    const cnt = followers[s.key] || 0;
+    const prev = prevFollowers[s.key] || cnt;
+    const pct = prev > 0 ? ((cnt-prev)/prev*100).toFixed(1) : 0;
+    const isUp = pct >= 0;
+    return `
+      <div class="social-card">
+        <div class="social-icon" style="background:${s.bg}">
+          <i class="fab ${s.icon}" style="color:${s.key==='Snapchat'?'#888':s.color}"></i>
+        </div>
+        <div class="social-name">${s.key}</div>
+        <div class="social-count">${fmtNum(cnt)}</div>
+        <div class="social-change ${isUp?'up':'down'}">
+          <i class="fas fa-arrow-${isUp?'up':'down'}"></i> ${Math.abs(pct)}%
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // Influence score
+  const { score, normF, normS, normV } = calcInfluenceScore();
+  document.getElementById('influenceScore').textContent = score;
+  document.getElementById('influenceBar').style.width = (score/10)+'%';
+  document.getElementById('influenceBreakdown').innerHTML = `
+    Audiência Social: ${(normF*400).toFixed(0)}/400 pts<br>
+    Streams 30d: ${(normS*400).toFixed(0)}/400 pts<br>
+    Vendas: ${(normV*200).toFixed(0)}/200 pts
+  `;
+
+  // Bar chart
+  destroyChart('chartSocialBar');
+  const topSocial = SOCIAL_CONFIG.slice(0,6);
+  const ctxSB = document.getElementById('chartSocialBar').getContext('2d');
+  charts['chartSocialBar'] = new Chart(ctxSB, {
+    type: 'bar',
+    data: {
+      labels: topSocial.map(s=>s.key),
+      datasets: [{ label: 'Seguidores', data: topSocial.map(s=>followers[s.key]||0), backgroundColor: topSocial.map(s=>s.color+'CC'), borderRadius: 6 }]
+    },
+    options: { responsive: true, plugins:{legend:{display:false}}, scales:{y:{ticks:{callback:v=>fmtNum(v)}}} }
+  });
+
+  // Evolution line
+  destroyChart('chartSocialLine');
+  const months = [];
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(); d.setMonth(d.getMonth()-i);
+    months.push(d.toLocaleDateString('pt-BR',{month:'short'}));
+  }
+  const mainNets = ['Instagram','TikTok','YouTube','Spotify'];
+  const socialLineDs = mainNets.map((n,i) => {
+    const curr = followers[n] || 0;
+    const data = months.map((_,mi) => Math.floor(curr * (0.6 + (mi/5)*0.4) * (0.9 + Math.random()*0.2)));
+    return { label: n, data, borderColor: SOCIAL_CONFIG.find(s=>s.key===n)?.color||'#0057FF', tension: 0.4, fill: false };
+  });
+  const ctxSL = document.getElementById('chartSocialLine').getContext('2d');
+  charts['chartSocialLine'] = new Chart(ctxSL, {
+    type: 'line',
+    data: { labels: months, datasets: socialLineDs },
+    options: { responsive: true, scales:{y:{ticks:{callback:v=>fmtNum(v)}}}, plugins:{legend:{labels:{font:{size:11}}}} }
+  });
+}
+
+// ============================================================
+// TAB 9: INSIGHTS / FORECAST
+// ============================================================
+function renderTab9() {
+  const total = totalStreams();
+  const last30 = getLast30DaysStreams();
+  const sum30 = last30.reduce((a,b)=>a+b,0);
+  const avgDay = sum30 / 30;
+
+  // Forecast cards
+  const f7 = Math.round(avgDay * 7 * 1.05);
+  const f30 = Math.round(avgDay * 30 * 1.08);
+  const f90 = Math.round(avgDay * 90 * 1.12);
+  document.getElementById('forecastCards').innerHTML = [
+    { label: 'Próximos 7 dias', val: fmtNum(f7), icon: '📅', color: 'var(--blue)' },
+    { label: 'Próximos 30 dias', val: fmtNum(f30), icon: '📆', color: 'var(--purple)' },
+    { label: 'Próximos 90 dias', val: fmtNum(f90), icon: '🗓️', color: 'var(--green)' },
+  ].map(f => `
+    <div class="forecast-card">
+      <div style="font-size:24px;margin-bottom:8px">${f.icon}</div>
+      <div class="forecast-val" style="color:${f.color}">${f.val}</div>
+      <div style="font-size:13px;color:var(--gray)">${f.label}</div>
+    </div>
+  `).join('');
+
+  // Forecast chart
+  destroyChart('chartForecast');
+  const historicalLabels = [];
+  const historicalData = [];
+  for (let i = 29; i >= 0; i--) {
+    const dt = new Date(); dt.setDate(dt.getDate()-i);
+    historicalLabels.push(dt.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}));
+    historicalData.push(last30[29-i] || 0);
+  }
+  const forecastLabels = [];
+  const forecastData = [];
+  const forecastHigh = [];
+  const forecastLow = [];
+  for (let i = 1; i <= 14; i++) {
+    const dt = new Date(); dt.setDate(dt.getDate()+i);
+    forecastLabels.push(dt.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}));
+    const base = avgDay * (1 + i * 0.005);
+    forecastData.push(Math.round(base));
+    forecastHigh.push(Math.round(base * 1.2));
+    forecastLow.push(Math.round(base * 0.8));
+  }
+  const allLabels = [...historicalLabels, ...forecastLabels];
+  const ctxFC = document.getElementById('chartForecast').getContext('2d');
+  const gradFC = ctxFC.createLinearGradient(0,0,0,200);
+  gradFC.addColorStop(0,'rgba(0,87,255,0.15)'); gradFC.addColorStop(1,'rgba(0,87,255,0)');
+  charts['chartForecast'] = new Chart(ctxFC, {
+    type: 'line',
+    data: {
+      labels: allLabels,
+      datasets: [
+        { label: 'Histórico', data: [...historicalData, ...new Array(14).fill(null)], borderColor: '#0057FF', backgroundColor: gradFC, fill: true, tension: 0.4, pointRadius: 1 },
+        { label: 'Previsão', data: [...new Array(30).fill(null), ...forecastData], borderColor: '#10B981', borderDash: [5,5], tension: 0.4, pointRadius: 2, fill: false },
+        { label: 'Máx', data: [...new Array(30).fill(null), ...forecastHigh], borderColor: 'rgba(16,185,129,0.3)', fill: '+1', tension: 0.4, pointRadius: 0 },
+        { label: 'Mín', data: [...new Array(30).fill(null), ...forecastLow], borderColor: 'rgba(16,185,129,0.3)', fill: false, backgroundColor: 'rgba(16,185,129,0.08)', tension: 0.4, pointRadius: 0 },
+      ]
+    },
+    options: { responsive: true, scales:{y:{ticks:{callback:v=>fmtNum(v)}}}, plugins:{legend:{labels:{font:{size:11}}}} }
+  });
+
+  // ML alerts
+  const pct7 = (() => {
+    const s7 = last30.slice(-7).reduce((a,b)=>a+b,0);
+    const p7 = last30.slice(-14,-7).reduce((a,b)=>a+b,0);
+    return p7 > 0 ? ((s7-p7)/p7*100).toFixed(1) : 0;
+  })();
+  const alerts = [
+    {
+      color: pct7 >= 0 ? 'green' : 'red',
+      icon: pct7 >= 0 ? '🚀' : '⚠️',
+      title: pct7 >= 0 ? 'Tendência Positiva' : 'Atenção: Queda Detectada',
+      text: `Streams dos últimos 7 dias ${pct7 >= 0 ? 'cresceram' : 'caíram'} ${Math.abs(pct7)}% vs semana anterior.`,
+      badge: pct7 >= 0 ? 'badge-green' : 'badge-red'
+    },
+    {
+      color: 'blue',
+      icon: '🎯',
+      title: 'Probabilidade de Top 50',
+      text: `Com base no histórico atual, a probabilidade de entrar no Top 50 Spotify BR em 7 dias é ${total > 1e8 ? 85 : total > 5e7 ? 60 : 30}%.`,
+      badge: 'badge-blue'
+    },
+    {
+      color: 'gold',
+      icon: '💎',
+      title: 'Próxima Certificação',
+      text: `Estimativa: próxima certificação em aproximadamente ${Math.max(1, Math.round((300000 - totalEquivUnits()) / (avgDay/500)))} dias, mantido ritmo atual.`,
+      badge: 'badge-gold'
+    },
+  ];
+  document.getElementById('mlAlerts').innerHTML = alerts.map(a => `
+    <div class="card" style="border-top:4px solid ${a.color==='green'?'var(--green)':a.color==='red'?'var(--red)':a.color==='gold'?'var(--gold)':'var(--blue)'}">
+      <div style="font-size:28px;margin-bottom:8px">${a.icon}</div>
+      <div style="font-family:var(--font-title);font-size:14px;font-weight:700;margin-bottom:6px">${a.title}</div>
+      <div style="font-size:13px;color:var(--gray);line-height:1.5">${a.text}</div>
+    </div>
+  `).join('');
+
+  // Touring
+  const cities = [
+    { city: 'São Paulo', country: '🇧🇷', demand: 98, streams: fmtNum(Math.floor(totalStreams()*0.12)) },
+    { city: 'Rio de Janeiro', country: '🇧🇷', demand: 87, streams: fmtNum(Math.floor(totalStreams()*0.08)) },
+    { city: 'Los Angeles', country: '🇺🇸', demand: 72, streams: fmtNum(Math.floor(totalStreams()*0.06)) },
+    { city: 'Londres', country: '🇬🇧', demand: 65, streams: fmtNum(Math.floor(totalStreams()*0.04)) },
+    { city: 'Cidade do México', country: '🇲🇽', demand: 61, streams: fmtNum(Math.floor(totalStreams()*0.035)) },
+    { city: 'Tóquio', country: '🇯🇵', demand: 54, streams: fmtNum(Math.floor(totalStreams()*0.03)) },
+  ];
+  document.getElementById('touringList').innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:10px">
+      ${cities.map((c,i) => `
+        <div style="display:flex;align-items:center;gap:14px;padding:12px;border-radius:12px;background:var(--bg)">
+          <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--cyan));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:white">${i+1}</div>
+          <div style="flex:1">
+            <div style="font-weight:600;font-size:14px">${c.country} ${c.city}</div>
+            <div style="font-size:12px;color:var(--gray)">${c.streams} streams</div>
+          </div>
+          <div>
+            <div class="progress-wrap" style="width:120px;margin-bottom:4px"><div class="progress-fill" style="width:${c.demand}%;background:linear-gradient(90deg,var(--blue),var(--cyan))"></div></div>
+            <div style="font-size:11px;color:var(--blue);text-align:right">Índice: ${c.demand}</div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+
+  // Comparison chart
+  destroyChart('chartCompare');
+  const obrasForComp = state.obras.slice(0,5);
+  if (obrasForComp.length > 0) {
+    const ctxComp = document.getElementById('chartCompare').getContext('2d');
+    charts['chartCompare'] = new Chart(ctxComp, {
+      type: 'bar',
+      data: {
+        labels: obrasForComp.map(o => o.title),
+        datasets: [
+          { label: '7 dias', data: obrasForComp.map(o => {
+            const dt = new Date(o.date); const dt7 = new Date(dt); dt7.setDate(dt.getDate()+7);
+            return state.streams.filter(s=>s.obraId===o.id&&s.date>=o.date&&s.date<=dt7.toISOString().split('T')[0]).reduce((a,b)=>a+b.quantidade,0);
+          }), backgroundColor: '#0057FFCC', borderRadius: 4 },
+          { label: '30 dias', data: obrasForComp.map(o => {
+            const dt = new Date(o.date); const dt30 = new Date(dt); dt30.setDate(dt.getDate()+30);
+            return state.streams.filter(s=>s.obraId===o.id&&s.date>=o.date&&s.date<=dt30.toISOString().split('T')[0]).reduce((a,b)=>a+b.quantidade,0);
+          }), backgroundColor: '#7C3AEDCC', borderRadius: 4 },
+          { label: '90 dias', data: obrasForComp.map(o => {
+            const dt = new Date(o.date); const dt90 = new Date(dt); dt90.setDate(dt.getDate()+90);
+            return state.streams.filter(s=>s.obraId===o.id&&s.date>=o.date&&s.date<=dt90.toISOString().split('T')[0]).reduce((a,b)=>a+b.quantidade,0);
+          }), backgroundColor: '#10B981CC', borderRadius: 4 },
+        ]
+      },
+      options: { responsive: true, scales:{y:{ticks:{callback:v=>fmtNum(v)}}}, plugins:{legend:{labels:{font:{size:11}}}} }
+    });
+  }
+
+  // Insights
+  renderInsights(document.getElementById('insightsList'), 10);
+
+  // Hall of Fame
+  const achievements = [
+    { icon: '🎵', title: '1ª Música', desc: 'Primeira obra cadastrada', unlocked: state.obras.length >= 1, date: state.obras[0]?.date },
+    { icon: '🔥', title: '100M Streams', desc: '100 milhões de streams', unlocked: totalStreams() >= 100e6, date: today() },
+    { icon: '💫', title: '500M Streams', desc: '500 milhões de streams', unlocked: totalStreams() >= 500e6, date: today() },
+    { icon: '🌟', title: '1B Streams', desc: '1 bilhão de streams', unlocked: totalStreams() >= 1e9, date: today() },
+    { icon: '👑', title: 'Top 1 Global', desc: '#1 em algum chart', unlocked: state.chartPositions.some(x=>x.posicao===1), date: state.chartPositions.find(x=>x.posicao===1)?.date },
+    { icon: '🥇', title: 'Ouro', desc: 'Primeira certificação Ouro', unlocked: state.certificacoes.some(x=>x.level==='Ouro'), date: state.certificacoes.find(x=>x.level==='Ouro')?.date },
+    { icon: '🏆', title: 'Platina', desc: 'Primeira certificação Platina', unlocked: state.certificacoes.some(x=>x.level==='Platina'), date: state.certificacoes.find(x=>x.level==='Platina')?.date },
+    { icon: '💎', title: 'Diamante', desc: 'Certificação Diamante', unlocked: state.certificacoes.some(x=>x.level==='Diamante'), date: state.certificacoes.find(x=>x.level==='Diamante')?.date },
+    { icon: '🌍', title: 'Internacional', desc: 'Streams em 5+ países', unlocked: [...new Set(state.streams.map(x=>x.country))].length >= 5, date: today() },
+    { icon: '🎤', title: '5 Obras', desc: '5 obras cadastradas', unlocked: state.obras.length >= 5, date: state.obras[4]?.date },
+    { icon: '📀', title: '10 Certs.', desc: '10 certificações', unlocked: state.certificacoes.length >= 10, date: today() },
+    { icon: '🚀', title: 'Recorde', desc: 'Primeiro recorde histórico', unlocked: state.records.length >= 1, date: state.records[0]?.date },
+  ];
+
+  document.getElementById('achievementsGrid').innerHTML = achievements.map(a => `
+    <div class="achievement-card ${a.unlocked?'unlocked':'locked'}">
+      <div class="achievement-icon">${a.icon}</div>
+      <div class="achievement-title">${a.title}</div>
+      <div class="achievement-desc">${a.desc}</div>
+      ${a.unlocked && a.date ? `<div class="achievement-date">${fmtDate(a.date)}</div>` : ''}
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// ADD DATA FUNCTIONS
+// ============================================================
+function updateObraSelects() {
+  const selects = document.querySelectorAll('.obra-select');
+  const options = state.obras.map(o => `<option value="${o.id}">${o.title} (${o.tipo})</option>`).join('');
+  selects.forEach(s => { s.innerHTML = options || '<option value="">Cadastre uma obra primeiro</option>'; });
+}
+
+function saveArtist() {
+  state.user.name = document.getElementById('artistName').value || 'RPG';
+  state.user.country = document.getElementById('artistCountry').value;
+  document.getElementById('headerUser').textContent = state.user.name;
+  saveState(); updateAll();
+  showToast('Artista salvo!');
+}
+
+function addObra() {
+  const title = document.getElementById('obraTitle').value.trim();
+  if (!title) return showToast('Informe o título da obra.', true);
+  const obra = {
+    id: 'o' + Date.now(),
+    title,
+    tipo: document.getElementById('obraTipo').value,
+    era: document.getElementById('obraEra').value,
+    date: document.getElementById('obraDate').value || today(),
+    label: document.getElementById('obraLabel').value,
+    genre: document.getElementById('obraGenre').value,
+    isrc: document.getElementById('obraISRC').value,
+    status: document.getElementById('obraStatus').value,
+  };
+  state.obras.push(obra);
+  // Save cover if provided
+  const previewImg = document.getElementById('obraCoverPreview');
+  if (previewImg.src && previewImg.classList.contains('show')) {
+    if (!state.covers) state.covers = {};
+    state.covers[obra.id] = previewImg.src;
+  }
+  saveState(); updateObraSelects(); updateAll();
+  document.getElementById('obraTitle').value = '';
+  // Reset cover preview
+  previewImg.src = ''; previewImg.classList.remove('show');
+  document.getElementById('coverPlaceholderIcon').style.display = 'block';
+  document.getElementById('obraCoverInput').value = '';
+  showToast(`"${obra.title}" cadastrada!`);
+}
+
+function addStream() {
+  const obraId = document.getElementById('streamObra').value;
+  const qty = parseInt(document.getElementById('streamQty').value) || 0;
+  if (!obraId || qty <= 0) return showToast('Selecione uma obra e informe a quantidade.', true);
+  const obra = state.obras.find(o=>o.id===obraId);
+  state.streams.push({
+    id: 's' + Date.now(),
+    obraId,
+    obraTitle: obra?.title || '',
+    plataforma: document.getElementById('streamPlat').value,
+    country: document.getElementById('streamCountry').value,
+    quantidade: qty,
+    tipo: document.getElementById('streamType').value,
+    source: document.getElementById('streamSource').value,
+    playlist: document.getElementById('streamPlaylist').value,
+    date: document.getElementById('streamDate').value || today(),
+  });
+  saveState(); updateAll();
+  document.getElementById('streamQty').value = '';
+  showToast(`${fmtNum(qty)} streams registrados!`);
+}
+
+function addVenda() {
+  const obraId = document.getElementById('vendaObra').value;
+  const units = parseInt(document.getElementById('vendaUnits').value) || 0;
+  if (!obraId || units <= 0) return showToast('Selecione uma obra e informe as unidades.', true);
+  const obra = state.obras.find(o=>o.id===obraId);
+  state.vendas.push({
+    id: 'v' + Date.now(),
+    obraId,
+    obraTitle: obra?.title || '',
+    tipo: document.getElementById('vendaTipo').value,
+    formato: document.getElementById('vendaFormato').value,
+    country: document.getElementById('vendaCountry').value || 'BR',
+    units,
+    price: parseFloat(document.getElementById('vendaPrice').value) || 0,
+    loja: document.getElementById('vendaLoja').value,
+    date: document.getElementById('vendaDate').value || today(),
+  });
+  saveState(); updateAll();
+  document.getElementById('vendaUnits').value = '';
+  showToast(`${fmtNum(units)} unidades registradas!`);
+}
+
+function addCertificacao() {
+  const obraId = document.getElementById('certObra').value;
+  if (!obraId) return showToast('Selecione uma obra.', true);
+  const obra = state.obras.find(o=>o.id===obraId);
+  state.certificacoes.push({
+    id: 'c' + Date.now(),
+    obraId,
+    obraTitle: obra?.title || '',
+    country: document.getElementById('certCountry').value,
+    level: document.getElementById('certLevel').value,
+    date: document.getElementById('certDate').value || today(),
+    auto: false
+  });
+  saveState(); updateAll();
+  showToast('Certificação registrada!');
+}
+
+function addChartPos() {
+  const obraId = document.getElementById('chartObra').value;
+  const pos = parseInt(document.getElementById('chartPos').value);
+  if (!obraId || !pos) return showToast('Preencha todos os campos.', true);
+  const obra = state.obras.find(o=>o.id===obraId);
+  state.chartPositions.push({
+    id: 'cp' + Date.now(),
+    obraId,
+    obraTitle: obra?.title || '',
+    chart: document.getElementById('chartName').value,
+    country: document.getElementById('chartCountry').value,
+    posicao: pos,
+    date: document.getElementById('chartDate').value || today(),
+  });
+  saveState(); updateAll();
+  document.getElementById('chartPos').value = '';
+  showToast(`Posição #${pos} registrada!`);
+}
+
+function addRecord() {
+  const desc = document.getElementById('recDesc').value.trim();
+  if (!desc) return showToast('Informe a descrição do recorde.', true);
+  state.records.push({
+    id: 'r' + Date.now(),
+    desc,
+    val: document.getElementById('recVal').value,
+    date: document.getElementById('recDate').value || today(),
+  });
+  saveState(); updateAll();
+  document.getElementById('recDesc').value = '';
+  document.getElementById('recVal').value = '';
+  showToast('Recorde registrado!');
+}
+
+function addProjeto() {
+  const name = document.getElementById('projName').value.trim();
+  if (!name) return showToast('Informe o nome do projeto.', true);
+  state.projetos.push({
+    id: 'pr' + Date.now(),
+    name,
+    era: document.getElementById('projEra').value,
+    tipo: document.getElementById('projTipo').value,
+    date: document.getElementById('projDate').value || today(),
+  });
+  saveState(); updateAll();
+  document.getElementById('projName').value = '';
+  showToast('Projeto adicionado!');
+}
+
+// ============================================================
+// PRESS KIT
+// ============================================================
+function openPressKit() {
+  const total = totalStreams();
+  const certs = state.certificacoes.length;
+  const top1 = state.chartPositions.filter(x=>x.posicao===1).length;
+  const topObra = state.obras[0];
+  document.getElementById('presskitContent').innerHTML = `
+    <div class="presskit-header">
+      <div class="presskit-avatar"><i class="fas fa-user-astronaut" style="color:white"></i></div>
+      <div>
+        <div class="presskit-name">${state.user.name}</div>
+        <div style="font-size:14px;color:rgba(255,255,255,.5);margin-top:4px">🇧🇷 Brasil · Pop / R&B · ${new Date().getFullYear()}</div>
+        <div style="margin-top:8px"><span class="badge badge-cyan">Artista em Destaque</span></div>
+      </div>
+    </div>
+    <div class="presskit-stats">
+      <div class="presskit-stat">
+        <div class="presskit-stat-val">${fmtNum(total)}</div>
+        <div class="presskit-stat-label">Streams Totais</div>
+      </div>
+      <div class="presskit-stat">
+        <div class="presskit-stat-val">${certs}</div>
+        <div class="presskit-stat-label">Certificações</div>
+      </div>
+      <div class="presskit-stat">
+        <div class="presskit-stat-val">${top1}</div>
+        <div class="presskit-stat-label">Posições #1</div>
+      </div>
+    </div>
+    <div style="margin-top:24px;border-top:1px solid rgba(255,255,255,.1);padding-top:20px">
+      <div style="font-size:12px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px">Top Conquistas</div>
+      ${state.records.slice(0,3).map(r => `<div style="font-size:13px;color:rgba(255,255,255,.7);margin-bottom:6px">🏆 ${r.desc}</div>`).join('')}
+      ${state.certificacoes.slice(0,4).map(c => `<div style="font-size:13px;color:rgba(255,255,255,.7);margin-bottom:6px">${CERT_ICONS[c.level]} ${c.obraTitle} — ${c.level} (${c.country})</div>`).join('')}
+    </div>
+    <div style="margin-top:20px;font-size:11px;color:rgba(255,255,255,.25);text-align:right">Gerado por RPG·SoundCharts Pro · ${new Date().toLocaleDateString('pt-BR')}</div>
+  `;
+  document.getElementById('presskitModal').classList.add('open');
+}
+
+function closePressKit() {
+  document.getElementById('presskitModal').classList.remove('open');
+}
+
+function downloadPressKit() {
+  showToast('Press Kit copiado para impressão!');
+  window.print();
+}
+
+// ============================================================
+// TABS
+// ============================================================
+let activeTab = 0;
+
+function switchTab(idx) {
+  document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', i===idx));
+  document.querySelectorAll('.tab-panel').forEach((p,i) => p.classList.toggle('active', i===idx));
+  activeTab = idx;
+  renderCurrentTab();
+}
+
+function renderCurrentTab() {
+  switch(activeTab) {
+    case 0: renderTab0(); break;
+    case 2: renderTab2(); break;
+    case 3: renderTab3(); break;
+    case 4: renderTab4(); break;
+    case 5: renderTab5(); break;
+    case 6: renderTab6(); break;
+    case 7: renderTab7(); break;
+    case 8: renderTab8(); break;
+    case 9: renderTab9(); break;
+    case 10: renderTab10(); break;
+  }
+}
+
+function updateAll() {
+  updateKPIs();
+  renderCurrentTab();
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+let toastTimer;
+function showToast(msg, isError = false) {
+  const el = document.getElementById('toast');
+  const msgEl = document.getElementById('toastMsg');
+  el.className = 'toast' + (isError ? ' error' : '');
+  msgEl.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+window.addEventListener('load', () => {
+  loadState();
+  if (state.user && state.user.name) {
+    showDashboard();
+  }
+  // Set today as default for date fields
+  document.querySelectorAll('input[type="date"]').forEach(el => {
+    if (!el.value) el.value = today();
+  });
+});
+
+// Close modal on overlay click
+document.getElementById('presskitModal').addEventListener('click', function(e) {
+  if (e.target === this) closePressKit();
+});
+document.getElementById('newArtistModal').addEventListener('click', function(e) {
+  if (e.target === this) closeNewArtistModal();
+});
+document.getElementById('obraHistoryModal').addEventListener('click', function(e) {
+  if (e.target === this) closeObraHistory();
+});
+
+// ============================================================
+// COVER IMAGE HELPERS
+// ============================================================
+function previewObraCover(input) {
+  if (!input.files || !input.files[0]) return;
+  const file = input.files[0];
+  if (file.size > 5 * 1024 * 1024) return showToast('Imagem muito grande (máx. 5MB).', true);
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const img = document.getElementById('obraCoverPreview');
+    img.src = e.target.result;
+    img.classList.add('show');
+    document.getElementById('coverPlaceholderIcon').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+function previewNewArtistPhoto(input) {
+  if (!input.files || !input.files[0]) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const img = document.getElementById('newArtistPhotoPreview');
+    img.src = e.target.result;
+    img.classList.add('show');
+    document.getElementById('newArtistPhotoIcon').style.display = 'none';
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+// ============================================================
+// ZIP IMPORT
+// ============================================================
+async function handleZipUpload(file) {
+  if (!file) return;
+  if (file.size > 50 * 1024 * 1024) return showToast('ZIP muito grande (máx. 50MB).', true);
+  if (!file.name.endsWith('.zip')) return showToast('Selecione um arquivo .zip válido.', true);
+
+  const progressBar = document.getElementById('zipProgressBar');
+  const progressFill = document.getElementById('zipProgressFill');
+  const logEl = document.getElementById('zipLog');
+  const coverPreviewEl = document.getElementById('zipCoverPreview');
+
+  progressBar.style.display = 'block';
+  logEl.style.display = 'block';
+  coverPreviewEl.innerHTML = '';
+  progressFill.style.width = '0%';
+  logEl.innerHTML = '⏳ Abrindo arquivo ZIP...';
+
+  const mergeMode = document.getElementById('zipMergeMode').checked;
+  const newStreams = [];
+  const newVendas = [];
+  const newCharts = [];
+  const newCapas = {};
+  const logs = [];
+
+  try {
+    const zip = await JSZip.loadAsync(file);
+    const files = Object.entries(zip.files).filter(([name, entry]) => !entry.dir);
+    let processed = 0;
+
+    for (const [filename, zipEntry] of files) {
+      const shortName = filename.split('/').pop();
+      const ext = shortName.split('.').pop().toLowerCase();
+      progressFill.style.width = Math.round((processed / files.length) * 80) + '%';
+      logEl.innerHTML += `<br>📄 Processando: <strong>${shortName}</strong>`;
+
+      try {
+        if (ext === 'csv') {
+          const content = await zipEntry.async('string');
+          const rows = content.trim().split('\n').map(r => r.split(',').map(c => c.trim().replace(/^"|"$/g, '')));
+          if (rows.length < 2) { logs.push(`⚠️ ${shortName}: sem linhas de dados`); processed++; continue; }
+          const header = rows[0].map(h => h.toLowerCase());
+
+          if (shortName.toLowerCase().includes('stream') || (header.includes('quantidade') && header.includes('plataforma'))) {
+            // streams CSV: obra,plataforma,country,quantidade,tipo,source,date
+            rows.slice(1).forEach((row, ri) => {
+              if (row.length < 4) return;
+              const obraTitle = row[header.indexOf('obra')] || row[0];
+              const obra = state.obras.find(o => o.title.toLowerCase() === obraTitle.toLowerCase()) || state.obras[0];
+              if (!obra) return;
+              const qty = parseInt(row[header.indexOf('quantidade')] ?? row[3]) || 0;
+              if (qty <= 0) return;
+              newStreams.push({
+                id: 's_zip_' + Date.now() + '_' + ri,
+                obraId: obra.id,
+                obraTitle: obra.title,
+                plataforma: row[header.indexOf('plataforma')] || row[1] || 'Spotify',
+                country: row[header.indexOf('country')] ?? row[2] ?? 'BR',
+                quantidade: qty,
+                tipo: row[header.indexOf('tipo')] || 'Premium',
+                source: row[header.indexOf('source')] || 'Importado',
+                date: row[header.indexOf('date')] || today(),
+              });
+            });
+            logs.push(`✅ ${shortName}: ${rows.length - 1} streams importados`);
+          } else if (shortName.toLowerCase().includes('venda') || header.includes('units')) {
+            // vendas CSV: obra,tipo,formato,country,units,price,loja,date
+            rows.slice(1).forEach((row, ri) => {
+              if (row.length < 4) return;
+              const obraTitle = row[header.indexOf('obra')] || row[0];
+              const obra = state.obras.find(o => o.title.toLowerCase() === obraTitle.toLowerCase()) || state.obras[0];
+              if (!obra) return;
+              const units = parseInt(row[header.indexOf('units')] ?? row[4]) || 0;
+              if (units <= 0) return;
+              newVendas.push({
+                id: 'v_zip_' + Date.now() + '_' + ri,
+                obraId: obra.id,
+                obraTitle: obra.title,
+                tipo: row[header.indexOf('tipo')] || 'Física',
+                formato: row[header.indexOf('formato')] || 'CD',
+                country: row[header.indexOf('country')] ?? row[3] ?? 'BR',
+                units,
+                price: parseFloat(row[header.indexOf('price')] ?? row[5]) || 39.90,
+                loja: row[header.indexOf('loja')] || 'Importado',
+                date: row[header.indexOf('date')] || today(),
+              });
+            });
+            logs.push(`✅ ${shortName}: ${rows.length - 1} vendas importadas`);
+          } else if (shortName.toLowerCase().includes('chart') || header.includes('posicao')) {
+            // charts CSV: obra,chart,country,posicao,date
+            rows.slice(1).forEach((row, ri) => {
+              if (row.length < 4) return;
+              const obraTitle = row[header.indexOf('obra')] || row[0];
+              const obra = state.obras.find(o => o.title.toLowerCase() === obraTitle.toLowerCase()) || state.obras[0];
+              if (!obra) return;
+              const pos = parseInt(row[header.indexOf('posicao')] ?? row[3]) || 0;
+              if (pos <= 0) return;
+              newCharts.push({
+                id: 'cp_zip_' + Date.now() + '_' + ri,
+                obraId: obra.id,
+                obraTitle: obra.title,
+                chart: row[header.indexOf('chart')] || 'Spotify Top 200',
+                country: row[header.indexOf('country')] ?? row[2] ?? 'BR',
+                posicao: pos,
+                date: row[header.indexOf('date')] || today(),
+              });
+            });
+            logs.push(`✅ ${shortName}: ${rows.length - 1} posições importadas`);
+          }
+        } else if (ext === 'json') {
+          const content = await zipEntry.async('string');
+          const data = JSON.parse(content);
+          if (Array.isArray(data.obras)) {
+            data.obras.forEach(o => { if (!state.obras.find(x=>x.title===o.title)) state.obras.push({...o, id:'o_zip_'+Date.now()+'_'+Math.random()}); });
+            logs.push(`✅ ${shortName}: ${data.obras.length} obras do JSON`);
+          }
+          if (Array.isArray(data.streams)) {
+            data.streams.forEach(s => newStreams.push({...s, id:'s_zip_'+Date.now()+'_'+Math.random()}));
+            logs.push(`✅ ${shortName}: ${data.streams.length} streams do JSON`);
+          }
+        } else if (['jpg','jpeg','png','webp','gif'].includes(ext)) {
+          const base64 = await zipEntry.async('base64');
+          const dataUrl = `data:image/${ext === 'jpg' ? 'jpeg' : ext};base64,${base64}`;
+          // Try to match capa to an obra by filename
+          const nameNoExt = shortName.replace(/\.(jpg|jpeg|png|webp|gif)$/i,'').toLowerCase().replace(/[_\-]/g,' ');
+          let matched = state.obras.find(o => o.title.toLowerCase().includes(nameNoExt) || nameNoExt.includes(o.title.toLowerCase()));
+          if (!matched && shortName.toLowerCase().includes('capa')) matched = state.obras[0];
+          if (matched) {
+            newCapas[matched.id] = dataUrl;
+            logs.push(`🖼️ Capa "${shortName}" → obra "${matched.title}"`);
+            // Show preview
+            const thumb = document.createElement('img');
+            thumb.src = dataUrl;
+            thumb.className = 'zip-cover-thumb';
+            thumb.title = matched.title;
+            coverPreviewEl.appendChild(thumb);
+          } else {
+            // Store by filename for later use
+            newCapas['_unnamed_' + shortName] = dataUrl;
+            logs.push(`🖼️ ${shortName}: imagem carregada (sem obra associada)`);
+            const thumb = document.createElement('img');
+            thumb.src = dataUrl;
+            thumb.className = 'zip-cover-thumb';
+            thumb.title = shortName;
+            coverPreviewEl.appendChild(thumb);
+          }
+        } else {
+          logs.push(`⏭️ ${shortName}: extensão ignorada (.${ext})`);
+        }
+      } catch(err) {
+        logs.push(`❌ Erro em ${shortName}: ${err.message}`);
+      }
+      processed++;
+    }
+
+    progressFill.style.width = '100%';
+
+    // Apply to state
+    if (!mergeMode) {
+      state.streams = []; state.vendas = []; state.chartPositions = [];
+    }
+    state.streams.push(...newStreams);
+    state.vendas.push(...newVendas);
+    state.chartPositions.push(...newCharts);
+    if (!state.covers) state.covers = {};
+    Object.assign(state.covers, newCapas);
+
+    // Log entry
+    if (!state.importLogs) state.importLogs = [];
+    state.importLogs.unshift({
+      date: today(),
+      file: file.name,
+      streams: newStreams.length,
+      vendas: newVendas.length,
+      charts: newCharts.length,
+      capas: Object.keys(newCapas).length,
+    });
+
+    saveState(); updateAll(); updateObraSelects();
+
+    const summary = `✅ Importação concluída: ${newStreams.length} streams, ${newVendas.length} vendas, ${newCharts.length} posições de chart, ${Object.keys(newCapas).length} capas.`;
+    logEl.innerHTML = logs.map(l => `<div>${l}</div>`).join('') + `<div style="margin-top:10px;font-weight:600;color:var(--green)">${summary}</div>`;
+    showToast(`ZIP importado! ${newStreams.length} streams, ${newVendas.length} vendas, ${Object.keys(newCapas).length} capas.`);
+
+    setTimeout(() => { progressBar.style.display = 'none'; progressFill.style.width = '0%'; }, 2000);
+  } catch(err) {
+    logEl.innerHTML += `<br>❌ Erro ao processar ZIP: ${err.message}`;
+    progressBar.style.display = 'none';
+    showToast('Erro ao processar o ZIP.', true);
+  }
+}
+
+// Drag and drop for ZIP zone
+document.addEventListener('DOMContentLoaded', () => {
+  const zone = document.getElementById('zipDropZone');
+  if (!zone) return;
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault();
+    zone.classList.remove('dragover');
+    const file = e.dataTransfer.files[0];
+    if (file) handleZipUpload(file);
+  });
+});
+
+// ============================================================
+// MULTI-ARTIST / LABEL MODULE
+// ============================================================
+function updateLabelSelector() {
+  const artists = state.artists || [];
+  const sel = document.getElementById('headerArtistSelect');
+  const wrapper = document.getElementById('labelArtistSelector');
+  if (artists.length > 0) {
+    wrapper.style.display = 'flex';
+    sel.innerHTML = `<option value="__main__">${state.user.name}</option>` +
+      artists.map((a,i) => `<option value="${i}">${a.name}</option>`).join('');
+  } else {
+    wrapper.style.display = 'none';
+  }
+}
+
+function switchActiveArtist(val) {
+  if (val === '__main__') {
+    document.getElementById('headerUser').textContent = state.user.name;
+  } else {
+    const artist = state.artists[parseInt(val)];
+    if (artist) document.getElementById('headerUser').textContent = artist.name;
+  }
+}
+
+function openNewArtistModal() {
+  document.getElementById('newArtistModal').classList.add('open');
+}
+
+function closeNewArtistModal() {
+  document.getElementById('newArtistModal').classList.remove('open');
+  document.getElementById('newArtistName').value = '';
+  document.getElementById('newArtistGenre').value = '';
+  document.getElementById('newArtistPhotoPreview').src = '';
+  document.getElementById('newArtistPhotoPreview').classList.remove('show');
+  document.getElementById('newArtistPhotoIcon').style.display = 'block';
+  document.getElementById('newArtistPhoto').value = '';
+}
+
+function confirmAddArtist() {
+  const name = document.getElementById('newArtistName').value.trim();
+  if (!name) return showToast('Informe o nome do artista.', true);
+  const photoImg = document.getElementById('newArtistPhotoPreview');
+  const artist = {
+    id: 'a' + Date.now(),
+    name,
+    country: document.getElementById('newArtistCountry').value,
+    genre: document.getElementById('newArtistGenre').value,
+    photo: photoImg.classList.contains('show') ? photoImg.src : null,
+    obras: [],
+    streams: [],
+    vendas: [],
+    certificacoes: [],
+    chartPositions: [],
+    records: [],
+    // Simulated metrics for demo
+    totalStreams: Math.floor(Math.random() * 800e6) + 50e6,
+    totalCerts: Math.floor(Math.random() * 8) + 1,
+    top1s: Math.floor(Math.random() * 6),
+    obras_count: Math.floor(Math.random() * 10) + 1,
+  };
+  if (!state.artists) state.artists = [];
+  state.artists.push(artist);
+  saveState();
+  updateLabelSelector();
+  renderTab10();
+  closeNewArtistModal();
+  showToast(`${name} adicionado ao elenco!`);
+}
+
+// ============================================================
+// TAB 10: LABEL / GLOBAL
+// ============================================================
+function renderTab10() {
+  const artists = state.artists || [];
+
+  // Build consolidated roster including main artist
+  const roster = [
+    {
+      id: '__main__',
+      name: state.user.name,
+      country: state.user.country || 'BR',
+      genre: state.obras[0]?.genre || '—',
+      photo: null,
+      totalStreams: totalStreams(),
+      totalCerts: state.certificacoes.length,
+      top1s: state.chartPositions.filter(x=>x.posicao===1).length,
+      obras_count: state.obras.length,
+      isMain: true,
+    },
+    ...artists.map(a => ({
+      id: a.id,
+      name: a.name,
+      country: a.country || 'BR',
+      genre: a.genre || '—',
+      photo: a.photo || null,
+      totalStreams: a.totalStreams || 0,
+      totalCerts: a.totalCerts || 0,
+      top1s: a.top1s || 0,
+      obras_count: a.obras_count || 0,
+      isMain: false,
+    }))
+  ];
+
+  const totalRosterStreams = roster.reduce((s,a) => s + a.totalStreams, 0);
+  const totalRosterCerts = roster.reduce((s,a) => s + a.totalCerts, 0);
+  const totalRosterTop1s = roster.reduce((s,a) => s + a.top1s, 0);
+  const totalRosterArtists = roster.length;
+
+  const countryFlag = { BR:'🇧🇷', US:'🇺🇸', GB:'🇬🇧', MX:'🇲🇽', AR:'🇦🇷', JP:'🇯🇵', KR:'🇰🇷', DE:'🇩🇪', FR:'🇫🇷' };
+
+  // Label KPIs
+  document.getElementById('labelKpiBar').innerHTML = [
+    { label: 'Artistas no Elenco', val: totalRosterArtists, icon: '🎤' },
+    { label: 'Streams Totais (Portfólio)', val: fmtNum(totalRosterStreams), icon: '▶️' },
+    { label: 'Certificações Totais', val: totalRosterCerts, icon: '🏆' },
+    { label: 'Posições #1 Totais', val: totalRosterTop1s, icon: '👑' },
+  ].map(k => `
+    <div class="label-kpi">
+      <div style="font-size:24px;margin-bottom:4px">${k.icon}</div>
+      <div class="label-kpi-val">${k.val}</div>
+      <div class="label-kpi-label">${k.label}</div>
+    </div>
+  `).join('');
+
+  // Milestone alerts
+  const milestones = [];
+  roster.forEach(a => {
+    if (a.totalStreams >= 1e9) milestones.push({ artist: a.name, msg: `atingiu 1 Bilhão de streams!`, icon: '🎉' });
+    else if (a.totalStreams >= 500e6) milestones.push({ artist: a.name, msg: `ultrapassou 500M de streams`, icon: '🚀' });
+    if (a.totalCerts >= 5) milestones.push({ artist: a.name, msg: `acumulou ${a.totalCerts} certificações`, icon: '🏆' });
+    if (a.top1s >= 3) milestones.push({ artist: a.name, msg: `conquistou ${a.top1s} posições #1 em charts`, icon: '👑' });
+  });
+  document.getElementById('milestoneAlerts').innerHTML = milestones.slice(0,4).map(m => `
+    <div class="alert-milestone">
+      <i class="fas fa-bell"></i>
+      <span><strong>${m.artist}</strong> ${m.msg} ${m.icon}</span>
+    </div>
+  `).join('') || '<div style="font-size:13px;color:var(--gray);padding:12px">Adicione mais artistas ao elenco para ver alertas de marcos.</div>';
+
+  // Artists grid
+  document.getElementById('artistsGrid').innerHTML = roster.map((a,i) => `
+    <div class="artist-card">
+      <div class="artist-card-header" style="background:linear-gradient(135deg,${['#0057FF','#7C3AED','#10B981','#F59E0B','#EF4444'][i%5]},${['#7C3AED','#10B981','#F59E0B','#EF4444','#0057FF'][i%5]})">
+        <div class="artist-card-avatar">
+          ${a.photo ? `<img src="${a.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">` : (a.isMain ? '⭐' : '🎤')}
+        </div>
+        ${a.isMain ? `<div style="position:absolute;top:8px;right:8px"><span class="badge badge-gold">Principal</span></div>` : ''}
+      </div>
+      <div class="artist-card-body">
+        <div class="artist-card-name">${a.name}</div>
+        <div class="artist-card-meta">${countryFlag[a.country]||''} ${a.country} · ${a.genre}</div>
+        <div class="artist-card-stats">
+          <span class="badge badge-blue">${fmtNum(a.totalStreams)} streams</span>
+          <span class="badge badge-gold">${a.totalCerts} certs.</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  // Ranking
+  const ranked = [...roster].sort((a,b) => b.totalStreams - a.totalStreams);
+  const rankBg = ['gold-bg','silver-bg','bronze-bg'];
+  document.getElementById('artistRanking').innerHTML = ranked.map((a,i) => `
+    <div class="ranking-row">
+      <div class="ranking-num ${rankBg[i]||''}">${i+1}</div>
+      <div style="flex:1">
+        <div style="font-weight:600;font-size:14px">${a.name}</div>
+        <div style="font-size:12px;color:var(--gray)">${fmtNum(a.totalStreams)} streams · ${a.totalCerts} certs · ${a.top1s} #1s</div>
+      </div>
+      <div>
+        <div class="progress-wrap" style="width:100px"><div class="progress-fill" style="width:${Math.round(a.totalStreams/totalRosterStreams*100)}%;background:linear-gradient(90deg,var(--blue),var(--cyan))"></div></div>
+        <div style="font-size:11px;color:var(--blue);text-align:right;margin-top:2px">${(a.totalStreams/totalRosterStreams*100).toFixed(1)}%</div>
+      </div>
+    </div>
+  `).join('') || '<div style="color:var(--gray);font-size:13px;padding:16px">Nenhum artista no elenco.</div>';
+
+  // Doughnut chart - streams by artist
+  destroyChart('chartLabelDoughnut');
+  const artistColors = ['#0057FF','#7C3AED','#10B981','#F59E0B','#EF4444','#00D2FF','#EC4899'];
+  const ctxLD = document.getElementById('chartLabelDoughnut').getContext('2d');
+  charts['chartLabelDoughnut'] = new Chart(ctxLD, {
+    type: 'doughnut',
+    data: {
+      labels: roster.map(a=>a.name),
+      datasets: [{ data: roster.map(a=>a.totalStreams), backgroundColor: roster.map((_,i)=>artistColors[i%artistColors.length]), borderWidth: 2, borderColor: '#fff' }]
+    },
+    options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } } }
+  });
+
+  // Bar chart - certifications
+  destroyChart('chartLabelCerts');
+  const ctxLC = document.getElementById('chartLabelCerts').getContext('2d');
+  charts['chartLabelCerts'] = new Chart(ctxLC, {
+    type: 'bar',
+    data: {
+      labels: roster.map(a=>a.name),
+      datasets: [
+        { label: 'Certificações', data: roster.map(a=>a.totalCerts), backgroundColor: roster.map((_,i)=>artistColors[i%artistColors.length]+'CC'), borderRadius: 6 },
+        { label: 'Posições #1', data: roster.map(a=>a.top1s), backgroundColor: roster.map((_,i)=>artistColors[i%artistColors.length]+'66'), borderRadius: 6 },
+      ]
+    },
+    options: { responsive: true, scales: { y: { beginAtZero: true } }, plugins: { legend: { labels: { font: { size: 11 } } } } }
+  });
+
+  // Comparison table
+  document.getElementById('labelCompareBody').innerHTML = ranked.map((a,i) => {
+    const influenceScore = Math.min(1000, Math.round((a.totalStreams / 1e9) * 600 + a.totalCerts * 20 + a.top1s * 30));
+    return `<tr>
+      <td><strong>${a.name}</strong> ${a.isMain ? '<span class="badge badge-blue">Principal</span>' : ''}</td>
+      <td>${countryFlag[a.country]||''} ${a.country}</td>
+      <td><strong>${fmtNum(a.totalStreams)}</strong></td>
+      <td>${fmtNum(a.obras_count * 12000)}</td>
+      <td>${a.totalCerts}</td>
+      <td>${a.top1s}</td>
+      <td>${a.obras_count}</td>
+      <td><span class="badge ${influenceScore >= 700 ? 'badge-green' : influenceScore >= 400 ? 'badge-blue' : 'badge-purple'}">${influenceScore} pts</span></td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="8" style="text-align:center;color:var(--gray);padding:24px">Adicione artistas para ver o comparativo.</td></tr>';
+}
+
+</script>
+</body>
+</html>
