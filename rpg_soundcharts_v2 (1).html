@@ -745,6 +745,191 @@ body {
 .era-meta { font-size: 12px; color: var(--gray); margin-top: 4px; }
 .era-stats { display: flex; gap: 12px; margin-top: 12px; flex-wrap: wrap; }
 
+/* ===== SISTEMA DE ERAS — CSS ===== */
+
+/* Era sub-nav */
+.era-subnav {
+  display: flex; gap: 8px; margin-bottom: 24px;
+  background: var(--white); border-radius: 12px; padding: 6px;
+  border: 1px solid var(--gray3); width: fit-content;
+}
+.era-subnav-btn {
+  padding: 8px 20px; border-radius: 8px; border: none;
+  font-family: var(--font-body); font-size: 13px; font-weight: 600;
+  cursor: pointer; color: var(--gray); background: transparent; transition: all .2s;
+}
+.era-subnav-btn.active { background: var(--blue); color: white; box-shadow: 0 4px 12px rgba(0,87,255,.3); }
+.era-subnav-btn:hover:not(.active) { background: var(--bg); color: var(--dark); }
+
+/* Timeline */
+.era-timeline-wrap { overflow-x: auto; padding: 16px 0 24px; }
+.era-timeline {
+  display: flex; align-items: flex-start; gap: 0; min-width: max-content;
+  padding: 0 20px; position: relative;
+}
+.era-timeline::before {
+  content:''; position:absolute; top:60px; left:20px; right:20px;
+  height:3px; background:linear-gradient(90deg,var(--blue),var(--purple));
+  border-radius:2px; z-index:0;
+}
+.era-timeline-item {
+  display:flex; flex-direction:column; align-items:center;
+  min-width:180px; position:relative; z-index:1; cursor:pointer;
+}
+.era-timeline-dot {
+  width:20px; height:20px; border-radius:50%; border:3px solid white;
+  box-shadow:0 0 0 3px var(--blue); margin-bottom:12px;
+  transition: transform .2s; flex-shrink:0; background:var(--blue);
+}
+.era-timeline-dot.active-era { background:var(--green); box-shadow:0 0 0 3px var(--green); animation:pulseGlow 2s ease-in-out infinite; }
+.era-timeline-dot.planejada { background:var(--gray2); box-shadow:0 0 0 3px var(--gray2); }
+.era-timeline-dot.encerrada { background:var(--gray); box-shadow:0 0 0 3px var(--gray); opacity:.6; }
+@keyframes pulseGlow { 0%,100%{box-shadow:0 0 0 3px var(--green)} 50%{box-shadow:0 0 0 8px rgba(16,185,129,.3)} }
+
+.era-timeline-bar {
+  height:4px; border-radius:2px; width:calc(100% - 20px);
+  position:absolute; top:58px; left:50%; right:0; z-index:0;
+}
+.era-tl-card {
+  background:var(--white); border-radius:16px; border:1.5px solid var(--gray3);
+  padding:14px; width:160px; text-align:center;
+  box-shadow:0 2px 8px rgba(0,0,0,.05); transition:all .2s;
+}
+.era-timeline-item:hover .era-tl-card { transform:translateY(-4px); box-shadow:0 8px 24px rgba(0,0,0,.12); }
+.era-tl-card.active-card { border-color:var(--green); box-shadow:0 4px 20px rgba(16,185,129,.2); }
+
+/* Era Big Cards */
+.era-big-card {
+  background:var(--white); border-radius:24px; border:1.5px solid var(--gray3);
+  overflow:hidden; box-shadow:0 4px 16px rgba(0,0,0,.06); transition:all .2s;
+  cursor:pointer;
+}
+.era-big-card:hover { transform:translateY(-4px); box-shadow:0 12px 40px rgba(0,0,0,.12); }
+.era-big-header {
+  height:160px; position:relative; overflow:hidden;
+  display:flex; align-items:center; justify-content:center;
+}
+.era-big-header-bg {
+  position:absolute; inset:0; background-size:cover; background-position:center;
+  filter:blur(6px) brightness(.7); transform:scale(1.1);
+}
+.era-big-header-overlay {
+  position:absolute; inset:0;
+  background:linear-gradient(to bottom, transparent 30%, rgba(0,0,0,.6));
+}
+.era-big-header-content {
+  position:relative; z-index:2; text-align:center; padding:16px;
+}
+.era-big-badge {
+  display:inline-block; padding:3px 10px; border-radius:20px;
+  font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px;
+  margin-bottom:6px;
+}
+.era-big-name { font-family:var(--font-title); font-size:20px; font-weight:800; color:white; }
+.era-big-sub { font-size:11px; color:rgba(255,255,255,.7); margin-top:2px; }
+.era-big-body { padding:20px; }
+.era-big-kpis { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:14px; }
+.era-kpi-mini { text-align:center; }
+.era-kpi-mini-val { font-family:var(--font-mono); font-size:15px; font-weight:700; color:var(--dark); }
+.era-kpi-mini-lbl { font-size:10px; color:var(--gray); margin-top:2px; }
+.era-progress-wrap { height:4px; background:var(--gray3); border-radius:2px; overflow:hidden; margin-top:8px; }
+.era-progress-fill { height:100%; border-radius:2px; transition:width .5s; }
+.era-action-btn {
+  width:100%; padding:10px; border-radius:10px; border:none;
+  font-family:var(--font-body); font-size:12px; font-weight:600;
+  cursor:pointer; margin-top:12px; transition:all .2s;
+  display:flex; align-items:center; justify-content:center; gap:6px;
+}
+
+/* Era Immersive Dashboard */
+.era-dashboard {
+  display:none; position:fixed; inset:0; z-index:2000;
+  overflow-y:auto; animation:fadeIn .3s;
+}
+.era-dashboard.open { display:block; }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+.era-dash-bg {
+  position:fixed; inset:0; z-index:-1;
+  background-size:cover; background-position:center;
+  filter:blur(20px) brightness(.3); transform:scale(1.1);
+}
+.era-dash-overlay { position:fixed; inset:0; z-index:-1; background:rgba(15,23,42,.85); }
+.era-dash-container { max-width:1100px; margin:0 auto; padding:32px 24px 60px; }
+.era-dash-header {
+  text-align:center; padding:40px 0 32px; position:relative;
+}
+.era-dash-back {
+  position:absolute; left:0; top:40px; background:rgba(255,255,255,.1);
+  border:1px solid rgba(255,255,255,.2); color:white; border-radius:12px;
+  padding:10px 18px; cursor:pointer; font-size:13px; font-weight:600;
+  display:flex; align-items:center; gap:6px; transition:all .2s;
+  font-family:var(--font-body); backdrop-filter:blur(8px);
+}
+.era-dash-back:hover { background:rgba(255,255,255,.2); }
+.era-dash-logo { font-family:var(--font-title); font-size:42px; font-weight:900; color:white; letter-spacing:-1px; }
+.era-dash-sub { font-size:14px; color:rgba(255,255,255,.5); margin-top:6px; font-style:italic; }
+.era-dash-status {
+  display:inline-block; padding:4px 14px; border-radius:20px; font-size:11px;
+  font-weight:700; text-transform:uppercase; letter-spacing:1px; margin-top:10px;
+}
+.era-dash-kpis {
+  display:grid; grid-template-columns:repeat(6,1fr); gap:12px; margin-bottom:24px;
+}
+@media(max-width:900px){ .era-dash-kpis{ grid-template-columns:repeat(3,1fr); } }
+.era-dash-kpi {
+  background:rgba(255,255,255,.07); backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,.12); border-radius:16px; padding:16px 14px;
+  text-align:center;
+}
+.era-dash-kpi-val { font-family:var(--font-mono); font-size:20px; font-weight:700; color:white; }
+.era-dash-kpi-lbl { font-size:10px; color:rgba(255,255,255,.45); text-transform:uppercase; letter-spacing:.5px; margin-top:4px; }
+.era-dash-section {
+  background:rgba(255,255,255,.05); backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,.1); border-radius:20px;
+  padding:24px; margin-bottom:20px;
+}
+.era-dash-section-title {
+  font-family:var(--font-title); font-size:15px; font-weight:700;
+  color:rgba(255,255,255,.9); margin-bottom:16px;
+  display:flex; align-items:center; gap:8px;
+}
+.era-obra-card {
+  background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1);
+  border-radius:14px; padding:14px; transition:all .2s;
+}
+.era-obra-card:hover { background:rgba(255,255,255,.1); }
+.era-obra-card-title { font-size:13px; font-weight:700; color:white; margin-bottom:4px; }
+.era-obra-card-meta { font-size:11px; color:rgba(255,255,255,.45); }
+.era-obra-card-streams { font-family:var(--font-mono); font-size:14px; font-weight:600; margin-top:8px; }
+
+/* Comparison */
+.era-compare-select {
+  display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px;
+}
+.era-compare-col {
+  background:var(--white); border-radius:16px; border:1.5px solid var(--gray3); padding:20px;
+}
+.era-compare-col-title {
+  font-family:var(--font-title); font-size:16px; font-weight:800; margin-bottom:16px;
+}
+.era-compare-row {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:10px 0; border-bottom:1px solid var(--gray3); font-size:13px;
+}
+.era-compare-row:last-child { border-bottom:none; }
+.era-compare-lbl { color:var(--gray); }
+.era-compare-val { font-weight:700; color:var(--dark); font-family:var(--font-mono); }
+.era-compare-winner { color:var(--green); }
+.era-compare-loser { color:var(--gray); opacity:.7; }
+
+/* Insight banners */
+.era-insight {
+  background:linear-gradient(135deg,rgba(0,87,255,.08),rgba(124,58,237,.06));
+  border:1.5px solid rgba(0,87,255,.2); border-radius:12px; padding:12px 16px;
+  font-size:13px; color:var(--dark2); display:flex; align-items:center; gap:10px;
+  margin-bottom:10px;
+}
+
 /* FORECAST */
 .forecast-card {
   background: var(--white);
@@ -761,16 +946,104 @@ body {
   color: var(--blue);
 }
 
-/* RESPONSIVE */
+/* ===== MOBILE NAV ===== */
+.mobile-nav-toggle {
+  display: none;
+  background: none; border: 1px solid rgba(255,255,255,.2);
+  border-radius: 8px; padding: 8px 12px; color: rgba(255,255,255,.7);
+  cursor: pointer; font-size: 16px; transition: all .2s;
+}
+.mobile-nav-toggle:hover { background: rgba(255,255,255,.08); }
+.mobile-tab-drawer {
+  display: none;
+  position: fixed; top: 64px; left: 0; right: 0; z-index: 999;
+  background: var(--dark);
+  border-bottom: 1px solid rgba(255,255,255,.1);
+  max-height: calc(100vh - 64px); overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0,0,0,.5);
+  animation: slideDown .2s ease;
+}
+.mobile-tab-drawer.open { display: block; }
+@keyframes slideDown { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
+.mobile-tab-list { padding: 8px; display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+.mobile-tab-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 14px; border-radius: 10px; border: none;
+  background: transparent; color: rgba(255,255,255,.5);
+  font-family: var(--font-body); font-size: 13px; font-weight: 500;
+  cursor: pointer; text-align: left; transition: all .2s; width: 100%;
+}
+.mobile-tab-item:hover { background: rgba(255,255,255,.06); color: rgba(255,255,255,.8); }
+.mobile-tab-item.active { background: rgba(0,87,255,.2); color: var(--blue2); }
+.mobile-tab-item i { font-size: 14px; width: 18px; text-align: center; }
+.mobile-overlay {
+  display: none; position: fixed; inset: 0; z-index: 998;
+  background: rgba(0,0,0,.4); backdrop-filter: blur(2px);
+}
+.mobile-overlay.open { display: block; }
+
+/* ===== AIRPLAY STYLES ===== */
+.airplay-kpi-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 20px; }
+.airplay-kpi {
+  background: linear-gradient(135deg, rgba(124,58,237,.08), rgba(0,87,255,.05));
+  border: 1.5px solid rgba(124,58,237,.2); border-radius: 16px; padding: 18px 16px; text-align: center;
+}
+.airplay-kpi-val { font-family: var(--font-mono); font-size: 22px; font-weight: 800; color: var(--purple); }
+.airplay-kpi-lbl { font-size: 10px; color: var(--gray); text-transform: uppercase; letter-spacing:.5px; margin-top: 4px; }
+.station-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;
+  background: rgba(124,58,237,.1); color: var(--purple); border: 1px solid rgba(124,58,237,.2);
+}
+.airplay-station-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 0; border-bottom: 1px solid var(--gray3); gap: 10px;
+}
+.airplay-station-row:last-child { border-bottom: none; }
+.airplay-tipo-bar { display: flex; border-radius: 8px; overflow: hidden; height: 28px; margin-bottom: 8px; }
+.airplay-tipo-seg { display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: white; transition: width .5s; }
+
+/* ===== RESPONSIVE ===== */
 @media (max-width: 1100px) {
   .kpis { grid-template-columns: repeat(3, 1fr); }
   .grid-4, .grid-5 { grid-template-columns: repeat(2, 1fr); }
+  .airplay-kpi-grid { grid-template-columns: repeat(2,1fr); }
 }
 @media (max-width: 768px) {
   .kpis { grid-template-columns: repeat(2, 1fr); }
-  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  .grid-2, .grid-3, .grid-4, .grid-5 { grid-template-columns: 1fr; }
   .form-row, .form-row-3 { grid-template-columns: 1fr; }
-  .content { padding: 16px; }
+  .content { padding: 14px; }
+  .card { padding: 16px; border-radius: 14px; }
+  .section-title { font-size: 18px; }
+  .era-big-kpis { grid-template-columns: 1fr 1fr 1fr; }
+  .era-compare-select { grid-template-columns: 1fr; }
+  .airplay-kpi-grid { grid-template-columns: repeat(2,1fr); }
+  .header { padding: 0 14px; height: 56px; }
+  .header-logo-icon { display: none; }
+  .tabs-wrapper { display: none; }
+  .mobile-nav-toggle { display: flex; align-items: center; gap: 6px; }
+  .db-toolbar { flex-wrap: wrap; }
+  .db-sort-group { flex-wrap: wrap; }
+  .era-dash-kpis { grid-template-columns: repeat(2,1fr); }
+  .era-dash-back { position: relative; top: 0; left: 0; margin-bottom: 16px; }
+  .era-dash-header { padding-top: 16px; }
+  .login-card { padding: 32px 24px; }
+  .presskit-stats { grid-template-columns: repeat(2,1fr); }
+  .kpi-card { padding: 14px 16px; }
+  .kpi-value { font-size: 18px; }
+}
+@media (max-width: 480px) {
+  .kpis { grid-template-columns: repeat(2, 1fr); gap: 0; }
+  .kpi-card { padding: 12px; }
+  .kpi-icon { width: 36px; height: 36px; font-size: 14px; }
+  .kpi-value { font-size: 16px; }
+  .kpi-label { font-size: 10px; }
+  .kpi-sub { display: none; }
+  .content { padding: 10px; }
+  .era-tl-card { width: 130px; }
+  .era-timeline-item { min-width: 150px; }
+  .era-big-kpis { grid-template-columns: 1fr 1fr 1fr; }
 }
 
 /* CHIP SELECTOR */
@@ -1142,6 +1415,162 @@ body {
 .history-peak-country { font-size: 11px; color: var(--gray); margin-top: 3px; }
 .history-peak-date { font-size: 10px; color: var(--gray2); margin-top: 2px; }
 
+/* ===== SEARCHABLE COUNTRY SELECT ===== */
+.country-select-wrapper {
+  position: relative;
+  width: 100%;
+}
+.country-search-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--gray3);
+  border-radius: 10px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--dark);
+  background: var(--white);
+  outline: none;
+  cursor: pointer;
+  transition: border .15s;
+  box-sizing: border-box;
+}
+.country-search-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(0,87,255,.08); }
+.country-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0; right: 0;
+  background: var(--white);
+  border: 1px solid var(--gray3);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.12);
+  z-index: 9999;
+  max-height: 240px;
+  overflow: hidden;
+  display: none;
+  flex-direction: column;
+}
+.country-dropdown.open { display: flex; }
+.country-search-box {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--gray3);
+  flex-shrink: 0;
+}
+.country-search-box input {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid var(--gray3);
+  border-radius: 8px;
+  font-size: 12px;
+  font-family: var(--font-body);
+  outline: none;
+  background: var(--bg);
+}
+.country-search-box input:focus { border-color: var(--blue); }
+.country-options-list {
+  overflow-y: auto;
+  flex: 1;
+}
+.country-option {
+  padding: 8px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background .1s;
+}
+.country-option:hover, .country-option.highlighted { background: rgba(0,87,255,.06); }
+.country-option.selected { background: rgba(0,87,255,.1); font-weight: 600; color: var(--blue); }
+.country-option-no-result { padding: 12px 14px; font-size: 12px; color: var(--gray); text-align: center; }
+
+/* ===== DATABASE TABS (10-13) ===== */
+.db-toolbar {
+  display: flex; flex-wrap: wrap; gap: 10px;
+  align-items: center; margin-bottom: 18px;
+}
+.db-search-input {
+  padding: 9px 14px; border: 1px solid var(--gray3); border-radius: 10px;
+  font-family: var(--font-body); font-size: 13px; width: 220px;
+  outline: none; transition: border .15s;
+}
+.db-search-input:focus { border-color: var(--blue); }
+.db-filter-select {
+  padding: 9px 12px; border: 1px solid var(--gray3); border-radius: 10px;
+  font-family: var(--font-body); font-size: 13px; background: var(--white);
+  outline: none; cursor: pointer; color: var(--dark);
+}
+.db-filter-select:focus { border-color: var(--blue); }
+.db-sort-btn {
+  padding: 8px 14px; border: 1px solid var(--gray3); border-radius: 10px;
+  font-family: var(--font-body); font-size: 12px; font-weight: 600;
+  background: var(--white); cursor: pointer; transition: all .15s;
+  color: var(--gray); display: inline-flex; align-items: center; gap: 5px;
+}
+.db-sort-btn:hover { border-color: var(--blue); color: var(--blue); }
+.db-sort-btn.active { background: var(--blue); border-color: var(--blue); color: white; }
+.db-sort-group { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.db-sort-label { font-size: 11px; color: var(--gray); font-weight: 600; text-transform: uppercase; letter-spacing: .8px; }
+.db-pagination {
+  display: flex; align-items: center; gap: 6px;
+  justify-content: center; margin-top: 18px; flex-wrap: wrap;
+}
+.db-page-btn {
+  width: 36px; height: 36px; border-radius: 8px;
+  border: 1px solid var(--gray3); background: var(--white);
+  font-family: var(--font-mono); font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: all .15s; color: var(--dark);
+  display: flex; align-items: center; justify-content: center;
+}
+.db-page-btn:hover { border-color: var(--blue); color: var(--blue); }
+.db-page-btn.active { background: var(--blue); border-color: var(--blue); color: white; }
+.db-page-info { font-size: 12px; color: var(--gray); padding: 0 6px; }
+.rank-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px; border-radius: 8px;
+  font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+  background: var(--bg); color: var(--dark);
+}
+.rank-badge.r1 { background: linear-gradient(135deg,#F59E0B,#FDE68A); color: #92400E; }
+.rank-badge.r2 { background: linear-gradient(135deg,#94A3B8,#CBD5E1); color: #334155; }
+.rank-badge.r3 { background: linear-gradient(135deg,#CD7C2F,#F0B97D); color: #7C3D0F; }
+.peak-pill {
+  display: inline-block; padding: 2px 9px; border-radius: 999px;
+  font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+  background: var(--bg); color: var(--dark); border: 1px solid var(--gray3);
+}
+.peak-pill.p1 { background: rgba(245,158,11,.15); color: #B45309; border-color: rgba(245,158,11,.3); }
+.peak-pill.p10 { background: rgba(16,185,129,.1); color: #047857; border-color: rgba(16,185,129,.25); }
+.cert-pill {
+  display: inline-block; padding: 2px 8px; border-radius: 999px;
+  font-size: 11px; font-weight: 600; border: 1px solid transparent;
+}
+.cert-diamond { background: rgba(99,102,241,.12); color: #4338CA; border-color: rgba(99,102,241,.3); }
+.cert-platinum { background: rgba(100,116,139,.1); color: #475569; border-color: rgba(100,116,139,.3); }
+.cert-gold { background: rgba(245,158,11,.1); color: #B45309; border-color: rgba(245,158,11,.3); }
+.macro-kpi-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 14px; margin-bottom: 22px;
+}
+.macro-kpi-card {
+  background: var(--white); border-radius: 14px; padding: 18px 16px;
+  border: 1px solid var(--gray3); text-align: center;
+}
+.macro-kpi-val {
+  font-family: var(--font-mono); font-size: 26px; font-weight: 700;
+  color: var(--dark); line-height: 1; margin-bottom: 4px;
+}
+.macro-kpi-lbl { font-size: 11px; color: var(--gray); text-transform: uppercase; letter-spacing: .8px; font-weight: 600; }
+.market-table-row-flag { font-size: 18px; }
+.sps-bar-wrap { background: var(--gray3); border-radius: 999px; height: 6px; flex: 1; overflow: hidden; }
+.sps-bar-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--blue), var(--cyan)); }
+.album-track-list { display: flex; flex-direction: column; gap: 4px; margin-top: 10px; }
+.album-track-row { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--gray); padding: 4px 0; border-bottom: 1px solid var(--gray3); }
+.album-track-row:last-child { border-bottom: none; }
+.album-track-num { width: 20px; font-family: var(--font-mono); font-weight: 600; color: var(--blue); }
+.album-track-name { flex: 1; color: var(--dark); font-weight: 500; }
+.no-data-msg { text-align: center; padding: 48px 20px; color: var(--gray); }
+.no-data-msg i { font-size: 36px; margin-bottom: 12px; display: block; opacity: .4; }
+
 </style>
 </head>
 <body>
@@ -1189,11 +1618,20 @@ body {
         <i class="fas fa-user-astronaut"></i>
         <span id="headerUser">RPG</span>
       </div>
-      <button class="btn-logout" onclick="doLogout()">
-        <i class="fas fa-sign-out-alt"></i> Sair
+      <button class="btn-logout" onclick="doLogout()" style="display:flex;align-items:center;gap:6px">
+        <i class="fas fa-sign-out-alt"></i><span class="logout-text"> Sair</span>
+      </button>
+      <button class="mobile-nav-toggle" onclick="toggleMobileNav()" id="mobileNavToggle" aria-label="Menu">
+        <i class="fas fa-bars" id="mobileNavIcon"></i>
       </button>
     </div>
   </header>
+
+  <!-- MOBILE DRAWER NAV -->
+  <div class="mobile-overlay" id="mobileOverlay" onclick="closeMobileNav()"></div>
+  <div class="mobile-tab-drawer" id="mobileTabDrawer">
+    <div class="mobile-tab-list" id="mobileTabList"></div>
+  </div>
 
   <!-- KPIs -->
   <div class="kpis">
@@ -1264,7 +1702,7 @@ body {
         <i class="fas fa-record-vinyl"></i> Recordes
       </button>
       <button class="tab-btn" onclick="switchTab(7)" data-tab="7">
-        <i class="fas fa-layer-group"></i> Projetos / Eras
+        <i class="fas fa-layer-group"></i> Sistema de Eras
       </button>
       <button class="tab-btn" onclick="switchTab(8)" data-tab="8">
         <i class="fas fa-share-alt"></i> Redes Sociais
@@ -1273,7 +1711,19 @@ body {
         <i class="fas fa-brain"></i> Insights / Forecast
       </button>
       <button class="tab-btn" onclick="switchTab(10)" data-tab="10">
-        <i class="fas fa-building"></i> Gravadora / Global
+        <i class="fas fa-list-ol"></i> Charts
+      </button>
+      <button class="tab-btn" onclick="switchTab(11)" data-tab="11">
+        <i class="fas fa-globe"></i> Dados Gerais
+      </button>
+      <button class="tab-btn" onclick="switchTab(12)" data-tab="12">
+        <i class="fas fa-fire"></i> Ranking Singles
+      </button>
+      <button class="tab-btn" onclick="switchTab(13)" data-tab="13">
+        <i class="fas fa-compact-disc"></i> Ranking Álbuns
+      </button>
+      <button class="tab-btn" onclick="switchTab(14)" data-tab="14">
+        <i class="fas fa-radio"></i> Airplay
       </button>
     </div>
   </div>
@@ -1337,6 +1787,9 @@ body {
           </div>
         </div>
       </div>
+
+      <!-- ERA ATUAL CARD -->
+      <div id="eraAtualCard" style="display:none;margin-bottom:20px"></div>
     </div>
 
     <!-- TAB 1: ADICIONAR DADOS -->
@@ -1354,17 +1807,14 @@ body {
           </div>
           <div class="form-col">
             <label>País de Origem</label>
-            <select id="artistCountry">
-              <option value="BR">🇧🇷 Brasil</option>
-              <option value="US">🇺🇸 Estados Unidos</option>
-              <option value="GB">🇬🇧 Reino Unido</option>
-              <option value="KR">🇰🇷 Coreia do Sul</option>
-              <option value="JP">🇯🇵 Japão</option>
-              <option value="DE">🇩🇪 Alemanha</option>
-              <option value="FR">🇫🇷 França</option>
-              <option value="AR">🇦🇷 Argentina</option>
-              <option value="MX">🇲🇽 México</option>
-            </select>
+            <div class="country-select-wrapper">
+              <input type="hidden" id="artistCountry" value="BR">
+              <input type="text" class="country-search-input" id="artistCountry_display" placeholder="🌍 Selecionar país..." readonly onclick="toggleCountryDropdown('artistCountry')" value="🇧🇷 Brasil">
+              <div class="country-dropdown" id="artistCountry_dropdown">
+                <div class="country-search-box"><input type="text" placeholder="🔍 Buscar país..." oninput="filterCountries('artistCountry',this.value)" id="artistCountry_filter" onclick="event.stopPropagation()"></div>
+                <div class="country-options-list" id="artistCountry_list"></div>
+              </div>
+            </div>
           </div>
         </div>
         <button class="btn-save" onclick="saveArtist()"><i class="fas fa-save"></i> Salvar Artista</button>
@@ -1390,7 +1840,8 @@ body {
         <div class="form-row">
           <div class="form-col">
             <label>Era</label>
-            <input type="text" id="obraEra" placeholder="Ex: Debut Era">
+            <input type="text" id="obraEra" placeholder="Ex: Debut Era" list="eraDatalist" autocomplete="off">
+            <datalist id="eraDatalist"></datalist>
           </div>
           <div class="form-col">
             <label>Data de Lançamento *</label>
@@ -1399,15 +1850,9 @@ body {
         </div>
         <div class="form-row">
           <div class="form-col">
-            <label>Gravadora</label>
-            <input type="text" id="obraLabel" placeholder="Nome da gravadora">
-          </div>
-          <div class="form-col">
             <label>Gênero</label>
             <input type="text" id="obraGenre" placeholder="Ex: Pop, Hip-Hop">
           </div>
-        </div>
-        <div class="form-row">
           <div class="form-col">
             <label>ISRC</label>
             <input type="text" id="obraISRC" placeholder="BR-XXX-00-00000">
@@ -1457,18 +1902,14 @@ body {
         <div class="form-row">
           <div class="form-col">
             <label>País</label>
-            <select id="streamCountry">
-              <option value="BR">🇧🇷 Brasil</option>
-              <option value="US">🇺🇸 EUA</option>
-              <option value="GB">🇬🇧 Reino Unido</option>
-              <option value="MX">🇲🇽 México</option>
-              <option value="AR">🇦🇷 Argentina</option>
-              <option value="JP">🇯🇵 Japão</option>
-              <option value="KR">🇰🇷 Coreia do Sul</option>
-              <option value="DE">🇩🇪 Alemanha</option>
-              <option value="FR">🇫🇷 França</option>
-              <option value="OTHER">Outros</option>
-            </select>
+            <div class="country-select-wrapper">
+              <input type="hidden" id="streamCountry" value="BR">
+              <input type="text" class="country-search-input" id="streamCountry_display" placeholder="🌍 Selecionar país..." readonly onclick="toggleCountryDropdown('streamCountry')" value="🇧🇷 Brasil">
+              <div class="country-dropdown" id="streamCountry_dropdown">
+                <div class="country-search-box"><input type="text" placeholder="🔍 Buscar país..." oninput="filterCountries('streamCountry',this.value)" id="streamCountry_filter" onclick="event.stopPropagation()"></div>
+                <div class="country-options-list" id="streamCountry_list"></div>
+              </div>
+            </div>
           </div>
           <div class="form-col">
             <label>Quantidade *</label>
@@ -1529,7 +1970,14 @@ body {
           </div>
           <div class="form-col">
             <label>País</label>
-            <input type="text" id="vendaCountry" placeholder="BR, US, etc.">
+            <div class="country-select-wrapper">
+              <input type="hidden" id="vendaCountry" value="BR">
+              <input type="text" class="country-search-input" id="vendaCountry_display" placeholder="🌍 Selecionar país..." readonly onclick="toggleCountryDropdown('vendaCountry')" value="🇧🇷 Brasil">
+              <div class="country-dropdown" id="vendaCountry_dropdown">
+                <div class="country-search-box"><input type="text" placeholder="🔍 Buscar país..." oninput="filterCountries('vendaCountry',this.value)" id="vendaCountry_filter" onclick="event.stopPropagation()"></div>
+                <div class="country-options-list" id="vendaCountry_list"></div>
+              </div>
+            </div>
           </div>
         </div>
         <div class="form-row">
@@ -1565,12 +2013,14 @@ body {
           </div>
           <div class="form-col">
             <label>País</label>
-            <select id="certCountry">
-              <option value="BR">Brasil</option>
-              <option value="US">EUA</option>
-              <option value="GB">Reino Unido</option>
-              <option value="Global">Global</option>
-            </select>
+            <div class="country-select-wrapper">
+              <input type="hidden" id="certCountry" value="BR">
+              <input type="text" class="country-search-input" id="certCountry_display" placeholder="🌍 Selecionar país..." readonly onclick="toggleCountryDropdown('certCountry')" value="🇧🇷 Brasil">
+              <div class="country-dropdown" id="certCountry_dropdown">
+                <div class="country-search-box"><input type="text" placeholder="🔍 Buscar país..." oninput="filterCountries('certCountry',this.value)" id="certCountry_filter" onclick="event.stopPropagation()"></div>
+                <div class="country-options-list" id="certCountry_list"></div>
+              </div>
+            </div>
           </div>
         </div>
         <div class="form-row">
@@ -1614,12 +2064,14 @@ body {
         <div class="form-row">
           <div class="form-col">
             <label>País</label>
-            <select id="chartCountry">
-              <option value="Global">Global</option>
-              <option value="BR">Brasil</option>
-              <option value="US">EUA</option>
-              <option value="GB">Reino Unido</option>
-            </select>
+            <div class="country-select-wrapper">
+              <input type="hidden" id="chartCountry" value="Global">
+              <input type="text" class="country-search-input" id="chartCountry_display" placeholder="🌍 Selecionar país..." readonly onclick="toggleCountryDropdown('chartCountry')" value="🌐 Global">
+              <div class="country-dropdown" id="chartCountry_dropdown">
+                <div class="country-search-box"><input type="text" placeholder="🔍 Buscar país..." oninput="filterCountries('chartCountry',this.value)" id="chartCountry_filter" onclick="event.stopPropagation()"></div>
+                <div class="country-options-list" id="chartCountry_list"></div>
+              </div>
+            </div>
           </div>
           <div class="form-col">
             <label>Posição (#)</label>
@@ -1661,6 +2113,13 @@ body {
       <!-- Projeto / Era -->
       <div class="form-section">
         <h3><i class="fas fa-layer-group"></i> Projetos / Eras</h3>
+        <div style="background:linear-gradient(135deg,rgba(124,58,237,.08),rgba(0,87,255,.06));border:1.5px solid rgba(124,58,237,.2);border-radius:12px;padding:14px 18px;margin-bottom:16px;font-size:13px;color:var(--dark2)">
+          <i class="fas fa-layer-group" style="color:var(--purple);margin-right:8px"></i>
+          O <b>Sistema de Eras</b> foi aprimorado! Use a aba dedicada para criar Eras com identidade visual, metas, dashboard imersivo e comparativos.
+          <button onclick="switchTab(7)" style="display:inline-flex;align-items:center;gap:6px;margin-left:10px;background:var(--purple);color:white;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer">
+            <i class="fas fa-layer-group"></i> Ir para Sistema de Eras
+          </button>
+        </div>
         <div class="form-row">
           <div class="form-col">
             <label>Nome do Projeto</label>
@@ -1668,7 +2127,7 @@ body {
           </div>
           <div class="form-col">
             <label>Era</label>
-            <input type="text" id="projEra" placeholder="Ex: Debut Era">
+            <input type="text" id="projEra" placeholder="Ex: Debut Era" list="eraDatalist" autocomplete="off">
           </div>
         </div>
         <div class="form-row">
@@ -1809,9 +2268,137 @@ body {
 
     <!-- TAB 7: PROJETOS / ERAS -->
     <div class="tab-panel" id="tab7">
-      <div class="section-title"><i class="fas fa-layer-group"></i> Projetos / Eras</div>
-      <div class="section-sub">Obras agrupadas por fase criativa do artista</div>
-      <div id="erasList"></div>
+      <div class="section-title"><i class="fas fa-layer-group"></i> Sistema de Eras</div>
+      <div class="section-sub">Ciclos criativos da carreira — timeline, métricas e comparativos</div>
+
+      <!-- Sub-nav -->
+      <div class="era-subnav">
+        <button class="era-subnav-btn active" onclick="switchEraView('timeline')" id="eraBtn-timeline"><i class="fas fa-stream"></i> Timeline</button>
+        <button class="era-subnav-btn" onclick="switchEraView('cards')" id="eraBtn-cards"><i class="fas fa-layer-group"></i> Eras</button>
+        <button class="era-subnav-btn" onclick="switchEraView('comparar')" id="eraBtn-comparar"><i class="fas fa-balance-scale"></i> Comparar</button>
+        <button class="era-subnav-btn" onclick="switchEraView('nova')" id="eraBtn-nova"><i class="fas fa-plus"></i> Nova Era</button>
+      </div>
+
+      <!-- VIEW: TIMELINE -->
+      <div id="eraView-timeline">
+        <div class="card" style="margin-bottom:20px;overflow:hidden">
+          <div class="card-title"><i class="fas fa-stream"></i> Linha do Tempo da Carreira</div>
+          <div class="era-timeline-wrap">
+            <div class="era-timeline" id="eraTimeline"></div>
+          </div>
+        </div>
+        <div id="erasList"></div>
+      </div>
+
+      <!-- VIEW: CARDS -->
+      <div id="eraView-cards" style="display:none">
+        <div id="eraCardsGrid" class="grid-3"></div>
+      </div>
+
+      <!-- VIEW: COMPARAR -->
+      <div id="eraView-comparar" style="display:none">
+        <div class="card" style="margin-bottom:20px">
+          <div class="card-title"><i class="fas fa-balance-scale"></i> Comparar Eras</div>
+          <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap">
+            <div style="flex:1;min-width:180px">
+              <label style="font-size:12px;color:var(--gray);font-weight:600;display:block;margin-bottom:6px">Era A</label>
+              <select id="compareEraA" onchange="renderEraComparison()" style="width:100%;padding:10px 12px;border-radius:10px;border:1.5px solid var(--gray3);font-family:var(--font-body);font-size:13px;background:var(--white)"></select>
+            </div>
+            <div style="flex:1;min-width:180px">
+              <label style="font-size:12px;color:var(--gray);font-weight:600;display:block;margin-bottom:6px">Era B</label>
+              <select id="compareEraB" onchange="renderEraComparison()" style="width:100%;padding:10px 12px;border-radius:10px;border:1.5px solid var(--gray3);font-family:var(--font-body);font-size:13px;background:var(--white)"></select>
+            </div>
+          </div>
+          <div id="eraCompareResult"></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="fas fa-chart-line"></i> Crescimento Acumulado — Primeiros 90 dias</div>
+          <div class="chart-container"><canvas id="chartEraCompare"></canvas></div>
+        </div>
+      </div>
+
+      <!-- VIEW: NOVA ERA -->
+      <div id="eraView-nova" style="display:none">
+        <div class="card">
+          <div class="card-title"><i class="fas fa-plus-circle"></i> Criar Nova Era</div>
+          <div class="form-row">
+            <div><label>Nome da Era *</label><input type="text" id="eraFormNome" placeholder="Ex: Debut Era, COSMOS Era"></div>
+            <div><label>Subtítulo / Slogan</label><input type="text" id="eraFormSub" placeholder="Ex: O início de tudo"></div>
+          </div>
+          <div class="form-row-3">
+            <div><label>Início</label><input type="date" id="eraFormInicio"></div>
+            <div><label>Fim (opcional)</label><input type="date" id="eraFormFim"></div>
+            <div>
+              <label>Status</label>
+              <select id="eraFormStatus" style="width:100%;padding:10px 12px;border-radius:10px;border:1.5px solid var(--gray3);font-family:var(--font-body);font-size:13px">
+                <option value="ativa">Ativa</option>
+                <option value="planejada">Planejada</option>
+                <option value="encerrada">Encerrada</option>
+                <option value="pausada">Pausada</option>
+              </select>
+            </div>
+          </div>
+          <div style="margin-bottom:16px"><label>Descrição / Conceito</label><textarea id="eraFormDesc" rows="3" placeholder="Descreva o conceito criativo desta Era..." style="width:100%;padding:10px 12px;border-radius:10px;border:1.5px solid var(--gray3);font-family:var(--font-body);font-size:13px;resize:vertical"></textarea></div>
+          <div class="form-row-3">
+            <div><label>Cor Primária</label><div style="display:flex;align-items:center;gap:8px"><input type="color" id="eraFormCor1" value="#7C3AED" style="width:44px;height:44px;border-radius:8px;border:none;cursor:pointer"><input type="text" id="eraFormCor1Hex" value="#7C3AED" placeholder="#7C3AED" oninput="document.getElementById('eraFormCor1').value=this.value" style="flex:1;padding:10px 12px;border-radius:10px;border:1.5px solid var(--gray3);font-family:var(--font-mono);font-size:12px"></div></div>
+            <div><label>Cor Secundária</label><div style="display:flex;align-items:center;gap:8px"><input type="color" id="eraFormCor2" value="#F59E0B" style="width:44px;height:44px;border-radius:8px;border:none;cursor:pointer"><input type="text" id="eraFormCor2Hex" value="#F59E0B" placeholder="#F59E0B" oninput="document.getElementById('eraFormCor2').value=this.value" style="flex:1;padding:10px 12px;border-radius:10px;border:1.5px solid var(--gray3);font-family:var(--font-mono);font-size:12px"></div></div>
+            <div><label>Meta de Streams</label><input type="number" id="eraFormMeta" placeholder="Ex: 500000000"></div>
+          </div>
+          <button class="btn-save purple" onclick="addEra()"><i class="fas fa-layer-group"></i> Criar Era</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ERA IMMERSIVE DASHBOARD OVERLAY -->
+    <div class="era-dashboard" id="eraDashboard">
+      <div class="era-dash-bg" id="eraDashBg"></div>
+      <div class="era-dash-overlay"></div>
+      <div class="era-dash-container">
+        <div class="era-dash-header">
+          <button class="era-dash-back" onclick="closeEraDashboard()"><i class="fas fa-arrow-left"></i> Voltar</button>
+          <div class="era-dash-logo" id="eraDashName">—</div>
+          <div class="era-dash-sub" id="eraDashSub"></div>
+          <div class="era-dash-status" id="eraDashStatus"></div>
+        </div>
+
+        <!-- KPIs -->
+        <div class="era-dash-kpis" id="eraDashKpis"></div>
+
+        <!-- Meta Progress -->
+        <div class="era-dash-section" id="eraDashMetaSection" style="display:none">
+          <div class="era-dash-section-title"><i class="fas fa-bullseye" style="color:var(--gold)"></i> Progresso da Meta</div>
+          <div style="margin-bottom:6px;display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,.5)">
+            <span id="eraDashMetaLabel"></span><span id="eraDashMetaPct"></span>
+          </div>
+          <div style="height:8px;background:rgba(255,255,255,.1);border-radius:4px;overflow:hidden">
+            <div id="eraDashMetaBar" style="height:100%;border-radius:4px;transition:width 1s"></div>
+          </div>
+        </div>
+
+        <!-- Obras -->
+        <div class="era-dash-section">
+          <div class="era-dash-section-title"><i class="fas fa-music"></i> Obras da Era</div>
+          <div class="grid-4" id="eraDashObras" style="gap:12px"></div>
+        </div>
+
+        <!-- Charts -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+          <div class="era-dash-section">
+            <div class="era-dash-section-title"><i class="fas fa-chart-bar"></i> Streams por Obra</div>
+            <div class="chart-container"><canvas id="chartEraObras"></canvas></div>
+          </div>
+          <div class="era-dash-section">
+            <div class="era-dash-section-title"><i class="fas fa-chart-line"></i> Evolução de Streams</div>
+            <div class="chart-container"><canvas id="chartEraEvolucao"></canvas></div>
+          </div>
+        </div>
+
+        <!-- Insights da Era -->
+        <div class="era-dash-section">
+          <div class="era-dash-section-title"><i class="fas fa-lightbulb" style="color:var(--gold)"></i> Insights da Era</div>
+          <div id="eraDashInsights"></div>
+        </div>
+      </div>
     </div>
 
     <!-- TAB 8: REDES SOCIAIS -->
@@ -1928,55 +2515,243 @@ body {
       </div>
     </div>
 
-    <!-- TAB 10: GRAVADORA / GLOBAL -->
+    <!-- TAB 10: CHARTS -->
     <div class="tab-panel" id="tab10">
-      <div class="section-title"><i class="fas fa-building"></i> Gravadora / Visão Global</div>
-      <div class="section-sub">Gestão de múltiplos artistas — visão consolidada do elenco</div>
-
-      <!-- Label KPIs bar -->
-      <div class="label-kpi-bar" id="labelKpiBar" style="margin-bottom:24px"></div>
-
-      <!-- Milestone Alerts -->
-      <div id="milestoneAlerts" style="margin-bottom:20px"></div>
-
-      <!-- Artists Grid + Ranking -->
-      <div class="grid-2" style="margin-bottom:20px">
-        <div class="card">
-          <div class="card-title"><i class="fas fa-users"></i> Elenco de Artistas</div>
-          <div id="artistsGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px"></div>
-          <button class="label-add-artist-btn" onclick="openNewArtistModal()">
-            <i class="fas fa-plus"></i> Adicionar Artista ao Elenco
-          </button>
-        </div>
-        <div class="card">
-          <div class="card-title"><i class="fas fa-trophy"></i> Ranking de Performance</div>
-          <div id="artistRanking"></div>
-        </div>
-      </div>
-
-      <!-- Portfolio Charts -->
-      <div class="grid-2" style="margin-bottom:20px">
-        <div class="card">
-          <div class="card-title"><i class="fas fa-chart-pie"></i> Streams por Artista</div>
-          <div class="chart-container" style="max-width:300px;margin:0 auto"><canvas id="chartLabelDoughnut"></canvas></div>
-        </div>
-        <div class="card">
-          <div class="card-title"><i class="fas fa-chart-bar"></i> Comparativo de Certificações</div>
-          <div class="chart-container"><canvas id="chartLabelCerts"></canvas></div>
-        </div>
-      </div>
-
-      <!-- Side-by-side comparison -->
+      <div class="section-title"><i class="fas fa-list-ol"></i> Charts — Top Singles por Posição</div>
+      <div class="section-sub">Ranking por peak position · ordenação secundária por semanas, unidades e streams</div>
       <div class="card" style="margin-bottom:20px">
-        <div class="card-title"><i class="fas fa-balance-scale"></i> Comparativo Detalhado</div>
+        <div class="db-toolbar">
+          <div style="display:flex;align-items:center;gap:6px;flex:1;min-width:200px">
+            <i class="fas fa-search" style="color:var(--gray);font-size:13px"></i>
+            <input class="db-search-input" style="width:100%" id="chartsSearch" placeholder="Buscar música..." oninput="renderTab10()">
+          </div>
+          <select class="db-filter-select" id="chartsFilterCountry" onchange="renderTab10()">
+            <option value="">🌍 Todos os países</option>
+          </select>
+          <select class="db-filter-select" id="chartsFilterYear" onchange="renderTab10()">
+            <option value="">📅 Todos os anos</option>
+          </select>
+          <select class="db-filter-select" id="chartsFilterEra" onchange="renderTab10()">
+            <option value="">🎭 Todas as eras</option>
+          </select>
+          <div class="db-sort-group">
+            <span class="db-sort-label">Ordenar:</span>
+            <button class="db-sort-btn active" id="chartsSortPeak" onclick="setChartsSort('peak')"><i class="fas fa-trophy"></i> Peak</button>
+            <button class="db-sort-btn" id="chartsSortWeeks" onclick="setChartsSort('weeks')"><i class="fas fa-calendar-week"></i> Semanas</button>
+            <button class="db-sort-btn" id="chartsSortStreams" onclick="setChartsSort('streams')"><i class="fas fa-wave-square"></i> Streams</button>
+            <button class="db-sort-btn" id="chartsSortUnits" onclick="setChartsSort('units')"><i class="fas fa-compact-disc"></i> Unidades</button>
+          </div>
+        </div>
         <div class="table-wrapper">
-          <table class="data-table" id="labelCompareTable">
+          <table class="data-table" id="chartsTable">
             <thead><tr>
-              <th>Artista</th><th>País</th><th>Streams Totais</th><th>Vendas Equiv.</th><th>Certificações</th><th>Charts #1</th><th>Obras</th><th>Influência</th>
+              <th style="width:44px">#</th>
+              <th>Música</th>
+              <th>Tipo</th>
+              <th>Peak</th>
+              <th>Semanas</th>
+              <th>Streams</th>
+              <th>Unidades</th>
+              <th>Certificação</th>
+              <th>Era</th>
             </tr></thead>
-            <tbody id="labelCompareBody"></tbody>
+            <tbody id="chartsTableBody"></tbody>
           </table>
         </div>
+        <div class="db-pagination" id="chartsPagination"></div>
+      </div>
+    </div>
+
+    <!-- TAB 11: DADOS GERAIS -->
+    <div class="tab-panel" id="tab11">
+      <div class="section-title"><i class="fas fa-globe"></i> Dados Gerais — Visão Macro</div>
+      <div class="section-sub">Resumo global de carreira · distribuição por mercado · evolução por era</div>
+      <div id="macroKpiGrid" class="macro-kpi-grid"></div>
+      <div class="grid-2" style="margin-bottom:20px">
+        <div class="card">
+          <div class="card-title"><i class="fas fa-chart-pie"></i> Distribuição por Mercado</div>
+          <div class="table-wrapper">
+            <table class="data-table" id="marketTable">
+              <thead><tr><th>País</th><th>Streams</th><th>% Total</th><th>Receita Est.</th><th>#1 Hits</th></tr></thead>
+              <tbody id="marketTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="fas fa-chart-bar"></i> Streams por Era</div>
+          <div class="chart-container"><canvas id="chartEraStreams"></canvas></div>
+        </div>
+      </div>
+      <div class="grid-2" style="margin-bottom:20px">
+        <div class="card">
+          <div class="card-title"><i class="fas fa-medal"></i> Evolução de Certificações</div>
+          <div class="chart-container"><canvas id="chartCertEvolution"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="fas fa-chart-area"></i> Crescimento Acumulado de Streams</div>
+          <div class="chart-container"><canvas id="chartGrowthCumulative"></canvas></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><i class="fas fa-table"></i> Resumo por Plataforma</div>
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead><tr><th>Plataforma</th><th>Streams Totais</th><th>% Share</th><th>Unidades Equiv.</th></tr></thead>
+            <tbody id="platformSummaryBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 12: RANKING ABSOLUTO DE SINGLES -->
+    <div class="tab-panel" id="tab12">
+      <div class="section-title"><i class="fas fa-fire"></i> Ranking Absoluto — Singles</div>
+      <div class="section-sub">Ordenado por consumo real (streams + vendas) · independente de posição em chart</div>
+      <div class="card" style="margin-bottom:20px">
+        <div class="db-toolbar">
+          <div style="display:flex;align-items:center;gap:6px;flex:1;min-width:200px">
+            <i class="fas fa-search" style="color:var(--gray);font-size:13px"></i>
+            <input class="db-search-input" style="width:100%" id="rankingSearch" placeholder="Buscar música..." oninput="renderTab12()">
+          </div>
+          <div class="db-sort-group">
+            <span class="db-sort-label">Ordenar:</span>
+            <button class="db-sort-btn active" id="rankingSortStreams" onclick="setRankingSort('streams')"><i class="fas fa-wave-square"></i> Streams</button>
+            <button class="db-sort-btn" id="rankingSortUnits" onclick="setRankingSort('units')"><i class="fas fa-compact-disc"></i> Unidades</button>
+            <button class="db-sort-btn" id="rankingSortPeak" onclick="setRankingSort('peak')"><i class="fas fa-trophy"></i> Peak</button>
+            <button class="db-sort-btn" id="rankingSortDate" onclick="setRankingSort('date')"><i class="fas fa-calendar"></i> Mais Recente</button>
+          </div>
+          <div class="db-sort-group">
+            <span class="db-sort-label">Filtrar:</span>
+            <button class="db-sort-btn" id="rankingFilter1" onclick="toggleRankingFilter('top1')"><i class="fas fa-trophy"></i> Só #1</button>
+            <button class="db-sort-btn" id="rankingFilterCert" onclick="toggleRankingFilter('cert')"><i class="fas fa-medal"></i> Certificados</button>
+          </div>
+        </div>
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead><tr>
+              <th style="width:44px">#</th>
+              <th>Música</th>
+              <th>Lançamento</th>
+              <th>Streams</th>
+              <th>Unidades</th>
+              <th>Peak</th>
+              <th>Semanas</th>
+              <th>Certificação</th>
+            </tr></thead>
+            <tbody id="rankingTableBody"></tbody>
+          </table>
+        </div>
+        <div class="db-pagination" id="rankingPagination"></div>
+      </div>
+    </div>
+
+    <!-- TAB 13: RANKING DE ÁLBUNS -->
+    <div class="tab-panel" id="tab13">
+      <div class="section-title"><i class="fas fa-compact-disc"></i> Ranking de Álbuns</div>
+      <div class="section-sub">Ordenado por consumo total (SPS = Streams + Physical Sales + Digital Sales)</div>
+      <div class="card" style="margin-bottom:20px">
+        <div class="db-toolbar">
+          <div style="display:flex;align-items:center;gap:6px;flex:1;min-width:200px">
+            <i class="fas fa-search" style="color:var(--gray);font-size:13px"></i>
+            <input class="db-search-input" style="width:100%" id="albumSearch" placeholder="Buscar álbum..." oninput="renderTab13()">
+          </div>
+          <div class="db-sort-group">
+            <span class="db-sort-label">Ordenar:</span>
+            <button class="db-sort-btn active" id="albumSortSps" onclick="setAlbumSort('sps')"><i class="fas fa-star"></i> SPS</button>
+            <button class="db-sort-btn" id="albumSortStreams" onclick="setAlbumSort('streams')"><i class="fas fa-wave-square"></i> Streams</button>
+            <button class="db-sort-btn" id="albumSortSales" onclick="setAlbumSort('sales')"><i class="fas fa-shopping-bag"></i> Vendas</button>
+            <button class="db-sort-btn" id="albumSortDate" onclick="setAlbumSort('date')"><i class="fas fa-calendar"></i> Mais Recente</button>
+          </div>
+        </div>
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead><tr>
+              <th style="width:44px">#</th>
+              <th>Álbum / EP</th>
+              <th>Lançamento</th>
+              <th>Streams</th>
+              <th>Vendas Físicas</th>
+              <th>Vendas Digitais</th>
+              <th>SPS Total</th>
+              <th style="width:160px">Barras SPS</th>
+              <th>Certificação</th>
+            </tr></thead>
+            <tbody id="albumTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 14: AIRPLAY -->
+    <div class="tab-panel" id="tab14">
+      <div class="section-title"><i class="fas fa-radio"></i> Airplay — Execuções em Rádio</div>
+      <div class="section-sub">Gerado automaticamente a partir de streams, vendas e charts · Sem necessidade de entrada manual</div>
+
+      <div style="background:linear-gradient(135deg,rgba(124,58,237,.08),rgba(0,87,255,.06));border:1.5px solid rgba(124,58,237,.2);border-radius:14px;padding:14px 18px;margin-bottom:24px;font-size:13px;color:var(--dark2);display:flex;align-items:center;gap:10px">
+        <i class="fas fa-robot" style="color:var(--purple);font-size:20px"></i>
+        <span>Modelo preditivo calibrado com benchmarks reais do mercado musical. Todos os dados são gerados automaticamente a partir dos seus streams e vendas.</span>
+      </div>
+
+      <!-- Filtro de obra -->
+      <div class="card" style="margin-bottom:20px">
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <label style="font-size:12px;color:var(--gray);font-weight:600">Obra:</label>
+          <select id="airplayObraFilter" onchange="renderTab14()" style="padding:8px 12px;border-radius:10px;border:1.5px solid var(--gray3);font-family:var(--font-body);font-size:13px;min-width:200px">
+            <option value="">Todas as obras (agregado)</option>
+          </select>
+          <label style="font-size:12px;color:var(--gray);font-weight:600">Modelo:</label>
+          <select id="airplaySensibilidade" onchange="renderTab14()" style="padding:8px 12px;border-radius:10px;border:1.5px solid var(--gray3);font-family:var(--font-body);font-size:13px">
+            <option value="1.0">Padrão</option>
+            <option value="0.7">Conservador</option>
+            <option value="1.4">Otimista</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- KPIs Airplay -->
+      <div class="airplay-kpi-grid" id="airplayKpis" style="margin-bottom:20px"></div>
+
+      <!-- Distribuição por tipo de emissora -->
+      <div class="grid-2" style="margin-bottom:20px">
+        <div class="card">
+          <div class="card-title"><i class="fas fa-broadcast-tower"></i> Distribuição por Tipo de Emissora</div>
+          <div id="airplayTipoBar" style="margin-bottom:14px"></div>
+          <div id="airplayTipoLegend"></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="fas fa-clock"></i> Distribuição por Faixa Horária</div>
+          <div class="chart-container" style="max-width:260px;margin:0 auto"><canvas id="chartAirplayHorario"></canvas></div>
+        </div>
+      </div>
+
+      <!-- Curva de Adoção -->
+      <div class="card" style="margin-bottom:20px">
+        <div class="card-title"><i class="fas fa-chart-area"></i> Curva de Adoção Radiofônica</div>
+        <div class="chart-container"><canvas id="chartAirplayAdocao"></canvas></div>
+      </div>
+
+      <!-- Top emissoras -->
+      <div class="grid-2" style="margin-bottom:20px">
+        <div class="card">
+          <div class="card-title"><i class="fas fa-star"></i> Top Emissoras por Execuções</div>
+          <div id="airplayTopStations"></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="fas fa-chart-bar"></i> Execuções por Obra</div>
+          <div class="chart-container"><canvas id="chartAirplayObras"></canvas></div>
+        </div>
+      </div>
+
+      <!-- Contribuição para unidades equivalentes -->
+      <div class="card" style="margin-bottom:20px">
+        <div class="card-title"><i class="fas fa-calculator"></i> Contribuição do Airplay para Unidades Equivalentes</div>
+        <div id="airplayEquivUnits"></div>
+      </div>
+
+      <!-- Peaks de Airplay -->
+      <div class="card">
+        <div class="card-title"><i class="fas fa-trophy"></i> Peaks de Airplay Gerados Automaticamente</div>
+        <div id="airplayPeaksTable"></div>
       </div>
     </div>
 
@@ -2028,13 +2803,14 @@ body {
     <div class="form-row">
       <div class="form-col">
         <label>País</label>
-        <select id="newArtistCountry">
-          <option value="BR">🇧🇷 Brasil</option>
-          <option value="US">🇺🇸 EUA</option>
-          <option value="GB">🇬🇧 Reino Unido</option>
-          <option value="MX">🇲🇽 México</option>
-          <option value="AR">🇦🇷 Argentina</option>
-        </select>
+        <div class="country-select-wrapper">
+          <input type="hidden" id="newArtistCountry" value="BR">
+          <input type="text" class="country-search-input" id="newArtistCountry_display" placeholder="🌍 Selecionar país..." readonly onclick="toggleCountryDropdown('newArtistCountry')" value="🇧🇷 Brasil">
+          <div class="country-dropdown" id="newArtistCountry_dropdown">
+            <div class="country-search-box"><input type="text" placeholder="🔍 Buscar país..." oninput="filterCountries('newArtistCountry',this.value)" id="newArtistCountry_filter" onclick="event.stopPropagation()"></div>
+            <div class="country-options-list" id="newArtistCountry_list"></div>
+          </div>
+        </div>
       </div>
       <div class="form-col">
         <label>Gênero Principal</label>
@@ -2089,6 +2865,7 @@ let state = {
   chartPositions: [],
   records: [],
   projetos: [],
+  eras: [],
   covers: {},
   artists: [],
   importLogs: []
@@ -2149,7 +2926,7 @@ function doLogout() {
   localStorage.removeItem(STORAGE_KEY);
   document.getElementById('dashboardScreen').style.display = 'none';
   document.getElementById('loginScreen').style.display = 'flex';
-  state = { user: {name:'RPG', email:'rpg@music.com', country:'BR'}, obras:[], streams:[], vendas:[], certificacoes:[], chartPositions:[], records:[], projetos:[], covers:{}, artists:[], importLogs:[] };
+  state = { user: {name:'RPG', email:'rpg@music.com', country:'BR'}, obras:[], streams:[], vendas:[], certificacoes:[], chartPositions:[], records:[], projetos:[], eras:[], covers:{}, artists:[], importLogs:[] };
 }
 
 function showDashboard() {
@@ -2159,6 +2936,7 @@ function showDashboard() {
   if (!state.covers) state.covers = {};
   if (!state.artists) state.artists = [];
   if (!state.importLogs) state.importLogs = [];
+  if (!state.eras) state.eras = [];
   updateObraSelects();
   updateLabelSelector();
   updateAll();
@@ -2275,9 +3053,15 @@ function generateDemoData() {
     { id: 'pr4', name: 'Colab com DJ XYZ', era: 'COSMOS Era', tipo: 'Feat / Single', date: '2024-05-20' },
   ];
 
+  const eras = [
+    { id: 'e1', nome: 'Debut Era', subtitulo: 'O início de tudo', dataInicio: '2023-05-01', dataFim: '2023-12-31', status: 'encerrada', descricao: 'A primeira fase da carreira — marcada por sonoridade pop luminosa e apresentação ao público.', corPrimaria: '#0057FF', corSecundaria: '#00D2FF', corAcento: '#ffffff', metaStreams: 200000000 },
+    { id: 'e2', nome: 'COSMOS Era', subtitulo: 'Onde o universo nos une', dataInicio: '2024-02-28', dataFim: '2024-12-31', status: 'encerrada', descricao: 'Era marcada pelo lançamento do álbum COSMOS e a primeira turnê nacional — consolidação como artista mainstream.', corPrimaria: '#7C3AED', corSecundaria: '#F59E0B', corAcento: '#F59E0B', metaStreams: 500000000 },
+    { id: 'e3', nome: 'HYPERSPEED Era', subtitulo: 'Velocidade além da luz', dataInicio: '2025-01-20', dataFim: null, status: 'ativa', descricao: 'A era atual — sonoridade futurista, world tour e expansão internacional para novos territórios.', corPrimaria: '#10B981', corSecundaria: '#00D2FF', corAcento: '#F59E0B', metaStreams: 1000000000 },
+  ];
+
   return {
     user: { name: 'RPG', email: 'rpg@music.com', country: 'BR' },
-    obras, streams, vendas, certificacoes, chartPositions, records, projetos,
+    obras, streams, vendas, certificacoes, chartPositions, records, projetos, eras,
     covers: {},
     artists: [
       { id: 'a_demo1', name: 'Luna Vox', country: 'BR', genre: 'Pop/R&B', photo: null, totalStreams: 320000000, totalCerts: 4, top1s: 2, obras_count: 6 },
@@ -2388,11 +3172,15 @@ function updateKPIs() {
   document.getElementById('kpiCerts').textContent = tc;
   document.getElementById('kpiRecords').textContent = tr;
 
-  // Airplay (simulated)
-  const af = Math.floor(ts * 0.00003);
-  document.getElementById('airplayBR').textContent = fmtNum(Math.floor(af * 0.6));
-  document.getElementById('airplayUS').textContent = fmtNum(Math.floor(af * 0.2));
-  document.getElementById('airplayGlobal').textContent = fmtNum(af);
+  // Airplay (motor real)
+  const airplayAll = calcAllAirplay(1.0);
+  const totalExecAll = airplayAll.reduce((a,b)=>a+b.totalExec,0);
+  const totalImpressAll = airplayAll.reduce((a,b)=>a+b.totalImpress,0);
+  const brExec = Math.floor(totalExecAll * 0.6);
+  const usExec = Math.floor(totalExecAll * 0.2);
+  document.getElementById('airplayBR').textContent = fmtNum(brExec);
+  document.getElementById('airplayUS').textContent = fmtNum(usExec);
+  document.getElementById('airplayGlobal').textContent = fmtNum(totalExecAll);
 }
 
 // ============================================================
@@ -2486,6 +3274,49 @@ function renderTab0() {
 
   // Auto insights
   renderInsights(document.getElementById('autoInsights'), 5);
+
+  // Era Atual card
+  renderEraAtualCard();
+}
+
+function renderEraAtualCard() {
+  const cardEl = document.getElementById('eraAtualCard');
+  if (!cardEl) return;
+  const eras = getEraList ? getEraList() : (state.eras || []);
+  const eraAtual = eras.find(e => e.status === 'ativa') || eras[eras.length - 1];
+  if (!eraAtual) { cardEl.style.display = 'none'; return; }
+  cardEl.style.display = '';
+  const streams = getEraStreams(eraAtual.nome);
+  const obras = getEraObras(eraAtual.nome);
+  const dias = getEraDays(eraAtual);
+  const pct = eraAtual.metaStreams > 0 ? Math.min(100, Math.round(streams / eraAtual.metaStreams * 100)) : null;
+  cardEl.innerHTML = `
+    <div style="background:linear-gradient(135deg,${eraAtual.corPrimaria},${eraAtual.corSecundaria});border-radius:20px;padding:24px;color:white;position:relative;overflow:hidden;cursor:pointer" onclick="switchTab(7);setTimeout(()=>openEraDashboard('${eraAtual.id}'),100)">
+      <div style="position:absolute;top:-30px;right:-30px;width:180px;height:180px;background:rgba(255,255,255,.05);border-radius:50%"></div>
+      <div style="position:absolute;bottom:-40px;right:60px;width:120px;height:120px;background:rgba(255,255,255,.04);border-radius:50%"></div>
+      <div style="position:relative;z-index:1">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px">
+          <div>
+            <div style="font-size:10px;text-transform:uppercase;letter-spacing:2px;opacity:.6;margin-bottom:4px"><i class="fas fa-layer-group" style="margin-right:5px"></i> Era Atual</div>
+            <div style="font-family:var(--font-title);font-size:24px;font-weight:900;line-height:1">${eraAtual.nome}</div>
+            ${eraAtual.subtitulo ? `<div style="font-size:12px;opacity:.6;margin-top:4px;font-style:italic">"${eraAtual.subtitulo}"</div>` : ''}
+          </div>
+          <div style="display:flex;gap:24px;flex-wrap:wrap">
+            <div style="text-align:center"><div style="font-family:var(--font-mono);font-size:22px;font-weight:800">${fmtNum(streams)}</div><div style="font-size:10px;opacity:.6;text-transform:uppercase">Streams</div></div>
+            <div style="text-align:center"><div style="font-family:var(--font-mono);font-size:22px;font-weight:800">${obras.length}</div><div style="font-size:10px;opacity:.6;text-transform:uppercase">Obras</div></div>
+            <div style="text-align:center"><div style="font-family:var(--font-mono);font-size:22px;font-weight:800">${dias}</div><div style="font-size:10px;opacity:.6;text-transform:uppercase">Dias</div></div>
+          </div>
+        </div>
+        ${pct !== null ? `
+          <div style="display:flex;justify-content:space-between;font-size:11px;opacity:.7;margin-bottom:6px"><span>Meta de Streams</span><span>${pct}%</span></div>
+          <div style="height:6px;background:rgba(255,255,255,.2);border-radius:3px;overflow:hidden">
+            <div style="height:100%;width:${pct}%;background:rgba(255,255,255,.8);border-radius:3px;transition:width 1s"></div>
+          </div>
+        ` : ''}
+        <div style="margin-top:14px;font-size:11px;opacity:.5">Clique para abrir o Dashboard da Era →</div>
+      </div>
+    </div>
+  `;
 }
 
 function renderInsights(container, max) {
@@ -2529,6 +3360,24 @@ function generateInsights() {
   if (state.obras.length > 0) {
     const lastObra = state.obras[state.obras.length-1];
     insights.push({ type:'', icon:'fas fa-compact-disc', text:`Obra recente: "${lastObra.title}" (${lastObra.tipo}) lançada em ${fmtDate(lastObra.date)}.` });
+  }
+
+  // Era insights
+  const eras = getEraList ? getEraList() : [];
+  const eraAtual = eras.find(e => e.status === 'ativa');
+  if (eraAtual) {
+    const eraS = getEraStreams(eraAtual.nome);
+    if (eraAtual.metaStreams > 0) {
+      const pct = Math.round(eraS / eraAtual.metaStreams * 100);
+      if (pct >= 100) insights.push({ type:'green', icon:'fas fa-layer-group', text:`🏆 Era "${eraAtual.nome}" atingiu 100% da meta de streams!` });
+      else if (pct >= 50) insights.push({ type:'', icon:'fas fa-layer-group', text:`🎯 Era "${eraAtual.nome}" atingiu ${pct}% da meta de streams.` });
+    }
+    // Check if era surpassed previous
+    const eraAnterior = eras.find(e => e.status === 'encerrada');
+    if (eraAnterior) {
+      const eraSAnterior = getEraStreams(eraAnterior.nome);
+      if (eraS > eraSAnterior) insights.push({ type:'green', icon:'fas fa-trophy', text:`A Era atual "${eraAtual.nome}" já superou "${eraAnterior.nome}" em streams totais!` });
+    }
   }
 
   if (insights.length === 0) {
@@ -3110,68 +3959,113 @@ function renderTab6() {
 }
 
 // ============================================================
-// TAB 7: PROJETOS / ERAS
+// TAB 7: SISTEMA DE ERAS — FULL IMPLEMENTATION
 // ============================================================
-function renderTab7() {
-  const covers = state.covers || {};
-  const eras = {};
-  state.projetos.forEach(p => {
-    const era = p.era || 'Sem Era';
-    if (!eras[era]) eras[era] = [];
-    eras[era].push(p);
-  });
 
-  // Also show obras with no project but with eras
+let currentEraView = 'timeline';
+let currentEraDashId = null;
+
+function switchEraView(view) {
+  currentEraView = view;
+  ['timeline','cards','comparar','nova'].forEach(v => {
+    document.getElementById('eraView-' + v).style.display = (v === view) ? '' : 'none';
+    document.getElementById('eraBtn-' + v).classList.toggle('active', v === view);
+  });
+  if (view === 'timeline') renderEraTimeline();
+  if (view === 'cards') renderEraCards();
+  if (view === 'comparar') renderEraCompareSelects();
+}
+
+function getEraList() {
+  // Build era list from state.eras + auto-derive from obra.era fields if needed
+  const eras = (state.eras || []).slice();
+  const eraNames = new Set(eras.map(e => e.nome));
   state.obras.forEach(o => {
-    if (!o.era) return;
-    const eraKey = o.era;
-    if (!eras[eraKey]) eras[eraKey] = [];
+    if (o.era && !eraNames.has(o.era)) {
+      eraNames.add(o.era);
+      eras.push({ id: 'auto_' + o.era, nome: o.era, subtitulo: '', dataInicio: o.date, dataFim: null, status: 'ativa', descricao: '', corPrimaria: '#0057FF', corSecundaria: '#7C3AED', corAcento: '#00D2FF', metaStreams: 0 });
+    }
   });
+  return eras.sort((a, b) => (a.dataInicio || '9999') < (b.dataInicio || '9999') ? -1 : 1);
+}
 
-  const colors = ['#0057FF','#7C3AED','#10B981','#F59E0B','#EF4444'];
+function getEraStreams(eraNome) {
+  return state.streams.filter(s => {
+    const obra = state.obras.find(o => o.id === s.obraId);
+    return obra && obra.era === eraNome;
+  }).reduce((a, b) => a + b.quantidade, 0);
+}
+
+function getEraObras(eraNome) {
+  return state.obras.filter(o => o.era === eraNome);
+}
+
+function getEraDays(era) {
+  const start = era.dataInicio ? new Date(era.dataInicio) : null;
+  const end = era.dataFim ? new Date(era.dataFim) : new Date();
+  if (!start) return 0;
+  return Math.max(0, Math.floor((end - start) / 86400000));
+}
+
+function renderTab7() {
+  // Init era view
+  switchEraView(currentEraView || 'timeline');
+}
+
+function renderEraTimeline() {
+  const eras = getEraList();
+  const tl = document.getElementById('eraTimeline');
+  if (!eras.length) { tl.innerHTML = '<div style="padding:30px;color:var(--gray);font-size:13px">Nenhuma era cadastrada. Crie uma Era para visualizar a timeline.</div>'; renderEraGrouped(); return; }
+
+  tl.innerHTML = eras.map((era, i) => {
+    const streams = getEraStreams(era.nome);
+    const dotClass = era.status === 'ativa' ? 'active-era' : era.status === 'planejada' ? 'planejada' : 'encerrada';
+    const cardClass = era.status === 'ativa' ? 'active-card' : '';
+    const statusLabel = { ativa: '🟢 Ativa', encerrada: '⚫ Encerrada', planejada: '🔵 Planejada', pausada: '🟡 Pausada' }[era.status] || era.status;
+    return `
+      <div class="era-timeline-item" onclick="openEraDashboard('${era.id}')">
+        <div class="era-timeline-dot ${dotClass}" style="background:${era.corPrimaria};box-shadow:0 0 0 3px ${era.corPrimaria}"></div>
+        <div class="era-tl-card ${cardClass}" style="${era.status==='ativa'?'border-color:'+era.corPrimaria:''}">
+          <div style="font-size:10px;color:var(--gray);margin-bottom:4px">${era.dataInicio ? new Date(era.dataInicio).getFullYear() : '—'}</div>
+          <div style="font-family:var(--font-title);font-size:13px;font-weight:800;color:var(--dark);margin-bottom:4px">${era.nome}</div>
+          <div style="font-size:10px;color:var(--gray);margin-bottom:6px">${statusLabel}</div>
+          <div style="font-family:var(--font-mono);font-size:12px;font-weight:700;color:${era.corPrimaria}">${fmtNum(streams)}</div>
+          <div style="font-size:9px;color:var(--gray)">streams</div>
+        </div>
+      </div>
+      ${i < eras.length - 1 ? '<div style="width:40px;height:3px;background:linear-gradient(90deg,'+era.corPrimaria+','+eras[i+1].corPrimaria+');align-self:flex-start;margin-top:60px;flex-shrink:0"></div>' : ''}
+    `;
+  }).join('');
+
+  renderEraGrouped();
+}
+
+function renderEraGrouped() {
+  const eras = getEraList();
+  const covers = state.covers || {};
   let html = '';
-  Object.entries(eras).forEach(([era, projs], ei) => {
-    const totalStreamsEra = state.streams.filter(s => {
-      const obra = state.obras.find(o=>o.id===s.obraId);
-      return obra && obra.era === era;
-    }).reduce((a,b)=>a+b.quantidade,0);
-
-    // Get obras for this era for cover display
-    const obrasEra = state.obras.filter(o => o.era === era);
-
+  eras.forEach(era => {
+    const streams = getEraStreams(era.nome);
+    const obras = getEraObras(era.nome);
+    if (!obras.length && !(state.projetos||[]).some(p=>p.era===era.nome)) return;
     html += `<div style="margin-bottom:32px">
-      <div style="font-family:var(--font-title);font-size:18px;font-weight:800;color:var(--dark);margin-bottom:14px;display:flex;align-items:center;gap:8px">
-        <div style="width:14px;height:14px;border-radius:50%;background:${colors[ei%colors.length]}"></div>
-        ${era}
-        <span class="badge badge-blue" style="margin-left:8px">${fmtNum(totalStreamsEra)} streams</span>
-        ${obrasEra.length > 0 ? `<span class="badge badge-purple">${obrasEra.length} obra(s)</span>` : ''}
+      <div style="font-family:var(--font-title);font-size:18px;font-weight:800;color:var(--dark);margin-bottom:14px;display:flex;align-items:center;gap:10px">
+        <div style="width:12px;height:12px;border-radius:50%;background:${era.corPrimaria}"></div>
+        ${era.nome}
+        ${era.subtitulo ? `<span style="font-size:12px;font-weight:400;color:var(--gray);font-style:italic">${era.subtitulo}</span>` : ''}
+        <span class="badge badge-blue" style="margin-left:4px">${fmtNum(streams)} streams</span>
+        <span class="badge badge-purple">${obras.length} obra(s)</span>
+        <button onclick="openEraDashboard('${era.id}')" style="margin-left:auto;background:${era.corPrimaria};color:white;border:none;border-radius:8px;padding:6px 14px;font-size:11px;font-weight:700;cursor:pointer">
+          <i class="fas fa-chart-bar"></i> Dashboard
+        </button>
       </div>
       <div class="grid-4">
-        ${projs.map(p => {
-          // Find an obra from this era to get a cover
-          const relObra = obrasEra.find(o => covers[o.id]);
-          const coverSrc = relObra ? covers[relObra.id] : null;
-          return `
-          <div class="era-card">
-            <div class="era-header" style="background:linear-gradient(135deg,${colors[ei%colors.length]},${colors[(ei+1)%colors.length]})">
-              ${coverSrc ? `<img src="${coverSrc}" alt="Capa">` : '🎵'}
-            </div>
-            <div class="era-body">
-              <div class="era-name">${p.name||'—'}</div>
-              <div class="era-meta">${p.tipo||'—'} · ${fmtDate(p.date)}</div>
-              <div class="era-stats">
-                <span class="badge badge-blue">${p.tipo||'—'}</span>
-              </div>
-            </div>
-          </div>`;
-        }).join('')}
-        ${obrasEra.map(o => {
-          const coverSrc = covers[o.id];
+        ${obras.map(o => {
           const obraStreams = state.streams.filter(s=>s.obraId===o.id).reduce((a,b)=>a+b.quantidade,0);
-          return `
-          <div class="era-card">
-            <div class="era-header" style="background:linear-gradient(135deg,${colors[ei%colors.length]}99,${colors[(ei+1)%colors.length]}99)">
-              ${coverSrc ? `<img src="${coverSrc}" alt="${o.title}">` : '🎵'}
+          const cover = covers[o.id];
+          return `<div class="era-card">
+            <div class="era-header" style="background:linear-gradient(135deg,${era.corPrimaria},${era.corSecundaria})">
+              ${cover ? `<img src="${cover}" alt="${o.title}">` : '<span style="font-size:32px">🎵</span>'}
             </div>
             <div class="era-body">
               <div class="era-name">${o.title}</div>
@@ -3186,9 +4080,301 @@ function renderTab7() {
       </div>
     </div>`;
   });
-
-  document.getElementById('erasList').innerHTML = html || '<div class="card" style="text-align:center;padding:40px;color:var(--gray)"><i class="fas fa-layer-group" style="font-size:40px;margin-bottom:12px;color:var(--gray2)"></i><br>Nenhum projeto registrado ainda.</div>';
+  document.getElementById('erasList').innerHTML = html || '<div class="card" style="text-align:center;padding:40px;color:var(--gray)"><i class="fas fa-layer-group" style="font-size:40px;margin-bottom:12px;color:var(--gray2)"></i><br>Nenhuma obra com Era cadastrada ainda.</div>';
 }
+
+function renderEraCards() {
+  const eras = getEraList();
+  const grid = document.getElementById('eraCardsGrid');
+  if (!eras.length) { grid.innerHTML = '<div class="card" style="text-align:center;padding:40px;color:var(--gray)">Crie Eras na aba "Nova Era" para visualizá-las aqui.</div>'; return; }
+
+  grid.innerHTML = eras.map(era => {
+    const streams = getEraStreams(era.nome);
+    const obras = getEraObras(era.nome);
+    const dias = getEraDays(era);
+    const pct = era.metaStreams > 0 ? Math.min(100, Math.round(streams / era.metaStreams * 100)) : null;
+    const statusColors = { ativa: '#10B981', encerrada: '#64748B', planejada: '#0057FF', pausada: '#F59E0B' };
+    const statusLabels = { ativa: 'Ativa', encerrada: 'Encerrada', planejada: 'Planejada', pausada: 'Pausada' };
+    return `
+      <div class="era-big-card" onclick="openEraDashboard('${era.id}')">
+        <div class="era-big-header" style="background:linear-gradient(135deg,${era.corPrimaria},${era.corSecundaria})">
+          <div class="era-big-header-content">
+            <div class="era-big-badge" style="background:${statusColors[era.status]||'#64748B'}22;color:${statusColors[era.status]||'#64748B'};border:1px solid ${statusColors[era.status]||'#64748B'}44">${statusLabels[era.status]||era.status}</div>
+            <div class="era-big-name">${era.nome}</div>
+            ${era.subtitulo ? `<div class="era-big-sub">${era.subtitulo}</div>` : ''}
+          </div>
+        </div>
+        <div class="era-big-body">
+          <div class="era-big-kpis">
+            <div class="era-kpi-mini"><div class="era-kpi-mini-val">${fmtNum(streams)}</div><div class="era-kpi-mini-lbl">Streams</div></div>
+            <div class="era-kpi-mini"><div class="era-kpi-mini-val">${obras.length}</div><div class="era-kpi-mini-lbl">Obras</div></div>
+            <div class="era-kpi-mini"><div class="era-kpi-mini-val">${dias}</div><div class="era-kpi-mini-lbl">Dias</div></div>
+          </div>
+          ${pct !== null ? `
+            <div style="font-size:10px;color:var(--gray);display:flex;justify-content:space-between;margin-bottom:4px">
+              <span>Meta de Streams</span><span style="font-weight:700;color:${era.corPrimaria}">${pct}%</span>
+            </div>
+            <div class="era-progress-wrap"><div class="era-progress-fill" style="width:${pct}%;background:linear-gradient(90deg,${era.corPrimaria},${era.corSecundaria})"></div></div>
+          ` : ''}
+          <button class="era-action-btn" style="background:${era.corPrimaria}15;color:${era.corPrimaria};border:1px solid ${era.corPrimaria}33">
+            <i class="fas fa-chart-bar"></i> Ver Dashboard
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderEraCompareSelects() {
+  const eras = getEraList();
+  ['compareEraA','compareEraB'].forEach((id, idx) => {
+    const sel = document.getElementById(id);
+    sel.innerHTML = eras.map((e, i) => `<option value="${e.id}" ${i===idx?'selected':''}>${e.nome}</option>`).join('');
+  });
+  renderEraComparison();
+}
+
+function renderEraComparison() {
+  const idA = document.getElementById('compareEraA')?.value;
+  const idB = document.getElementById('compareEraB')?.value;
+  const eras = getEraList();
+  const eraA = eras.find(e => e.id === idA);
+  const eraB = eras.find(e => e.id === idB);
+  if (!eraA || !eraB) return;
+
+  const sA = getEraStreams(eraA.nome), sB = getEraStreams(eraB.nome);
+  const oA = getEraObras(eraA.nome).length, oB = getEraObras(eraB.nome).length;
+  const dA = getEraDays(eraA), dB = getEraDays(eraB);
+  const certA = state.certificacoes.filter(c => { const o = state.obras.find(ob=>ob.isrc===c.isrc||ob.title===c.obraTitle); return o && o.era===eraA.nome; }).length;
+  const certB = state.certificacoes.filter(c => { const o = state.obras.find(ob=>ob.isrc===c.isrc||ob.title===c.obraTitle); return o && o.era===eraB.nome; }).length;
+
+  function compareRow(label, vA, vB, fmt) {
+    const winner = vA > vB ? 'A' : vA < vB ? 'B' : 'tie';
+    return `<div class="era-compare-row">
+      <span class="era-compare-lbl">${label}</span>
+      <div style="display:flex;gap:24px">
+        <span class="era-compare-val ${winner==='A'?'era-compare-winner':winner==='B'?'era-compare-loser':''}">${fmt(vA)}</span>
+        <span class="era-compare-val ${winner==='B'?'era-compare-winner':winner==='A'?'era-compare-loser':''}">${fmt(vB)}</span>
+      </div>
+    </div>`;
+  }
+
+  // Insights
+  const diff = sA > 0 ? Math.round(Math.abs(sA - sB) / Math.min(sA, sB) * 100) : 0;
+  const winner = sA >= sB ? eraA.nome : eraB.nome;
+  const loser = sA >= sB ? eraB.nome : eraA.nome;
+  const insights = [
+    `🏆 <b>${winner}</b> superou <b>${loser}</b> em ${diff}% mais streams totais.`,
+    `⏱ <b>${dA > dB ? eraA.nome : eraB.nome}</b> teve maior duração (${Math.max(dA,dB)} dias vs ${Math.min(dA,dB)} dias).`,
+    `🎵 <b>${oA > oB ? eraA.nome : eraB.nome}</b> lançou mais obras nesta fase (${Math.max(oA,oB)} obras).`,
+    certA !== certB ? `💿 <b>${certA > certB ? eraA.nome : eraB.nome}</b> conquistou mais certificações (${Math.max(certA,certB)} vs ${Math.min(certA,certB)}).` : null,
+  ].filter(Boolean);
+
+  document.getElementById('eraCompareResult').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:start;margin-bottom:20px">
+      <div class="era-compare-col" style="border-color:${eraA.corPrimaria}">
+        <div class="era-compare-col-title" style="color:${eraA.corPrimaria}">${eraA.nome}</div>
+        ${compareRow('Streams Totais', sA, sB, fmtNum)}
+        ${compareRow('Obras', oA, oB, v => v)}
+        ${compareRow('Duração (dias)', dA, dB, v => v)}
+        ${compareRow('Certificações', certA, certB, v => v)}
+      </div>
+      <div style="display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;color:var(--gray2);padding-top:30px">VS</div>
+      <div class="era-compare-col" style="border-color:${eraB.corPrimaria}">
+        <div class="era-compare-col-title" style="color:${eraB.corPrimaria}">${eraB.nome}</div>
+        ${compareRow('Streams Totais', sB, sA, fmtNum)}
+        ${compareRow('Obras', oB, oA, v => v)}
+        ${compareRow('Duração (dias)', dB, dA, v => v)}
+        ${compareRow('Certificações', certB, certA, v => v)}
+      </div>
+    </div>
+    ${insights.map(i => `<div class="era-insight"><i class="fas fa-chart-line" style="color:var(--blue);flex-shrink:0"></i><span>${i}</span></div>`).join('')}
+  `;
+
+  // Chart: simulated cumulative streams first 90 days
+  destroyChart('chartEraCompare');
+  const labels = Array.from({length:90},(_,i)=>'Dia '+(i+1));
+  const totalA = sA, totalB = sB;
+  function growthCurve(total, days) {
+    const vals = [];
+    for (let d = 0; d < days; d++) {
+      const factor = 1 - Math.exp(-d/25);
+      vals.push(Math.round(total * factor * 0.8 + Math.random() * total * 0.02));
+    }
+    return vals;
+  }
+  const ctx = document.getElementById('chartEraCompare').getContext('2d');
+  charts['chartEraCompare'] = new Chart(ctx, {
+    type:'line',
+    data:{
+      labels,
+      datasets:[
+        { label:eraA.nome, data:growthCurve(totalA,90), borderColor:eraA.corPrimaria, backgroundColor:eraA.corPrimaria+'22', fill:true, tension:.4, pointRadius:0, borderWidth:2.5 },
+        { label:eraB.nome, data:growthCurve(totalB,90), borderColor:eraB.corPrimaria, backgroundColor:eraB.corPrimaria+'22', fill:true, tension:.4, pointRadius:0, borderWidth:2.5 },
+      ]
+    },
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'top'}}, scales:{y:{ticks:{callback:v=>fmtNum(v)},grid:{color:'#F1F5F9'}},x:{grid:{display:false},ticks:{maxTicksLimit:10}}} }
+  });
+}
+
+function openEraDashboard(eraId) {
+  const eras = getEraList();
+  const era = eras.find(e => e.id === eraId);
+  if (!era) return;
+  currentEraDashId = eraId;
+
+  const dash = document.getElementById('eraDashboard');
+  dash.classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  // Apply era colors via CSS vars
+  dash.style.setProperty('--era-primary', era.corPrimaria);
+  dash.style.setProperty('--era-secondary', era.corSecundaria);
+  dash.style.setProperty('--era-accent', era.corAcento || era.corSecundaria);
+
+  document.getElementById('eraDashName').textContent = era.nome;
+  document.getElementById('eraDashSub').textContent = era.subtitulo || era.descricao || '';
+
+  const statusLabels = { ativa: '🟢 Era Ativa', encerrada: '⚫ Era Encerrada', planejada: '🔵 Planejada', pausada: '🟡 Pausada' };
+  const statusColors = { ativa: era.corPrimaria, encerrada: '#64748B', planejada: '#0057FF', pausada: '#F59E0B' };
+  const statusEl = document.getElementById('eraDashStatus');
+  statusEl.textContent = statusLabels[era.status] || era.status;
+  statusEl.style.background = (statusColors[era.status]||'#64748B') + '33';
+  statusEl.style.color = statusColors[era.status] || '#64748B';
+  statusEl.style.border = '1px solid ' + (statusColors[era.status]||'#64748B') + '55';
+
+  const obras = getEraObras(era.nome);
+  const streams = getEraStreams(era.nome);
+  const dias = getEraDays(era);
+  const certs = state.certificacoes.filter(c => { const o = state.obras.find(ob=>ob.title===c.obraTitle); return o && o.era===era.nome; }).length;
+  const vendas = state.vendas.filter(v => { const o = state.obras.find(ob=>ob.id===v.obraId); return o && o.era===era.nome; }).reduce((a,b)=>a+b.units,0);
+
+  document.getElementById('eraDashKpis').innerHTML = [
+    ['Streams Totais', fmtNum(streams), 'fa-headphones'],
+    ['Obras', obras.length, 'fa-music'],
+    ['Dias Ativos', dias, 'fa-calendar'],
+    ['Certificações', certs, 'fa-medal'],
+    ['Vendas', fmtNum(vendas), 'fa-shopping-bag'],
+    ['Meta', era.metaStreams > 0 ? Math.round(streams/era.metaStreams*100)+'%' : '—', 'fa-bullseye'],
+  ].map(([lbl,val,icon])=>`
+    <div class="era-dash-kpi" style="border-color:${era.corPrimaria}33">
+      <div style="font-size:16px;margin-bottom:4px;color:${era.corPrimaria}"><i class="fas ${icon}"></i></div>
+      <div class="era-dash-kpi-val">${val}</div>
+      <div class="era-dash-kpi-lbl">${lbl}</div>
+    </div>
+  `).join('');
+
+  // Meta progress
+  if (era.metaStreams > 0) {
+    const pct = Math.min(100, Math.round(streams/era.metaStreams*100));
+    document.getElementById('eraDashMetaSection').style.display = '';
+    document.getElementById('eraDashMetaLabel').textContent = `${fmtNum(streams)} / ${fmtNum(era.metaStreams)} streams`;
+    document.getElementById('eraDashMetaPct').textContent = `${pct}%`;
+    document.getElementById('eraDashMetaBar').style.width = pct + '%';
+    document.getElementById('eraDashMetaBar').style.background = `linear-gradient(90deg,${era.corPrimaria},${era.corSecundaria})`;
+  } else {
+    document.getElementById('eraDashMetaSection').style.display = 'none';
+  }
+
+  // Obras
+  const covers = state.covers || {};
+  document.getElementById('eraDashObras').innerHTML = obras.length ? obras.map(o => {
+    const s = state.streams.filter(x=>x.obraId===o.id).reduce((a,b)=>a+b.quantidade,0);
+    const cover = covers[o.id];
+    return `<div class="era-obra-card">
+      ${cover ? `<img src="${cover}" style="width:100%;height:80px;object-fit:cover;border-radius:8px;margin-bottom:8px" alt="${o.title}">` : `<div style="width:100%;height:80px;border-radius:8px;background:linear-gradient(135deg,${era.corPrimaria},${era.corSecundaria});display:flex;align-items:center;justify-content:center;margin-bottom:8px;font-size:24px">🎵</div>`}
+      <div class="era-obra-card-title">${o.title}</div>
+      <div class="era-obra-card-meta">${o.tipo} · ${fmtDate(o.date)}</div>
+      <div class="era-obra-card-streams" style="color:${era.corPrimaria}">${fmtNum(s)}</div>
+    </div>`;
+  }).join('') : '<div style="color:rgba(255,255,255,.4);font-size:13px">Nenhuma obra nesta Era. Cadastre obras com o nome desta Era no campo "Era" do formulário.</div>';
+
+  // Chart: streams por obra
+  destroyChart('chartEraObras');
+  if (obras.length) {
+    const ctxO = document.getElementById('chartEraObras').getContext('2d');
+    charts['chartEraObras'] = new Chart(ctxO, {
+      type:'bar',
+      data:{
+        labels: obras.map(o => o.title.length > 12 ? o.title.slice(0,12)+'…' : o.title),
+        datasets:[{ data: obras.map(o => state.streams.filter(s=>s.obraId===o.id).reduce((a,b)=>a+b.quantidade,0)), backgroundColor: obras.map((_,i) => i===0 ? era.corPrimaria : era.corSecundaria+'99'), borderRadius:8, borderSkipped:false }]
+      },
+      options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{ticks:{callback:v=>fmtNum(v)},grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'rgba(255,255,255,.4)'}},x:{grid:{display:false},ticks:{color:'rgba(255,255,255,.4)'}}} }
+    });
+  }
+
+  // Chart: evolução de streams (últimos 60 dias, soma das obras desta era)
+  destroyChart('chartEraEvolucao');
+  const last60 = [];
+  for (let d = 59; d >= 0; d--) {
+    const dt = new Date(); dt.setDate(dt.getDate() - d);
+    const ds = dt.toISOString().split('T')[0];
+    const obraIds = new Set(obras.map(o=>o.id));
+    const dayTotal = state.streams.filter(s => s.date === ds && obraIds.has(s.obraId)).reduce((a,b)=>a+b.quantidade,0);
+    last60.push({ date: ds, v: dayTotal });
+  }
+  const ctxE = document.getElementById('chartEraEvolucao').getContext('2d');
+  const gradE = ctxE.createLinearGradient(0,0,0,200);
+  gradE.addColorStop(0, era.corPrimaria + '55');
+  gradE.addColorStop(1, era.corPrimaria + '00');
+  charts['chartEraEvolucao'] = new Chart(ctxE, {
+    type:'line',
+    data:{ labels: last60.map(d=>d.date.slice(5)), datasets:[{ data: last60.map(d=>d.v), borderColor: era.corPrimaria, backgroundColor: gradE, fill:true, tension:.4, pointRadius:0, borderWidth:2.5 }] },
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{ticks:{callback:v=>fmtNum(v),color:'rgba(255,255,255,.4)'},grid:{color:'rgba(255,255,255,.05)'}},x:{grid:{display:false},ticks:{color:'rgba(255,255,255,.4)',maxTicksLimit:8}}} }
+  });
+
+  // Insights
+  const insArr = [];
+  if (streams > 0 && era.metaStreams > 0) {
+    const pct = Math.round(streams/era.metaStreams*100);
+    if (pct >= 100) insArr.push(`🎯 <b>${era.nome}</b> atingiu 100% da meta de streams! Parabéns pelo marco.`);
+    else insArr.push(`🎯 <b>${era.nome}</b> está em ${pct}% da meta de streams (${fmtNum(streams)} de ${fmtNum(era.metaStreams)}).`);
+  }
+  if (obras.length) {
+    const topObra = obras.map(o=>({ title:o.title, s: state.streams.filter(x=>x.obraId===o.id).reduce((a,b)=>a+b.quantidade,0) })).sort((a,b)=>b.s-a.s)[0];
+    if (topObra.s > 0) insArr.push(`🏆 A obra que mais impulsionou esta Era foi <b>"${topObra.title}"</b> com ${fmtNum(topObra.s)} streams.`);
+  }
+  insArr.push(`⏱ Esta Era tem ${dias} dias de história (${era.dataInicio ? fmtDate(era.dataInicio) : '—'} → ${era.dataFim ? fmtDate(era.dataFim) : 'presente'}).`);
+  if (certs > 0) insArr.push(`💿 ${certs} certificação(ões) conquistada(s) durante esta fase.`);
+
+  document.getElementById('eraDashInsights').innerHTML = insArr.map(i => `<div class="era-insight" style="background:${era.corPrimaria}11;border-color:${era.corPrimaria}33"><i class="fas fa-lightbulb" style="color:${era.corPrimaria};flex-shrink:0"></i><span>${i}</span></div>`).join('');
+}
+
+function closeEraDashboard() {
+  document.getElementById('eraDashboard').classList.remove('open');
+  document.body.style.overflow = '';
+  currentEraDashId = null;
+  destroyChart('chartEraObras');
+  destroyChart('chartEraEvolucao');
+}
+
+function addEra() {
+  const nome = document.getElementById('eraFormNome').value.trim();
+  if (!nome) return showToast('Informe o nome da Era.', true);
+  if (!state.eras) state.eras = [];
+  state.eras.push({
+    id: 'e' + Date.now(),
+    nome,
+    subtitulo: document.getElementById('eraFormSub').value.trim(),
+    dataInicio: document.getElementById('eraFormInicio').value || today(),
+    dataFim: document.getElementById('eraFormFim').value || null,
+    status: document.getElementById('eraFormStatus').value,
+    descricao: document.getElementById('eraFormDesc').value.trim(),
+    corPrimaria: document.getElementById('eraFormCor1').value,
+    corSecundaria: document.getElementById('eraFormCor2').value,
+    corAcento: document.getElementById('eraFormCor2').value,
+    metaStreams: parseInt(document.getElementById('eraFormMeta').value) || 0,
+  });
+  saveState();
+  showToast('Era criada com sucesso!');
+  document.getElementById('eraFormNome').value = '';
+  document.getElementById('eraFormSub').value = '';
+  document.getElementById('eraFormDesc').value = '';
+  document.getElementById('eraFormMeta').value = '';
+  switchEraView('cards');
+}
+
+
 
 // ============================================================
 // TAB 8: REDES SOCIAIS
@@ -3468,6 +4654,16 @@ function updateObraSelects() {
   const selects = document.querySelectorAll('.obra-select');
   const options = state.obras.map(o => `<option value="${o.id}">${o.title} (${o.tipo})</option>`).join('');
   selects.forEach(s => { s.innerHTML = options || '<option value="">Cadastre uma obra primeiro</option>'; });
+
+  // Populate era datalist from state.eras + obras
+  const dl = document.getElementById('eraDatalist');
+  if (dl) {
+    const eraNames = new Set([
+      ...(state.eras || []).map(e => e.nome),
+      ...state.obras.map(o => o.era).filter(Boolean)
+    ]);
+    dl.innerHTML = [...eraNames].map(n => `<option value="${n}">`).join('');
+  }
 }
 
 function saveArtist() {
@@ -3487,7 +4683,7 @@ function addObra() {
     tipo: document.getElementById('obraTipo').value,
     era: document.getElementById('obraEra').value,
     date: document.getElementById('obraDate').value || today(),
-    label: document.getElementById('obraLabel').value,
+    label: '',
     genre: document.getElementById('obraGenre').value,
     isrc: document.getElementById('obraISRC').value,
     status: document.getElementById('obraStatus').value,
@@ -3669,6 +4865,388 @@ function downloadPressKit() {
 }
 
 // ============================================================
+// SISTEMA AIRPLAY — ENGINE COMPLETO
+// ============================================================
+const RADIO_STATIONS = {
+  BR: [
+    { id:'jovem_pan', name:'Jovem Pan FM', tipo:'FM', cidade:'São Paulo', alcance:'Nacional', audiencia:1200000, generos:['Pop','Funk','Eletrônico','Sertanejo','Top40'] },
+    { id:'mix_fm', name:'Mix FM', tipo:'FM', cidade:'São Paulo', alcance:'Regional', audiencia:800000, generos:['Pop','Hits','Top40'] },
+    { id:'alpha_fm', name:'Alpha FM', tipo:'FM', cidade:'São Paulo', alcance:'Regional', audiencia:500000, generos:['MPB','Rock','Adulto','Internacional'] },
+    { id:'band_fm', name:'Band FM', tipo:'FM', cidade:'Nacional', alcance:'Nacional', audiencia:900000, generos:['Sertanejo','Popular','Funk'] },
+    { id:'radio_cidade', name:'Rádio Cidade', tipo:'FM', cidade:'Rio de Janeiro', alcance:'Regional', audiencia:600000, generos:['Pop','Rock','Funk'] },
+    { id:'transamérica', name:'Transamérica FM', tipo:'FM', cidade:'Nacional', alcance:'Nacional', audiencia:700000, generos:['Rock','Pop','Jovem'] },
+    { id:'antena1', name:'Antena 1', tipo:'FM', cidade:'Nacional', alcance:'Nacional', audiencia:650000, generos:['Adulto','MPB','Internacional'] },
+    { id:'89fm', name:'89 FM', tipo:'FM', cidade:'São Paulo', alcance:'Regional', audiencia:400000, generos:['Rock','Alternativo'] },
+    { id:'nova_brasil', name:'Nova Brasil FM', tipo:'FM', cidade:'Nacional', alcance:'Nacional', audiencia:550000, generos:['MPB','Popular','Adulto'] },
+    { id:'energia', name:'Energia 97 FM', tipo:'FM', cidade:'São Paulo', alcance:'Regional', audiencia:480000, generos:['Pop','Eletrônico','Dance'] },
+    { id:'fmodia', name:'FM O Dia', tipo:'FM', cidade:'Rio de Janeiro', alcance:'Regional', audiencia:420000, generos:['Funk','Pop','Pagode'] },
+    { id:'web_hits', name:'Web Hits Brasil', tipo:'Web', cidade:'Online', alcance:'Nacional', audiencia:200000, generos:['Pop','Eletrônico','Funk','Sertanejo'] },
+    { id:'rádio_t', name:'Rádio T', tipo:'FM', cidade:'Curitiba', alcance:'Regional', audiencia:380000, generos:['Sertanejo','Popular'] },
+    { id:'comunit_br', name:'Rádios Comunitárias BR', tipo:'Comunitária', cidade:'Diversas', alcance:'Local', audiencia:80000, generos:['Popular','Sertanejo','Gospel'] },
+    { id:'sat_br', name:'Satélite BR', tipo:'Satélite', cidade:'Nacional', alcance:'Nacional', audiencia:150000, generos:['Pop','Adulto'] },
+  ],
+  US: [
+    { id:'kiis_fm', name:'KIIS FM', tipo:'FM', cidade:'Los Angeles', alcance:'Regional', audiencia:2500000, generos:['Pop','Top40','R&B'] },
+    { id:'z100', name:'Z100 NY', tipo:'FM', cidade:'New York', alcance:'Regional', audiencia:3000000, generos:['Pop','Top40'] },
+    { id:'kiss_fm_us', name:'KISS FM', tipo:'FM', cidade:'Nacional', alcance:'Nacional', audiencia:2000000, generos:['Pop','R&B','Top40','Hip-Hop'] },
+    { id:'hot997', name:'Hot 99.5', tipo:'FM', cidade:'Washington DC', alcance:'Regional', audiencia:1200000, generos:['Pop','R&B','Hip-Hop'] },
+    { id:'power106', name:'Power 106', tipo:'FM', cidade:'Los Angeles', alcance:'Regional', audiencia:1500000, generos:['Hip-Hop','R&B','Eletrônico'] },
+    { id:'web_us', name:'iHeart Radio Online', tipo:'Web', cidade:'Online', alcance:'Nacional', audiencia:800000, generos:['Pop','Rock','Country','Top40'] },
+  ],
+  GB: [
+    { id:'bbc_r1', name:'BBC Radio 1', tipo:'FM', cidade:'Londres', alcance:'Nacional', audiencia:4500000, generos:['Pop','Alternativo','Eletrônico','Top40'] },
+    { id:'kiss_uk', name:'KISS FM UK', tipo:'FM', cidade:'Londres', alcance:'Nacional', audiencia:1800000, generos:['Pop','R&B','Eletrônico','Dance'] },
+    { id:'capital_uk', name:'Capital FM', tipo:'FM', cidade:'Londres', alcance:'Nacional', audiencia:2200000, generos:['Pop','Top40','Dance'] },
+  ],
+  MX: [
+    { id:'los40_mx', name:'Los 40 México', tipo:'FM', cidade:'Ciudad de México', alcance:'Nacional', audiencia:1600000, generos:['Pop','Reggaeton','Top40'] },
+    { id:'oxigen_mx', name:'Oxígeno FM', tipo:'FM', cidade:'Ciudad de México', alcance:'Regional', audiencia:900000, generos:['Pop','Eletrônico','Dance'] },
+  ],
+  AR: [
+    { id:'la_100', name:'La 100 FM', tipo:'FM', cidade:'Buenos Aires', alcance:'Nacional', audiencia:1100000, generos:['Pop','Rock','Top40'] },
+  ],
+};
+
+const GENRE_FACTORS = {
+  'Pop':1.3,'Sertanejo':1.5,'Rock':0.9,'MPB':1.1,'Funk':1.0,
+  'Eletrônico':0.8,'R&B':1.0,'Hip-Hop':0.85,'Top40':1.4,
+  'Reggaeton':1.2,'Dance':0.9,'Gospel':0.7,'default':1.0
+};
+
+const ADOPTION_CURVE = [
+  {maxDay:7,mult:0.5,label:'Estreia'},
+  {maxDay:30,mult:1.2,label:'Crescimento'},
+  {maxDay:60,mult:1.8,label:'Pico'},
+  {maxDay:120,mult:1.0,label:'Estabilização'},
+  {maxDay:Infinity,mult:0.6,label:'Declínio'}
+];
+
+function getAdoptionMult(daysOld) {
+  for (const p of ADOPTION_CURVE) if (daysOld <= p.maxDay) return p.mult;
+  return 0.6;
+}
+
+function getAdoptionPhase(daysOld) {
+  for (const p of ADOPTION_CURVE) if (daysOld <= p.maxDay) return p.label;
+  return 'Declínio';
+}
+
+function getStationsForCountry(country) {
+  return RADIO_STATIONS[country] || RADIO_STATIONS['BR'];
+}
+
+function genreMatchScore(obraGenre, station) {
+  if (!obraGenre) return 0.4;
+  const g = obraGenre.toLowerCase().replace(/\s*\/\s*/g, '/');
+  const parts = g.split('/').map(s=>s.trim());
+  for (const p of parts) {
+    if (station.generos.some(sg => sg.toLowerCase() === p)) return 1.0;
+  }
+  if (station.generos.some(sg => sg.toLowerCase() === 'top40')) return 0.6;
+  return 0.25;
+}
+
+function calcObraAirplay(obra, sensibilidade = 1.0) {
+  const obraStreams = state.streams.filter(s=>s.obraId===obra.id).reduce((a,b)=>a+b.quantidade,0);
+  const obraVendas = state.vendas.filter(v=>v.obraId===obra.id).reduce((a,b)=>a+(b.units||0),0);
+  const daysOld = Math.max(0, Math.floor((new Date() - new Date(obra.date))/86400000));
+  const adoptionMult = getAdoptionMult(daysOld);
+  const generoFactor = GENRE_FACTORS[obra.genre] || GENRE_FACTORS['default'];
+  const chartBest = state.chartPositions.filter(c=>c.obraId===obra.id);
+  const bestPeak = chartBest.length ? Math.min(...chartBest.map(c=>Number(c.posicao)||999)) : 999;
+  const chartBonus = bestPeak<=10 ? 1.2 : bestPeak<=50 ? 1.05 : 1.0;
+  const baseExec = (obraStreams * 0.0003) + (obraVendas * 0.05);
+  const totalExec = Math.floor(baseExec * adoptionMult * generoFactor * chartBonus * sensibilidade);
+  const fmExec  = Math.floor(totalExec*0.45);
+  const amExec  = Math.floor(totalExec*0.15);
+  const webExec = Math.floor(totalExec*0.25);
+  const comExec = Math.floor(totalExec*0.10);
+  const satExec = Math.floor(totalExec*0.05);
+  // Determine main country
+  const cMap = {};
+  state.streams.filter(s=>s.obraId===obra.id).forEach(s=>{ cMap[s.country||'BR']=(cMap[s.country||'BR']||0)+s.quantidade; });
+  const topCountry = Object.entries(cMap).sort((a,b)=>b[1]-a[1])[0]?.[0] || 'BR';
+  const stations = getStationsForCountry(topCountry);
+  const stationData = stations.map(st => {
+    const match = genreMatchScore(obra.genre, st);
+    const totalAud = stations.reduce((a,b)=>a+b.audiencia,0);
+    const execSt = Math.max(0, Math.floor(totalExec * match * (st.audiencia/totalAud) * 1.5));
+    const impressoesSt = Math.floor(execSt * st.audiencia * 0.0004);
+    return { ...st, execucoes: execSt, impressoes: impressoesSt, pais: topCountry };
+  }).filter(st=>st.execucoes>0).sort((a,b)=>b.execucoes-a.execucoes);
+  const totalImpress = stationData.reduce((a,b)=>a+b.impressoes,0);
+  // Equiv units: 2000 impressões FM = 1 unit, etc.
+  const fmImpress = stationData.filter(s=>s.tipo==='FM').reduce((a,b)=>a+b.impressoes,0);
+  const amImpress = stationData.filter(s=>s.tipo==='AM').reduce((a,b)=>a+b.impressoes,0);
+  const webImpress = stationData.filter(s=>s.tipo==='Web').reduce((a,b)=>a+b.impressoes,0);
+  const equivUnits = Math.floor(fmImpress/2000 + amImpress/3000 + webImpress/5000);
+  return { obraId:obra.id, obraTitulo:obra.title, obraGenre:obra.genre, obraDate:obra.date, totalExec, fmExec, amExec, webExec, comExec, satExec, totalImpress, stationData, adoptionMult, generoFactor, chartBonus, daysOld, country:topCountry, equivUnits, phase: getAdoptionPhase(daysOld) };
+}
+
+function calcAllAirplay(sensibilidade = 1.0) {
+  return state.obras.map(o => calcObraAirplay(o, sensibilidade));
+}
+
+function getAirplaySensibilidade() {
+  const el = document.getElementById('airplaySensibilidade');
+  return el ? parseFloat(el.value) : 1.0;
+}
+
+function generateAirplayPeaks(airplayData) {
+  // Auto-generate peaks: top station per obra + global peak
+  const peaks = [];
+  const hoje = today();
+  airplayData.forEach(ap => {
+    if (!ap.totalExec || ap.totalExec < 10) return;
+    const topStation = ap.stationData[0];
+    if (topStation && topStation.execucoes >= 20) {
+      const posicao = topStation.execucoes > 200 ? 1 : topStation.execucoes > 100 ? 5 : 10;
+      peaks.push({
+        id: 'air_' + ap.obraId + '_' + topStation.id,
+        obraId: ap.obraId, obraTitle: ap.obraTitulo,
+        tipo: 'airplay', emissora: topStation.name,
+        pais: ap.country, cidade: topStation.cidade,
+        posicao, valor: topStation.execucoes,
+        impressoes: topStation.impressoes,
+        date: hoje, fonte: 'gerado_automaticamente'
+      });
+    }
+    if (ap.totalImpress > 1000000) {
+      peaks.push({
+        id: 'air_impress_' + ap.obraId,
+        obraId: ap.obraId, obraTitle: ap.obraTitulo,
+        tipo: 'airplay_impressoes', emissora: 'Global',
+        pais: ap.country, cidade: '—',
+        posicao: null, valor: ap.totalExec,
+        impressoes: ap.totalImpress,
+        date: hoje, fonte: 'gerado_automaticamente'
+      });
+    }
+  });
+  return peaks;
+}
+
+// ============================================================
+// TAB 14: AIRPLAY
+// ============================================================
+function renderTab14() {
+  const sens = getAirplaySensibilidade();
+  const airplayData = calcAllAirplay(sens);
+  const totalExec = airplayData.reduce((a,b)=>a+b.totalExec,0);
+  const totalImpress = airplayData.reduce((a,b)=>a+b.totalImpress,0);
+  const totalEquiv = airplayData.reduce((a,b)=>a+b.equivUnits,0);
+  const topStation = airplayData.flatMap(a=>a.stationData).sort((a,b)=>b.execucoes-a.execucoes)[0];
+
+  // Populate obra filter
+  const sel = document.getElementById('airplayObraFilter');
+  if (sel && sel.options.length <= 1) {
+    state.obras.forEach(o => {
+      const opt = document.createElement('option');
+      opt.value = o.id; opt.textContent = o.title;
+      sel.appendChild(opt);
+    });
+  }
+  const obraFiltro = document.getElementById('airplayObraFilter')?.value || '';
+  const filtrado = obraFiltro ? airplayData.filter(a=>a.obraId===obraFiltro) : airplayData;
+  const filtExec = filtrado.reduce((a,b)=>a+b.totalExec,0);
+  const filtImpress = filtrado.reduce((a,b)=>a+b.totalImpress,0);
+  const filtEquiv = filtrado.reduce((a,b)=>a+b.equivUnits,0);
+  const filtTopSt = filtrado.flatMap(a=>a.stationData).sort((a,b)=>b.execucoes-a.execucoes)[0];
+
+  // KPIs
+  document.getElementById('airplayKpis').innerHTML = [
+    { val: fmtNum(filtExec), lbl: 'Execuções Totais', icon: 'fa-play' },
+    { val: fmtNum(filtImpress), lbl: 'Impressões Totais', icon: 'fa-eye' },
+    { val: filtTopSt ? filtTopSt.name : '—', lbl: 'Top Emissora', icon: 'fa-star', small: true },
+    { val: fmtNum(filtEquiv), lbl: 'Unidades Equiv.', icon: 'fa-record-vinyl' },
+  ].map(k=>`
+    <div class="airplay-kpi">
+      <div style="font-size:18px;color:var(--purple);margin-bottom:6px"><i class="fas ${k.icon}"></i></div>
+      <div class="airplay-kpi-val" style="${k.small?'font-size:13px;':''}">  ${k.val}</div>
+      <div class="airplay-kpi-lbl">${k.lbl}</div>
+    </div>
+  `).join('');
+
+  // Tipo bar
+  const tipoTotals = { FM: 0, AM: 0, Web: 0, Comunitária: 0, Satélite: 0 };
+  filtrado.forEach(a=>{ tipoTotals.FM+=a.fmExec; tipoTotals.AM+=a.amExec; tipoTotals.Web+=a.webExec; tipoTotals.Comunitária+=a.comExec; tipoTotals.Satélite+=a.satExec; });
+  const tipoColors = { FM:'#7C3AED', AM:'#0057FF', Web:'#10B981', Comunitária:'#F59E0B', Satélite:'#EF4444' };
+  const tipoTotal = Object.values(tipoTotals).reduce((a,b)=>a+b,0)||1;
+  document.getElementById('airplayTipoBar').innerHTML = `
+    <div class="airplay-tipo-bar">
+      ${Object.entries(tipoTotals).map(([t,v])=>`<div class="airplay-tipo-seg" style="width:${(v/tipoTotal*100).toFixed(1)}%;background:${tipoColors[t]}" title="${t}: ${fmtNum(v)}">${v/tipoTotal>0.08?t:''}</div>`).join('')}
+    </div>`;
+  document.getElementById('airplayTipoLegend').innerHTML = Object.entries(tipoTotals).map(([t,v])=>`
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="width:10px;height:10px;border-radius:50%;background:${tipoColors[t]}"></div>
+        <span style="font-size:13px">${t}</span>
+      </div>
+      <div style="font-family:var(--font-mono);font-size:12px;font-weight:600;color:var(--dark)">${fmtNum(v)} <span style="color:var(--gray);font-weight:400">(${(v/tipoTotal*100).toFixed(0)}%)</span></div>
+    </div>`).join('');
+
+  // Horário donut
+  destroyChart('chartAirplayHorario');
+  const horarios = ['06h-10h Drive','10h-17h Comercial','17h-20h Drive Vesp.','20h-00h Noite','00h-06h Madrugada'];
+  const horarioPct = [0.25, 0.35, 0.25, 0.10, 0.05];
+  const ctxH = document.getElementById('chartAirplayHorario')?.getContext('2d');
+  if (ctxH) charts['chartAirplayHorario'] = new Chart(ctxH, {
+    type:'doughnut',
+    data:{ labels:horarios, datasets:[{ data:horarioPct.map(p=>Math.round(filtExec*p)), backgroundColor:['#7C3AED','#0057FF','#10B981','#F59E0B','#64748B'], borderWidth:2, borderColor:'#fff' }] },
+    options:{ responsive:true, plugins:{ legend:{ position:'bottom', labels:{ font:{size:10}, boxWidth:10 } } } }
+  });
+
+  // Curva de adoção (obra mais nova com mais dados)
+  destroyChart('chartAirplayAdocao');
+  const obraParaCurva = filtrado.find(a=>a.totalExec>0) || filtrado[0];
+  if (obraParaCurva) {
+    const maxDays = Math.min(obraParaCurva.daysOld + 30, 180);
+    const curveDays = Array.from({length:Math.max(maxDays,30)},(_,i)=>i+1);
+    const baseExec = obraParaCurva.totalExec / (obraParaCurva.adoptionMult||1);
+    const teorica = curveDays.map(d=>Math.floor(baseExec * getAdoptionMult(d)));
+    const realCurve = curveDays.map(d=>d<=obraParaCurva.daysOld ? Math.floor(obraParaCurva.totalExec*(d/obraParaCurva.daysOld)*(1+Math.sin(d/10)*0.1)) : null);
+    const ctxA = document.getElementById('chartAirplayAdocao')?.getContext('2d');
+    if (ctxA) charts['chartAirplayAdocao'] = new Chart(ctxA, {
+      type:'line',
+      data:{ labels:curveDays.map(d=>'Dia '+d),
+        datasets:[
+          { label:'Curva Teórica', data:teorica, borderColor:'#7C3AED66', borderDash:[5,4], tension:.4, pointRadius:0, borderWidth:2, fill:false },
+          { label:`${obraParaCurva.obraTitulo} (real)`, data:realCurve, borderColor:'#7C3AED', backgroundColor:'rgba(124,58,237,.1)', fill:true, tension:.4, pointRadius:0, borderWidth:2.5 }
+        ]
+      },
+      options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{position:'top'} }, scales:{ y:{ticks:{callback:v=>fmtNum(v)},grid:{color:'#F1F5F9'}}, x:{grid:{display:false},ticks:{maxTicksLimit:10}} } }
+    });
+  }
+
+  // Top estações
+  const allStations = filtrado.flatMap(a=>a.stationData.map(s=>({...s,obraTitulo:a.obraTitulo}))).sort((a,b)=>b.execucoes-a.execucoes).slice(0,8);
+  const maxSt = allStations[0]?.execucoes||1;
+  document.getElementById('airplayTopStations').innerHTML = allStations.map(st=>`
+    <div class="airplay-station-row">
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:600;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${st.name}</div>
+        <div style="font-size:11px;color:var(--gray)">${st.cidade} · ${st.tipo}</div>
+        <div style="height:3px;background:var(--gray3);border-radius:2px;margin-top:4px;overflow:hidden"><div style="height:100%;width:${(st.execucoes/maxSt*100).toFixed(0)}%;background:var(--purple);border-radius:2px"></div></div>
+      </div>
+      <div style="text-align:right;flex-shrink:0;margin-left:10px">
+        <div style="font-family:var(--font-mono);font-size:13px;font-weight:700;color:var(--purple)">${fmtNum(st.execucoes)}</div>
+        <div style="font-size:10px;color:var(--gray)">${fmtNum(st.impressoes)} imp.</div>
+      </div>
+    </div>`).join('') || '<div style="color:var(--gray);font-size:13px;padding:20px 0;text-align:center">Adicione streams para gerar dados de airplay.</div>';
+
+  // Chart obras
+  destroyChart('chartAirplayObras');
+  if (filtrado.length) {
+    const ctxO = document.getElementById('chartAirplayObras')?.getContext('2d');
+    if (ctxO) charts['chartAirplayObras'] = new Chart(ctxO, {
+      type:'bar',
+      data:{ labels:filtrado.map(a=>a.obraTitulo.length>12?a.obraTitulo.slice(0,12)+'…':a.obraTitulo),
+        datasets:[{ label:'Execuções', data:filtrado.map(a=>a.totalExec), backgroundColor:'rgba(124,58,237,.7)', borderRadius:8, borderSkipped:false },
+                  { label:'Impressões (÷1k)', data:filtrado.map(a=>Math.floor(a.totalImpress/1000)), backgroundColor:'rgba(0,87,255,.4)', borderRadius:8, borderSkipped:false }]
+      },
+      options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'top'}}, scales:{ y:{ticks:{callback:v=>fmtNum(v)},grid:{color:'#F1F5F9'}}, x:{grid:{display:false}} } }
+    });
+  }
+
+  // Equiv units breakdown
+  const totalS = state.streams.reduce((a,b)=>a+b.quantidade,0);
+  const totalV = state.vendas.reduce((a,b)=>a+(b.units||0),0);
+  const equivS = Math.floor(totalS/1250);
+  const equivV = totalV;
+  const equivAir = filtEquiv;
+  const totalAll = equivS + equivV + equivAir || 1;
+  document.getElementById('airplayEquivUnits').innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:16px">
+      ${[['Streams',equivS,'#0057FF'],['Vendas',equivV,'#10B981'],['Airplay (gerado)',equivAir,'#7C3AED']].map(([l,v,c])=>`
+        <div style="text-align:center;background:${c}11;border:1.5px solid ${c}33;border-radius:14px;padding:16px">
+          <div style="font-family:var(--font-mono);font-size:22px;font-weight:800;color:${c}">${fmtNum(v)}</div>
+          <div style="font-size:11px;color:var(--gray);margin-top:4px">${l}</div>
+          <div style="font-size:12px;font-weight:700;color:${c};margin-top:6px">${(v/totalAll*100).toFixed(1)}%</div>
+        </div>`).join('')}
+    </div>
+    <div style="font-size:12px;color:var(--gray);background:var(--bg);border-radius:10px;padding:12px">
+      <b>Fórmula:</b> FM impressões÷2.000 + AM impressões÷3.000 + Web impressões÷5.000 = Unidades de Airplay
+      <br><b>Impacto total:</b> Airplay contribui com <b>${(equivAir/totalAll*100).toFixed(1)}%</b> das unidades equivalentes da carreira.
+    </div>`;
+
+  // Airplay peaks table
+  const peaks = generateAirplayPeaks(filtrado);
+  document.getElementById('airplayPeaksTable').innerHTML = peaks.length ? `
+    <div class="table-wrapper">
+      <table class="data-table">
+        <thead><tr><th>📻</th><th>Obra</th><th>Emissora</th><th>País</th><th>Posição</th><th>Execuções</th><th>Impressões</th><th>Data</th></tr></thead>
+        <tbody>${peaks.map(p=>`<tr>
+          <td><span style="font-size:16px">${p.tipo==='airplay_impressoes'?'🎯':'📻'}</span></td>
+          <td><b>${p.obraTitle}</b></td>
+          <td>${p.emissora}</td>
+          <td>${p.pais}</td>
+          <td>${p.posicao ? '#'+p.posicao : '—'}</td>
+          <td><span style="font-family:var(--font-mono);color:var(--purple);font-weight:700">${fmtNum(p.valor)}</span></td>
+          <td style="font-size:11px;color:var(--gray)">${fmtNum(p.impressoes)}</td>
+          <td style="font-size:12px;color:var(--gray)">${fmtDate(p.date)}</td>
+        </tr>`).join('')}</tbody>
+      </table>
+    </div>` : '<div style="text-align:center;padding:40px;color:var(--gray)">Adicione dados de streams para gerar peaks de airplay automaticamente.</div>';
+}
+
+// ============================================================
+// MOBILE NAV
+// ============================================================
+const TAB_DEFS = [
+  { icon:'fa-home', label:'Visão Geral' },
+  { icon:'fa-plus-circle', label:'Adicionar' },
+  { icon:'fa-wave-square', label:'Streams' },
+  { icon:'fa-shopping-bag', label:'Vendas' },
+  { icon:'fa-medal', label:'Certificações' },
+  { icon:'fa-chart-bar', label:'Charts ⭐' },
+  { icon:'fa-record-vinyl', label:'Recordes' },
+  { icon:'fa-layer-group', label:'Eras' },
+  { icon:'fa-share-alt', label:'Redes Sociais' },
+  { icon:'fa-brain', label:'Insights' },
+  { icon:'fa-list-ol', label:'Charts Tab' },
+  { icon:'fa-globe', label:'Dados Gerais' },
+  { icon:'fa-fire', label:'Ranking Singles' },
+  { icon:'fa-compact-disc', label:'Ranking Álbuns' },
+  { icon:'fa-radio', label:'Airplay' },
+];
+
+function buildMobileNav() {
+  const list = document.getElementById('mobileTabList');
+  if (!list) return;
+  list.innerHTML = TAB_DEFS.map((t,i)=>`
+    <button class="mobile-tab-item ${i===activeTab?'active':''}" onclick="mobileSelectTab(${i})">
+      <i class="fas ${t.icon}"></i> ${t.label}
+    </button>`).join('');
+}
+
+function mobileSelectTab(idx) {
+  closeMobileNav();
+  switchTab(idx);
+}
+
+function toggleMobileNav() {
+  const drawer = document.getElementById('mobileTabDrawer');
+  const overlay = document.getElementById('mobileOverlay');
+  const icon = document.getElementById('mobileNavIcon');
+  const isOpen = drawer.classList.contains('open');
+  if (isOpen) {
+    closeMobileNav();
+  } else {
+    buildMobileNav();
+    drawer.classList.add('open');
+    overlay.classList.add('open');
+    icon.className = 'fas fa-times';
+  }
+}
+
+function closeMobileNav() {
+  document.getElementById('mobileTabDrawer')?.classList.remove('open');
+  document.getElementById('mobileOverlay')?.classList.remove('open');
+  const icon = document.getElementById('mobileNavIcon');
+  if (icon) icon.className = 'fas fa-bars';
+}
+
+// ============================================================
 // TABS
 // ============================================================
 let activeTab = 0;
@@ -3692,6 +5270,10 @@ function renderCurrentTab() {
     case 8: renderTab8(); break;
     case 9: renderTab9(); break;
     case 10: renderTab10(); break;
+    case 11: renderTab11(); break;
+    case 12: renderTab12(); break;
+    case 13: renderTab13(); break;
+    case 14: renderTab14(); break;
   }
 }
 
@@ -3726,7 +5308,48 @@ window.addEventListener('load', () => {
   document.querySelectorAll('input[type="date"]').forEach(el => {
     if (!el.value) el.value = today();
   });
+
+  // Color picker two-way sync for era form
+  function syncColor(pickerId, hexId) {
+    const picker = document.getElementById(pickerId);
+    const hex = document.getElementById(hexId);
+    if (!picker || !hex) return;
+    picker.addEventListener('input', () => { hex.value = picker.value; });
+    hex.addEventListener('input', () => {
+      if (/^#[0-9A-Fa-f]{6}$/.test(hex.value)) picker.value = hex.value;
+    });
+  }
+  syncColor('eraFormCor1', 'eraFormCor1Hex');
+  syncColor('eraFormCor2', 'eraFormCor2Hex');
+
+  // Fechar era dashboard com Escape
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      const dash = document.getElementById('eraDashboard');
+      if (dash && dash.classList.contains('open')) closeEraDashboard();
+    }
+  });
+
+  // Era milestone toasts (run after render)
+  setTimeout(checkEraMilestones, 1500);
 });
+
+function checkEraMilestones() {
+  if (!state.eras || !state.eras.length) return;
+  const eras = getEraList();
+  eras.forEach(era => {
+    if (era.status !== 'ativa' || !era.metaStreams) return;
+    const s = getEraStreams(era.nome);
+    const pct = s / era.metaStreams * 100;
+    if (pct >= 100 && !sessionStorage.getItem('era_100_' + era.id)) {
+      sessionStorage.setItem('era_100_' + era.id, '1');
+      setTimeout(() => showToast(`🏆 Era "${era.nome}" atingiu 100% da meta de streams!`), 600);
+    } else if (pct >= 50 && !sessionStorage.getItem('era_50_' + era.id)) {
+      sessionStorage.setItem('era_50_' + era.id, '1');
+      setTimeout(() => showToast(`🎯 Era "${era.nome}" atingiu 50% da meta!`), 600);
+    }
+  });
+}
 
 // Close modal on overlay click
 document.getElementById('presskitModal').addEventListener('click', function(e) {
@@ -4040,161 +5663,648 @@ function confirmAddArtist() {
   state.artists.push(artist);
   saveState();
   updateLabelSelector();
-  renderTab10();
   closeNewArtistModal();
   showToast(`${name} adicionado ao elenco!`);
 }
 
+
 // ============================================================
-// TAB 10: LABEL / GLOBAL
+// TAB 10: CHARTS — TOP SINGLES POR PEAK
 // ============================================================
-function renderTab10() {
-  const artists = state.artists || [];
+let chartsSort = 'peak';
+let chartsPage = 0;
+const CHARTS_PER_PAGE = 50;
 
-  // Build consolidated roster including main artist
-  const roster = [
-    {
-      id: '__main__',
-      name: state.user.name,
-      country: state.user.country || 'BR',
-      genre: state.obras[0]?.genre || '—',
-      photo: null,
-      totalStreams: totalStreams(),
-      totalCerts: state.certificacoes.length,
-      top1s: state.chartPositions.filter(x=>x.posicao===1).length,
-      obras_count: state.obras.length,
-      isMain: true,
-    },
-    ...artists.map(a => ({
-      id: a.id,
-      name: a.name,
-      country: a.country || 'BR',
-      genre: a.genre || '—',
-      photo: a.photo || null,
-      totalStreams: a.totalStreams || 0,
-      totalCerts: a.totalCerts || 0,
-      top1s: a.top1s || 0,
-      obras_count: a.obras_count || 0,
-      isMain: false,
-    }))
-  ];
-
-  const totalRosterStreams = roster.reduce((s,a) => s + a.totalStreams, 0);
-  const totalRosterCerts = roster.reduce((s,a) => s + a.totalCerts, 0);
-  const totalRosterTop1s = roster.reduce((s,a) => s + a.top1s, 0);
-  const totalRosterArtists = roster.length;
-
-  const countryFlag = { BR:'🇧🇷', US:'🇺🇸', GB:'🇬🇧', MX:'🇲🇽', AR:'🇦🇷', JP:'🇯🇵', KR:'🇰🇷', DE:'🇩🇪', FR:'🇫🇷' };
-
-  // Label KPIs
-  document.getElementById('labelKpiBar').innerHTML = [
-    { label: 'Artistas no Elenco', val: totalRosterArtists, icon: '🎤' },
-    { label: 'Streams Totais (Portfólio)', val: fmtNum(totalRosterStreams), icon: '▶️' },
-    { label: 'Certificações Totais', val: totalRosterCerts, icon: '🏆' },
-    { label: 'Posições #1 Totais', val: totalRosterTop1s, icon: '👑' },
-  ].map(k => `
-    <div class="label-kpi">
-      <div style="font-size:24px;margin-bottom:4px">${k.icon}</div>
-      <div class="label-kpi-val">${k.val}</div>
-      <div class="label-kpi-label">${k.label}</div>
-    </div>
-  `).join('');
-
-  // Milestone alerts
-  const milestones = [];
-  roster.forEach(a => {
-    if (a.totalStreams >= 1e9) milestones.push({ artist: a.name, msg: `atingiu 1 Bilhão de streams!`, icon: '🎉' });
-    else if (a.totalStreams >= 500e6) milestones.push({ artist: a.name, msg: `ultrapassou 500M de streams`, icon: '🚀' });
-    if (a.totalCerts >= 5) milestones.push({ artist: a.name, msg: `acumulou ${a.totalCerts} certificações`, icon: '🏆' });
-    if (a.top1s >= 3) milestones.push({ artist: a.name, msg: `conquistou ${a.top1s} posições #1 em charts`, icon: '👑' });
+function setChartsSort(s) {
+  chartsSort = s;
+  chartsPage = 0;
+  ['peak','weeks','streams','units'].forEach(k => {
+    const b = document.getElementById('chartsSortBtn' + k.charAt(0).toUpperCase() + k.slice(1));
+    const b2 = document.getElementById('chartsSort' + k.charAt(0).toUpperCase() + k.slice(1));
+    if (b2) b2.classList.toggle('active', k === s);
   });
-  document.getElementById('milestoneAlerts').innerHTML = milestones.slice(0,4).map(m => `
-    <div class="alert-milestone">
-      <i class="fas fa-bell"></i>
-      <span><strong>${m.artist}</strong> ${m.msg} ${m.icon}</span>
-    </div>
-  `).join('') || '<div style="font-size:13px;color:var(--gray);padding:12px">Adicione mais artistas ao elenco para ver alertas de marcos.</div>';
-
-  // Artists grid
-  document.getElementById('artistsGrid').innerHTML = roster.map((a,i) => `
-    <div class="artist-card">
-      <div class="artist-card-header" style="background:linear-gradient(135deg,${['#0057FF','#7C3AED','#10B981','#F59E0B','#EF4444'][i%5]},${['#7C3AED','#10B981','#F59E0B','#EF4444','#0057FF'][i%5]})">
-        <div class="artist-card-avatar">
-          ${a.photo ? `<img src="${a.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">` : (a.isMain ? '⭐' : '🎤')}
-        </div>
-        ${a.isMain ? `<div style="position:absolute;top:8px;right:8px"><span class="badge badge-gold">Principal</span></div>` : ''}
-      </div>
-      <div class="artist-card-body">
-        <div class="artist-card-name">${a.name}</div>
-        <div class="artist-card-meta">${countryFlag[a.country]||''} ${a.country} · ${a.genre}</div>
-        <div class="artist-card-stats">
-          <span class="badge badge-blue">${fmtNum(a.totalStreams)} streams</span>
-          <span class="badge badge-gold">${a.totalCerts} certs.</span>
-        </div>
-      </div>
-    </div>
-  `).join('');
-
-  // Ranking
-  const ranked = [...roster].sort((a,b) => b.totalStreams - a.totalStreams);
-  const rankBg = ['gold-bg','silver-bg','bronze-bg'];
-  document.getElementById('artistRanking').innerHTML = ranked.map((a,i) => `
-    <div class="ranking-row">
-      <div class="ranking-num ${rankBg[i]||''}">${i+1}</div>
-      <div style="flex:1">
-        <div style="font-weight:600;font-size:14px">${a.name}</div>
-        <div style="font-size:12px;color:var(--gray)">${fmtNum(a.totalStreams)} streams · ${a.totalCerts} certs · ${a.top1s} #1s</div>
-      </div>
-      <div>
-        <div class="progress-wrap" style="width:100px"><div class="progress-fill" style="width:${Math.round(a.totalStreams/totalRosterStreams*100)}%;background:linear-gradient(90deg,var(--blue),var(--cyan))"></div></div>
-        <div style="font-size:11px;color:var(--blue);text-align:right;margin-top:2px">${(a.totalStreams/totalRosterStreams*100).toFixed(1)}%</div>
-      </div>
-    </div>
-  `).join('') || '<div style="color:var(--gray);font-size:13px;padding:16px">Nenhum artista no elenco.</div>';
-
-  // Doughnut chart - streams by artist
-  destroyChart('chartLabelDoughnut');
-  const artistColors = ['#0057FF','#7C3AED','#10B981','#F59E0B','#EF4444','#00D2FF','#EC4899'];
-  const ctxLD = document.getElementById('chartLabelDoughnut').getContext('2d');
-  charts['chartLabelDoughnut'] = new Chart(ctxLD, {
-    type: 'doughnut',
-    data: {
-      labels: roster.map(a=>a.name),
-      datasets: [{ data: roster.map(a=>a.totalStreams), backgroundColor: roster.map((_,i)=>artistColors[i%artistColors.length]), borderWidth: 2, borderColor: '#fff' }]
-    },
-    options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } } }
-  });
-
-  // Bar chart - certifications
-  destroyChart('chartLabelCerts');
-  const ctxLC = document.getElementById('chartLabelCerts').getContext('2d');
-  charts['chartLabelCerts'] = new Chart(ctxLC, {
-    type: 'bar',
-    data: {
-      labels: roster.map(a=>a.name),
-      datasets: [
-        { label: 'Certificações', data: roster.map(a=>a.totalCerts), backgroundColor: roster.map((_,i)=>artistColors[i%artistColors.length]+'CC'), borderRadius: 6 },
-        { label: 'Posições #1', data: roster.map(a=>a.top1s), backgroundColor: roster.map((_,i)=>artistColors[i%artistColors.length]+'66'), borderRadius: 6 },
-      ]
-    },
-    options: { responsive: true, scales: { y: { beginAtZero: true } }, plugins: { legend: { labels: { font: { size: 11 } } } } }
-  });
-
-  // Comparison table
-  document.getElementById('labelCompareBody').innerHTML = ranked.map((a,i) => {
-    const influenceScore = Math.min(1000, Math.round((a.totalStreams / 1e9) * 600 + a.totalCerts * 20 + a.top1s * 30));
-    return `<tr>
-      <td><strong>${a.name}</strong> ${a.isMain ? '<span class="badge badge-blue">Principal</span>' : ''}</td>
-      <td>${countryFlag[a.country]||''} ${a.country}</td>
-      <td><strong>${fmtNum(a.totalStreams)}</strong></td>
-      <td>${fmtNum(a.obras_count * 12000)}</td>
-      <td>${a.totalCerts}</td>
-      <td>${a.top1s}</td>
-      <td>${a.obras_count}</td>
-      <td><span class="badge ${influenceScore >= 700 ? 'badge-green' : influenceScore >= 400 ? 'badge-blue' : 'badge-purple'}">${influenceScore} pts</span></td>
-    </tr>`;
-  }).join('') || '<tr><td colspan="8" style="text-align:center;color:var(--gray);padding:24px">Adicione artistas para ver o comparativo.</td></tr>';
+  renderTab10();
 }
+
+function renderTab10() {
+  const obras = state.obras || [];
+  const streams = state.streams || [];
+  const vendas = state.vendas || [];
+  const charts = state.charts || [];
+  const certs = state.certificacoes || [];
+
+  // Populate filters
+  const years = [...new Set(obras.map(o => o.date ? o.date.slice(0,4) : null).filter(Boolean))].sort().reverse();
+  // Merge era names: from obras + from state.eras
+  const eraSet = new Set([...obras.map(o => o.era).filter(Boolean), ...(state.eras||[]).map(e=>e.nome)]);
+  const eras = [...eraSet].sort();
+  const countries = [...new Set(streams.map(s => s.country).filter(Boolean))].sort();
+
+  const selYear = document.getElementById('chartsFilterYear');
+  const selEra = document.getElementById('chartsFilterEra');
+  const selCountry = document.getElementById('chartsFilterCountry');
+  if (selYear && selYear.options.length <= 1) {
+    years.forEach(y => { const o = document.createElement('option'); o.value = y; o.textContent = y; selYear.appendChild(o); });
+  }
+  if (selEra && selEra.options.length <= 1) {
+    eras.forEach(e => { const o = document.createElement('option'); o.value = e; o.textContent = '🎭 ' + e; selEra.appendChild(o); });
+  }
+  if (selCountry && selCountry.options.length <= 1) {
+    countries.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = '🌍 ' + c; selCountry.appendChild(o); });
+  }
+
+  const qSearch = (document.getElementById('chartsSearch')?.value || '').toLowerCase();
+  const fYear = document.getElementById('chartsFilterYear')?.value || '';
+  const fEra = document.getElementById('chartsFilterEra')?.value || '';
+  const fCountry = document.getElementById('chartsFilterCountry')?.value || '';
+
+  // Build enriched obra list
+  let rows = obras.map(o => {
+    const oStreams = streams.filter(s => s.obraId === o.id && (!fCountry || s.country === fCountry));
+    const totalStreams = oStreams.reduce((a, b) => a + (b.quantidade || 0), 0);
+    const totalVendas = vendas.filter(v => v.obraId === o.id).reduce((a, b) => a + (b.units || 0), 0);
+    const unitsFromStreams = Math.round(totalStreams / 1250);
+    const totalUnits = unitsFromStreams + totalVendas;
+    const oCharts = charts.filter(c => c.obraId === o.id);
+    const bestPeak = oCharts.length ? Math.min(...oCharts.map(c => Number(c.pos) || 999)) : 999;
+    const totalWeeks = oCharts.length;
+    const top10Weeks = oCharts.filter(c => Number(c.pos) <= 10).length;
+    const bestCert = certs.filter(c => c.obraId === o.id).sort((a,b) => {
+      const order = {'Diamante':4,'Platina Duplo':3,'Platina':2,'Ouro':1};
+      return (order[b.level]||0) - (order[a.level]||0);
+    })[0];
+    return { o, totalStreams, totalUnits, totalVendas, bestPeak, totalWeeks, top10Weeks, bestCert };
+  });
+
+  // Filters
+  if (qSearch) rows = rows.filter(r => r.o.title.toLowerCase().includes(qSearch));
+  if (fYear) rows = rows.filter(r => r.o.date && r.o.date.startsWith(fYear));
+  if (fEra) rows = rows.filter(r => r.o.era === fEra);
+  rows = rows.filter(r => r.o.tipo !== 'Álbum' && r.o.tipo !== 'EP');
+
+  // Sort
+  rows.sort((a,b) => {
+    if (chartsSort === 'peak') return a.bestPeak !== b.bestPeak ? a.bestPeak - b.bestPeak : b.totalWeeks - a.totalWeeks;
+    if (chartsSort === 'weeks') return b.totalWeeks - a.totalWeeks;
+    if (chartsSort === 'streams') return b.totalStreams - a.totalStreams;
+    if (chartsSort === 'units') return b.totalUnits - a.totalUnits;
+    return 0;
+  });
+
+  // Sort button highlights
+  ['peak','weeks','streams','units'].forEach(k => {
+    const btn = document.getElementById('chartsSort' + k.charAt(0).toUpperCase() + k.slice(1));
+    if (btn) btn.classList.toggle('active', k === chartsSort);
+  });
+
+  // Pagination
+  const total = rows.length;
+  const totalPages = Math.max(1, Math.ceil(total / CHARTS_PER_PAGE));
+  if (chartsPage >= totalPages) chartsPage = 0;
+  const pageRows = rows.slice(chartsPage * CHARTS_PER_PAGE, (chartsPage + 1) * CHARTS_PER_PAGE);
+
+  const tbody = document.getElementById('chartsTableBody');
+  if (!tbody) return;
+
+  if (!pageRows.length) {
+    tbody.innerHTML = `<tr><td colspan="9"><div class="no-data-msg"><i class="fas fa-music"></i>Nenhuma música encontrada. Cadastre obras e registre charts na aba "Adicionar Dados".</div></td></tr>`;
+    document.getElementById('chartsPagination').innerHTML = '';
+    return;
+  }
+
+  tbody.innerHTML = pageRows.map((r, idx) => {
+    const globalRank = chartsPage * CHARTS_PER_PAGE + idx + 1;
+    const rankClass = globalRank===1?'r1':globalRank===2?'r2':globalRank===3?'r3':'';
+    const peakClass = r.bestPeak===1?'p1':r.bestPeak<=10?'p10':'';
+    const certHtml = r.bestCert
+      ? `<span class="cert-pill ${r.bestCert.level==='Diamante'?'cert-diamond':r.bestCert.level.startsWith('Platina')?'cert-platinum':'cert-gold'}">${r.bestCert.level}</span>`
+      : '<span style="color:var(--gray);font-size:11px">—</span>';
+    const cover = state.covers?.[r.o.id];
+    const coverHtml = cover
+      ? `<img src="${cover}" style="width:32px;height:32px;border-radius:6px;object-fit:cover;margin-right:8px;vertical-align:middle">`
+      : `<span style="width:32px;height:32px;border-radius:6px;background:linear-gradient(135deg,var(--blue),var(--purple));display:inline-flex;align-items:center;justify-content:center;margin-right:8px;vertical-align:middle;font-size:12px">🎵</span>`;
+    const peakDisplay = r.bestPeak < 999 ? `<span class="peak-pill ${peakClass}">#${r.bestPeak}</span>` : '—';
+    return `<tr>
+      <td><span class="rank-badge ${rankClass}">${globalRank}</span></td>
+      <td><div style="display:flex;align-items:center">${coverHtml}<strong>${r.o.title}</strong></div></td>
+      <td><span class="badge badge-purple" style="font-size:10px">${r.o.tipo}</span></td>
+      <td>${peakDisplay}</td>
+      <td><span style="font-family:var(--font-mono);font-weight:600">${r.totalWeeks}</span>${r.top10Weeks>0?` <span style="font-size:10px;color:var(--green)">(${r.top10Weeks} top10)</span>`:''}</td>
+      <td><span style="font-family:var(--font-mono)">${fmtNum(r.totalStreams)}</span></td>
+      <td><span style="font-family:var(--font-mono)">${fmtNum(r.totalUnits)}</span></td>
+      <td>${certHtml}</td>
+      <td><span style="font-size:11px;color:var(--gray)">${r.o.era||'—'}</span></td>
+    </tr>`;
+  }).join('');
+
+  // Pagination UI
+  const pagEl = document.getElementById('chartsPagination');
+  if (totalPages <= 1) { pagEl.innerHTML = `<span class="db-page-info">Mostrando ${total} de ${total} músicas</span>`; return; }
+  let pagHtml = `<span class="db-page-info">Página ${chartsPage+1} de ${totalPages} · ${total} músicas</span>`;
+  for (let p = 0; p < totalPages; p++) {
+    pagHtml += `<button class="db-page-btn${p===chartsPage?' active':''}" onclick="chartsPage=${p};renderTab10()">${p+1}</button>`;
+  }
+  pagEl.innerHTML = pagHtml;
+}
+
+// ============================================================
+// TAB 11: DADOS GERAIS — VISÃO MACRO
+// ============================================================
+function renderTab11() {
+  const obras = state.obras || [];
+  const streams = state.streams || [];
+  const vendas = state.vendas || [];
+  const charts = state.charts || [];
+  const certs = state.certificacoes || [];
+
+  const totalStreams = streams.reduce((a,b)=>a+(b.quantidade||0),0);
+  const totalVendas = vendas.reduce((a,b)=>a+(b.units||0),0);
+  const totalUnits = Math.round(totalStreams/1250) + totalVendas;
+  const singles = obras.filter(o=>o.tipo==='Single');
+  const albums = obras.filter(o=>o.tipo==='Álbum'||o.tipo==='EP');
+  const hit1 = [...new Set(charts.filter(c=>Number(c.pos)===1).map(c=>c.obraId))].length;
+  const hit10 = [...new Set(charts.filter(c=>Number(c.pos)<=10).map(c=>c.obraId))].length;
+
+  // KPI grid
+  const kpis = [
+    { val: singles.length, lbl: 'Singles', icon: '🎵' },
+    { val: albums.length, lbl: 'Álbuns/EPs', icon: '💿' },
+    { val: fmtNum(totalStreams), lbl: 'Streams Totais', icon: '📊' },
+    { val: fmtNum(totalUnits), lbl: 'Unidades Equiv.', icon: '📀' },
+    { val: hit1, lbl: '#1 Hits', icon: '🏆' },
+    { val: hit10, lbl: 'Top 10 Hits', icon: '🔥' },
+    { val: certs.length, lbl: 'Certificações', icon: '🥇' },
+    { val: fmtNum(charts.length), lbl: 'Entradas em Charts', icon: '📈' },
+  ];
+  const kpiEl = document.getElementById('macroKpiGrid');
+  if (kpiEl) kpiEl.innerHTML = kpis.map(k=>`
+    <div class="macro-kpi-card">
+      <div style="font-size:22px;margin-bottom:6px">${k.icon}</div>
+      <div class="macro-kpi-val">${k.val}</div>
+      <div class="macro-kpi-lbl">${k.lbl}</div>
+    </div>`).join('');
+
+  // Market table
+  const byCountry = {};
+  streams.forEach(s => {
+    const c = s.country || 'N/A';
+    if (!byCountry[c]) byCountry[c] = 0;
+    byCountry[c] += s.quantidade || 0;
+  });
+  const sortedCountries = Object.entries(byCountry).sort((a,b)=>b[1]-a[1]);
+  const marketBody = document.getElementById('marketTableBody');
+  if (marketBody) {
+    if (!sortedCountries.length) {
+      marketBody.innerHTML = '<tr><td colspan="5"><div class="no-data-msg" style="padding:20px"><i class="fas fa-globe"></i>Registre streams com países para ver a distribuição por mercado.</div></td></tr>';
+    } else {
+      const totalSt = sortedCountries.reduce((a,b)=>a+b[1],0)||1;
+      marketBody.innerHTML = sortedCountries.map(([c,v]) => {
+        const pct = ((v/totalSt)*100).toFixed(1);
+        const countryInfo = COUNTRY_LIST.find(x=>x.code===c);
+        const flag = countryInfo ? countryInfo.name.split(' ')[0] : '🌍';
+        const name = countryInfo ? countryInfo.name.replace(/^\S+\s/,'') : c;
+        const top1s = [...new Set(charts.filter(ch=>ch.country===c&&Number(ch.pos)===1).map(ch=>ch.obraId))].length;
+        const revenue = ((v/1250)*0.004).toFixed(0);
+        return `<tr>
+          <td><span style="font-size:18px">${flag}</span> <strong>${name}</strong></td>
+          <td style="font-family:var(--font-mono)">${fmtNum(v)}</td>
+          <td><div style="display:flex;align-items:center;gap:8px"><span style="font-family:var(--font-mono);width:38px">${pct}%</span><div class="sps-bar-wrap"><div class="sps-bar-fill" style="width:${Math.min(100,pct)}%"></div></div></div></td>
+          <td style="font-family:var(--font-mono)">$${fmtNum(Number(revenue))}</td>
+          <td>${top1s>0?`<span class="peak-pill p1">#1 ×${top1s}</span>`:'—'}</td>
+        </tr>`;
+      }).join('');
+    }
+  }
+
+  // Platform summary
+  const byPlat = {};
+  streams.forEach(s => {
+    const p = s.plataforma||'Outro';
+    if (!byPlat[p]) byPlat[p] = 0;
+    byPlat[p] += s.quantidade||0;
+  });
+  const platBody = document.getElementById('platformSummaryBody');
+  if (platBody) {
+    const platRows = Object.entries(byPlat).sort((a,b)=>b[1]-a[1]);
+    if (!platRows.length) {
+      platBody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--gray);padding:20px">Nenhum stream registrado ainda.</td></tr>';
+    } else {
+      const totalSP = platRows.reduce((a,b)=>a+b[1],0)||1;
+      platBody.innerHTML = platRows.map(([p,v])=>`<tr>
+        <td><strong>${p}</strong></td>
+        <td style="font-family:var(--font-mono)">${fmtNum(v)}</td>
+        <td>${((v/totalSP)*100).toFixed(1)}%</td>
+        <td style="font-family:var(--font-mono)">${fmtNum(Math.round(v/1250))}</td>
+      </tr>`).join('');
+    }
+  }
+
+  // Era chart
+  const eraMap = {};
+  obras.forEach(o => {
+    const era = o.era || 'Sem Era';
+    if (!eraMap[era]) eraMap[era] = 0;
+    const oSt = streams.filter(s=>s.obraId===o.id).reduce((a,b)=>a+(b.quantidade||0),0);
+    eraMap[era] += oSt;
+  });
+  const eraLabels = Object.keys(eraMap);
+  const eraData = Object.values(eraMap);
+
+  destroyChart('chartEraStreams');
+  const ctxE = document.getElementById('chartEraStreams');
+  if (ctxE && eraLabels.length) {
+    charts['chartEraStreams'] = new Chart(ctxE.getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels: eraLabels,
+        datasets: [{ label: 'Streams', data: eraData, backgroundColor: ['#0057FF','#7C3AED','#00D2FF','#10B981','#F59E0B','#EF4444'].slice(0,eraLabels.length), borderRadius: 8 }]
+      },
+      options: { responsive:true, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true, ticks:{callback:v=>fmtNum(v)}}} }
+    });
+  }
+
+  // Cert evolution chart
+  const certsByYear = {};
+  certs.forEach(c => {
+    const y = c.date ? c.date.slice(0,4) : '?';
+    certsByYear[y] = (certsByYear[y]||0) + 1;
+  });
+  const certYears = Object.keys(certsByYear).sort();
+  const certCounts = certYears.map(y => certsByYear[y]);
+
+  destroyChart('chartCertEvolution');
+  const ctxC = document.getElementById('chartCertEvolution');
+  if (ctxC && certYears.length) {
+    charts['chartCertEvolution'] = new Chart(ctxC.getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels: certYears,
+        datasets: [{ label: 'Certificações', data: certCounts, backgroundColor: '#F59E0B', borderRadius: 8 }]
+      },
+      options: { responsive:true, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true,ticks:{stepSize:1}}} }
+    });
+  }
+
+  // Cumulative streams growth
+  const sortedStreams = [...streams].sort((a,b)=>new Date(a.data)-new Date(b.data));
+  let cumulative = 0;
+  const growthPoints = sortedStreams.reduce((acc, s) => {
+    cumulative += s.quantidade||0;
+    const d = s.data;
+    if (!acc.length || acc[acc.length-1].x !== d) acc.push({x:d, y:cumulative});
+    else acc[acc.length-1].y = cumulative;
+    return acc;
+  }, []);
+
+  destroyChart('chartGrowthCumulative');
+  const ctxG = document.getElementById('chartGrowthCumulative');
+  if (ctxG && growthPoints.length) {
+    charts['chartGrowthCumulative'] = new Chart(ctxG.getContext('2d'), {
+      type: 'line',
+      data: {
+        labels: growthPoints.map(p=>p.x),
+        datasets: [{ label: 'Streams Acumulados', data: growthPoints.map(p=>p.y), borderColor:'#0057FF', backgroundColor:'rgba(0,87,255,.08)', fill:true, tension:.4, pointRadius:0 }]
+      },
+      options: { responsive:true, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true, ticks:{callback:v=>fmtNum(v)}}} }
+    });
+  }
+}
+
+// ============================================================
+// TAB 12: RANKING ABSOLUTO — SINGLES
+// ============================================================
+let rankingSort = 'streams';
+let rankingPage = 0;
+let rankingFilters = { top1: false, cert: false };
+const RANKING_PER_PAGE = 50;
+
+function setRankingSort(s) {
+  rankingSort = s;
+  rankingPage = 0;
+  ['streams','units','peak','date'].forEach(k => {
+    const btn = document.getElementById('rankingSort' + k.charAt(0).toUpperCase() + k.slice(1));
+    if (btn) btn.classList.toggle('active', k === s);
+  });
+  renderTab12();
+}
+
+function toggleRankingFilter(f) {
+  rankingFilters[f] = !rankingFilters[f];
+  rankingPage = 0;
+  const btnMap = { top1: 'rankingFilter1', cert: 'rankingFilterCert' };
+  const btn = document.getElementById(btnMap[f]);
+  if (btn) btn.classList.toggle('active', rankingFilters[f]);
+  renderTab12();
+}
+
+function renderTab12() {
+  const obras = state.obras || [];
+  const streams = state.streams || [];
+  const vendas = state.vendas || [];
+  const charts = state.charts || [];
+  const certs = state.certificacoes || [];
+  const qSearch = (document.getElementById('rankingSearch')?.value || '').toLowerCase();
+
+  let rows = obras
+    .filter(o => o.tipo !== 'Álbum' && o.tipo !== 'EP')
+    .map(o => {
+      const totalStreams = streams.filter(s=>s.obraId===o.id).reduce((a,b)=>a+(b.quantidade||0),0);
+      const totalVendas = vendas.filter(v=>v.obraId===o.id).reduce((a,b)=>a+(b.units||0),0);
+      const totalUnits = Math.round(totalStreams/1250) + totalVendas;
+      const oCharts = charts.filter(c=>c.obraId===o.id);
+      const bestPeak = oCharts.length ? Math.min(...oCharts.map(c=>Number(c.pos)||999)) : 999;
+      const totalWeeks = oCharts.length;
+      const bestCert = certs.filter(c=>c.obraId===o.id).sort((a,b)=>{
+        const order = {'Diamante':4,'Platina Duplo':3,'Platina':2,'Ouro':1};
+        return (order[b.level]||0) - (order[a.level]||0);
+      })[0];
+      return { o, totalStreams, totalUnits, totalVendas, bestPeak, totalWeeks, bestCert };
+    });
+
+  if (qSearch) rows = rows.filter(r => r.o.title.toLowerCase().includes(qSearch));
+  if (rankingFilters.top1) rows = rows.filter(r => r.bestPeak === 1);
+  if (rankingFilters.cert) rows = rows.filter(r => !!r.bestCert);
+
+  rows.sort((a,b) => {
+    if (rankingSort==='streams') return b.totalStreams - a.totalStreams;
+    if (rankingSort==='units') return b.totalUnits - a.totalUnits;
+    if (rankingSort==='peak') return a.bestPeak !== b.bestPeak ? a.bestPeak - b.bestPeak : b.totalStreams - a.totalStreams;
+    if (rankingSort==='date') return new Date(b.o.date||0) - new Date(a.o.date||0);
+    return 0;
+  });
+
+  const total = rows.length;
+  const totalPages = Math.max(1, Math.ceil(total / RANKING_PER_PAGE));
+  if (rankingPage >= totalPages) rankingPage = 0;
+  const pageRows = rows.slice(rankingPage * RANKING_PER_PAGE, (rankingPage + 1) * RANKING_PER_PAGE);
+
+  const tbody = document.getElementById('rankingTableBody');
+  if (!tbody) return;
+
+  if (!pageRows.length) {
+    tbody.innerHTML = `<tr><td colspan="8"><div class="no-data-msg"><i class="fas fa-fire"></i>Nenhuma música encontrada. Cadastre obras e registre streams na aba "Adicionar Dados".</div></td></tr>`;
+    document.getElementById('rankingPagination').innerHTML = '';
+    return;
+  }
+
+  tbody.innerHTML = pageRows.map((r, idx) => {
+    const globalRank = rankingPage * RANKING_PER_PAGE + idx + 1;
+    const rankClass = globalRank===1?'r1':globalRank===2?'r2':globalRank===3?'r3':'';
+    const peakClass = r.bestPeak===1?'p1':r.bestPeak<=10?'p10':'';
+    const peakDisplay = r.bestPeak < 999 ? `<span class="peak-pill ${peakClass}">#${r.bestPeak}</span>` : '—';
+    const certHtml = r.bestCert
+      ? `<span class="cert-pill ${r.bestCert.level==='Diamante'?'cert-diamond':r.bestCert.level.startsWith('Platina')?'cert-platinum':'cert-gold'}">${r.bestCert.level}</span>`
+      : '—';
+    const cover = state.covers?.[r.o.id];
+    const coverHtml = cover
+      ? `<img src="${cover}" style="width:32px;height:32px;border-radius:6px;object-fit:cover;margin-right:8px;vertical-align:middle">`
+      : `<span style="width:32px;height:32px;border-radius:6px;background:linear-gradient(135deg,var(--blue),var(--purple));display:inline-flex;align-items:center;justify-content:center;margin-right:8px;vertical-align:middle;font-size:12px">🎵</span>`;
+    return `<tr>
+      <td><span class="rank-badge ${rankClass}">${globalRank}</span></td>
+      <td><div style="display:flex;align-items:center">${coverHtml}<div><strong>${r.o.title}</strong><div style="font-size:10px;color:var(--gray)">${r.o.era||''}</div></div></div></td>
+      <td style="font-size:12px;color:var(--gray)">${r.o.date||'—'}</td>
+      <td><strong style="font-family:var(--font-mono)">${fmtNum(r.totalStreams)}</strong></td>
+      <td style="font-family:var(--font-mono)">${fmtNum(r.totalUnits)}</td>
+      <td>${peakDisplay}</td>
+      <td style="font-family:var(--font-mono);color:var(--gray)">${r.totalWeeks||'—'}</td>
+      <td>${certHtml}</td>
+    </tr>`;
+  }).join('');
+
+  const pagEl = document.getElementById('rankingPagination');
+  if (totalPages <= 1) { pagEl.innerHTML = `<span class="db-page-info">Mostrando ${total} de ${total} músicas</span>`; return; }
+  let pagHtml = `<span class="db-page-info">Página ${rankingPage+1} de ${totalPages} · ${total} músicas</span>`;
+  for (let p = 0; p < totalPages; p++) {
+    pagHtml += `<button class="db-page-btn${p===rankingPage?' active':''}" onclick="rankingPage=${p};renderTab12()">${p+1}</button>`;
+  }
+  pagEl.innerHTML = pagHtml;
+}
+
+// ============================================================
+// TAB 13: RANKING DE ÁLBUNS
+// ============================================================
+let albumSort = 'sps';
+
+function setAlbumSort(s) {
+  albumSort = s;
+  ['sps','streams','sales','date'].forEach(k => {
+    const btn = document.getElementById('albumSort' + k.charAt(0).toUpperCase() + k.slice(1));
+    if (btn) btn.classList.toggle('active', k === s);
+  });
+  renderTab13();
+}
+
+function renderTab13() {
+  const obras = state.obras || [];
+  const streams = state.streams || [];
+  const vendas = state.vendas || [];
+  const certs = state.certificacoes || [];
+  const qSearch = (document.getElementById('albumSearch')?.value || '').toLowerCase();
+
+  const albums = obras.filter(o => o.tipo === 'Álbum' || o.tipo === 'EP');
+
+  let rows = albums.map(o => {
+    const oStreams = streams.filter(s=>s.obraId===o.id).reduce((a,b)=>a+(b.quantidade||0),0);
+    const oVendasFisica = vendas.filter(v=>v.obraId===o.id&&v.tipo==='Física').reduce((a,b)=>a+(b.units||0),0);
+    const oVendasDigital = vendas.filter(v=>v.obraId===o.id&&v.tipo!=='Física').reduce((a,b)=>a+(b.units||0),0);
+    const streamUnits = Math.round(oStreams / 1250);
+    const sps = streamUnits + oVendasFisica + oVendasDigital;
+    const bestCert = certs.filter(c=>c.obraId===o.id).sort((a,b)=>{
+      const order = {'Diamante':4,'Platina Duplo':3,'Platina':2,'Ouro':1};
+      return (order[b.level]||0) - (order[a.level]||0);
+    })[0];
+    // Tracks belonging to this era/album
+    const tracks = obras.filter(t => t.tipo==='Single' && t.era && o.era && t.era===o.era);
+    return { o, oStreams, oVendasFisica, oVendasDigital, sps, streamUnits, bestCert, tracks };
+  });
+
+  if (qSearch) rows = rows.filter(r => r.o.title.toLowerCase().includes(qSearch));
+
+  rows.sort((a,b) => {
+    if (albumSort==='sps') return b.sps - a.sps;
+    if (albumSort==='streams') return b.oStreams - a.oStreams;
+    if (albumSort==='sales') return (b.oVendasFisica+b.oVendasDigital) - (a.oVendasFisica+a.oVendasDigital);
+    if (albumSort==='date') return new Date(b.o.date||0) - new Date(a.o.date||0);
+    return 0;
+  });
+
+  const tbody = document.getElementById('albumTableBody');
+  if (!tbody) return;
+
+  if (!rows.length) {
+    tbody.innerHTML = `<tr><td colspan="9"><div class="no-data-msg"><i class="fas fa-compact-disc"></i>Nenhum álbum ou EP cadastrado. Cadastre obras do tipo Álbum ou EP na aba "Adicionar Dados".</div></td></tr>`;
+    return;
+  }
+
+  const maxSps = Math.max(...rows.map(r=>r.sps), 1);
+
+  tbody.innerHTML = rows.map((r, idx) => {
+    const rank = idx + 1;
+    const rankClass = rank===1?'r1':rank===2?'r2':rank===3?'r3':'';
+    const pct = Math.round((r.sps / maxSps) * 100);
+    const certHtml = r.bestCert
+      ? `<span class="cert-pill ${r.bestCert.level==='Diamante'?'cert-diamond':r.bestCert.level.startsWith('Platina')?'cert-platinum':'cert-gold'}">${r.bestCert.level}</span>`
+      : '—';
+    const cover = state.covers?.[r.o.id];
+    const coverHtml = cover
+      ? `<img src="${cover}" style="width:36px;height:36px;border-radius:8px;object-fit:cover;margin-right:10px;vertical-align:middle">`
+      : `<span style="width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,var(--purple),var(--blue));display:inline-flex;align-items:center;justify-content:center;margin-right:10px;vertical-align:middle;font-size:14px">💿</span>`;
+    const trackInfo = r.tracks.length ? `<div style="font-size:10px;color:var(--gray);margin-top:2px">${r.tracks.length} faixas na era</div>` : '';
+    return `<tr>
+      <td><span class="rank-badge ${rankClass}">${rank}</span></td>
+      <td><div style="display:flex;align-items:center">${coverHtml}<div><strong>${r.o.title}</strong><div style="font-size:10px;color:var(--gray)">${r.o.tipo}${r.o.date?' · '+r.o.date.slice(0,4):''}</div>${trackInfo}</div></div></td>
+      <td style="font-size:12px;color:var(--gray)">${r.o.date||'—'}</td>
+      <td style="font-family:var(--font-mono)">${fmtNum(r.oStreams)}</td>
+      <td style="font-family:var(--font-mono)">${fmtNum(r.oVendasFisica)}</td>
+      <td style="font-family:var(--font-mono)">${fmtNum(r.oVendasDigital)}</td>
+      <td><strong style="font-family:var(--font-mono);color:var(--blue)">${fmtNum(r.sps)}</strong></td>
+      <td><div style="display:flex;align-items:center;gap:8px"><div class="sps-bar-wrap"><div class="sps-bar-fill" style="width:${pct}%"></div></div><span style="font-size:10px;color:var(--gray);font-family:var(--font-mono);min-width:28px">${pct}%</span></div></td>
+      <td>${certHtml}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ============================================================
+// SEARCHABLE COUNTRY SELECT — LISTA GLOBAL ~200 PAÍSES
+// ============================================================
+const COUNTRY_LIST = [
+  {code:'WORLD',name:'🌐 Mundo / Global'},
+  // AMÉRICAS
+  {code:'AG',name:'🇦🇬 Antígua e Barbuda'},{code:'AR',name:'🇦🇷 Argentina'},{code:'BS',name:'🇧🇸 Bahamas'},{code:'BB',name:'🇧🇧 Barbados'},
+  {code:'BZ',name:'🇧🇿 Belize'},{code:'BO',name:'🇧🇴 Bolívia'},{code:'BR',name:'🇧🇷 Brasil'},{code:'CA',name:'🇨🇦 Canadá'},
+  {code:'CL',name:'🇨🇱 Chile'},{code:'CO',name:'🇨🇴 Colômbia'},{code:'CR',name:'🇨🇷 Costa Rica'},{code:'CU',name:'🇨🇺 Cuba'},
+  {code:'DM',name:'🇩🇲 Dominica'},{code:'EC',name:'🇪🇨 Equador'},{code:'SV',name:'🇸🇻 El Salvador'},{code:'US',name:'🇺🇸 Estados Unidos'},
+  {code:'GD',name:'🇬🇩 Granada'},{code:'GT',name:'🇬🇹 Guatemala'},{code:'GY',name:'🇬🇾 Guiana'},{code:'HT',name:'🇭🇹 Haiti'},
+  {code:'HN',name:'🇭🇳 Honduras'},{code:'JM',name:'🇯🇲 Jamaica'},{code:'MX',name:'🇲🇽 México'},{code:'NI',name:'🇳🇮 Nicarágua'},
+  {code:'PA',name:'🇵🇦 Panamá'},{code:'PY',name:'🇵🇾 Paraguai'},{code:'PE',name:'🇵🇪 Peru'},{code:'DO',name:'🇩🇴 República Dominicana'},
+  {code:'LC',name:'🇱🇨 Santa Lúcia'},{code:'KN',name:'🇰🇳 São Cristóvão e Nevis'},{code:'VC',name:'🇻🇨 São Vicente e Granadinas'},
+  {code:'SR',name:'🇸🇷 Suriname'},{code:'TT',name:'🇹🇹 Trinidad e Tobago'},{code:'UY',name:'🇺🇾 Uruguai'},{code:'VE',name:'🇻🇪 Venezuela'},
+  // EUROPA
+  {code:'AL',name:'🇦🇱 Albânia'},{code:'DE',name:'🇩🇪 Alemanha'},{code:'AD',name:'🇦🇩 Andorra'},{code:'AT',name:'🇦🇹 Áustria'},
+  {code:'BE',name:'🇧🇪 Bélgica'},{code:'BY',name:'🇧🇾 Bielorrússia'},{code:'BA',name:'🇧🇦 Bósnia e Herzegovina'},{code:'BG',name:'🇧🇬 Bulgária'},
+  {code:'CY',name:'🇨🇾 Chipre'},{code:'HR',name:'🇭🇷 Croácia'},{code:'DK',name:'🇩🇰 Dinamarca'},{code:'SK',name:'🇸🇰 Eslováquia'},
+  {code:'SI',name:'🇸🇮 Eslovênia'},{code:'ES',name:'🇪🇸 Espanha'},{code:'EE',name:'🇪🇪 Estônia'},{code:'FI',name:'🇫🇮 Finlândia'},
+  {code:'FR',name:'🇫🇷 França'},{code:'GE',name:'🇬🇪 Geórgia'},{code:'GR',name:'🇬🇷 Grécia'},{code:'HU',name:'🇭🇺 Hungria'},
+  {code:'IE',name:'🇮🇪 Irlanda'},{code:'IS',name:'🇮🇸 Islândia'},{code:'IT',name:'🇮🇹 Itália'},{code:'XK',name:'🇽🇰 Kosovo'},
+  {code:'LV',name:'🇱🇻 Letônia'},{code:'LI',name:'🇱🇮 Liechtenstein'},{code:'LT',name:'🇱🇹 Lituânia'},{code:'LU',name:'🇱🇺 Luxemburgo'},
+  {code:'MT',name:'🇲🇹 Malta'},{code:'MD',name:'🇲🇩 Moldávia'},{code:'MC',name:'🇲🇨 Mônaco'},{code:'ME',name:'🇲🇪 Montenegro'},
+  {code:'NO',name:'🇳🇴 Noruega'},{code:'NL',name:'🇳🇱 Países Baixos'},{code:'PL',name:'🇵🇱 Polônia'},{code:'PT',name:'🇵🇹 Portugal'},
+  {code:'GB',name:'🇬🇧 Reino Unido'},{code:'CZ',name:'🇨🇿 República Tcheca'},{code:'RO',name:'🇷🇴 Romênia'},{code:'RU',name:'🇷🇺 Rússia'},
+  {code:'SM',name:'🇸🇲 San Marino'},{code:'RS',name:'🇷🇸 Sérvia'},{code:'SE',name:'🇸🇪 Suécia'},{code:'CH',name:'🇨🇭 Suíça'},
+  {code:'UA',name:'🇺🇦 Ucrânia'},{code:'VA',name:'🇻🇦 Vaticano'},
+  // ÁFRICA
+  {code:'DZ',name:'🇩🇿 Argélia'},{code:'AO',name:'🇦🇴 Angola'},{code:'BJ',name:'🇧🇯 Benim'},{code:'BW',name:'🇧🇼 Botsuana'},
+  {code:'BF',name:'🇧🇫 Burkina Faso'},{code:'BI',name:'🇧🇮 Burundi'},{code:'CV',name:'🇨🇻 Cabo Verde'},{code:'CM',name:'🇨🇲 Camarões'},
+  {code:'TD',name:'🇹🇩 Chade'},{code:'KM',name:'🇰🇲 Comores'},{code:'CG',name:'🇨🇬 Congo (Brazzaville)'},{code:'CD',name:'🇨🇩 Congo (Kinshasa)'},
+  {code:'CI',name:'🇨🇮 Costa do Marfim'},{code:'DJ',name:'🇩🇯 Djibuti'},{code:'EG',name:'🇪🇬 Egito'},{code:'ER',name:'🇪🇷 Eritreia'},
+  {code:'SZ',name:'🇸🇿 Eswatini'},{code:'ET',name:'🇪🇹 Etiópia'},{code:'GA',name:'🇬🇦 Gabão'},{code:'GM',name:'🇬🇲 Gâmbia'},
+  {code:'GH',name:'🇬🇭 Gana'},{code:'GN',name:'🇬🇳 Guiné'},{code:'GW',name:'🇬🇼 Guiné-Bissau'},{code:'GQ',name:'🇬🇶 Guiné Equatorial'},
+  {code:'LS',name:'🇱🇸 Lesoto'},{code:'LR',name:'🇱🇷 Libéria'},{code:'LY',name:'🇱🇾 Líbia'},{code:'MG',name:'🇲🇬 Madagascar'},
+  {code:'MW',name:'🇲🇼 Malawi'},{code:'ML',name:'🇲🇱 Mali'},{code:'MA',name:'🇲🇦 Marrocos'},{code:'MU',name:'🇲🇺 Maurícia'},
+  {code:'MR',name:'🇲🇷 Mauritânia'},{code:'MZ',name:'🇲🇿 Moçambique'},{code:'NA',name:'🇳🇦 Namíbia'},{code:'NE',name:'🇳🇪 Níger'},
+  {code:'NG',name:'🇳🇬 Nigéria'},{code:'KE',name:'🇰🇪 Quênia'},{code:'CF',name:'🇨🇫 República Centro-Africana'},{code:'RW',name:'🇷🇼 Ruanda'},
+  {code:'ST',name:'🇸🇹 São Tomé e Príncipe'},{code:'SN',name:'🇸🇳 Senegal'},{code:'SL',name:'🇸🇱 Serra Leoa'},{code:'SC',name:'🇸🇨 Seychelles'},
+  {code:'SO',name:'🇸🇴 Somália'},{code:'SD',name:'🇸🇩 Sudão'},{code:'SS',name:'🇸🇸 Sudão do Sul'},{code:'TZ',name:'🇹🇿 Tanzânia'},
+  {code:'TG',name:'🇹🇬 Togo'},{code:'TN',name:'🇹🇳 Tunísia'},{code:'UG',name:'🇺🇬 Uganda'},{code:'ZM',name:'🇿🇲 Zâmbia'},{code:'ZW',name:'🇿🇼 Zimbábue'},
+  // ÁSIA
+  {code:'AF',name:'🇦🇫 Afeganistão'},{code:'SA',name:'🇸🇦 Arábia Saudita'},{code:'AM',name:'🇦🇲 Armênia'},{code:'AZ',name:'🇦🇿 Azerbaijão'},
+  {code:'BH',name:'🇧🇭 Bahrein'},{code:'BD',name:'🇧🇩 Bangladesh'},{code:'BT',name:'🇧🇹 Butão'},{code:'BN',name:'🇧🇳 Brunei'},
+  {code:'KH',name:'🇰🇭 Camboja'},{code:'QA',name:'🇶🇦 Catar'},{code:'CN',name:'🇨🇳 China'},{code:'KP',name:'🇰🇵 Coreia do Norte'},
+  {code:'KR',name:'🇰🇷 Coreia do Sul'},{code:'AE',name:'🇦🇪 Emirados Árabes Unidos'},{code:'PH',name:'🇵🇭 Filipinas'},
+  {code:'IN',name:'🇮🇳 Índia'},{code:'ID',name:'🇮🇩 Indonésia'},{code:'IR',name:'🇮🇷 Irã'},{code:'IQ',name:'🇮🇶 Iraque'},
+  {code:'IL',name:'🇮🇱 Israel'},{code:'JP',name:'🇯🇵 Japão'},{code:'JO',name:'🇯🇴 Jordânia'},{code:'KZ',name:'🇰🇿 Cazaquistão'},
+  {code:'KW',name:'🇰🇼 Kuwait'},{code:'LA',name:'🇱🇦 Laos'},{code:'LB',name:'🇱🇧 Líbano'},{code:'MY',name:'🇲🇾 Malásia'},
+  {code:'MV',name:'🇲🇻 Maldivas'},{code:'MM',name:'🇲🇲 Mianmar'},{code:'MN',name:'🇲🇳 Mongólia'},{code:'NP',name:'🇳🇵 Nepal'},
+  {code:'OM',name:'🇴🇲 Omã'},{code:'PK',name:'🇵🇰 Paquistão'},{code:'PS',name:'🇵🇸 Palestina'},{code:'KG',name:'🇰🇬 Quirguistão'},
+  {code:'SG',name:'🇸🇬 Singapura'},{code:'SY',name:'🇸🇾 Síria'},{code:'LK',name:'🇱🇰 Sri Lanka'},{code:'TJ',name:'🇹🇯 Tadjiquistão'},
+  {code:'TH',name:'🇹🇭 Tailândia'},{code:'TL',name:'🇹🇱 Timor-Leste'},{code:'TM',name:'🇹🇲 Turcomenistão'},{code:'TR',name:'🇹🇷 Turquia'},
+  {code:'UZ',name:'🇺🇿 Uzbequistão'},{code:'VN',name:'🇻🇳 Vietnã'},{code:'YE',name:'🇾🇪 Iêmen'},
+  // OCEANIA
+  {code:'AU',name:'🇦🇺 Austrália'},{code:'FJ',name:'🇫🇯 Fiji'},{code:'KI',name:'🇰🇮 Kiribati'},{code:'MH',name:'🇲🇭 Ilhas Marshall'},
+  {code:'FM',name:'🇫🇲 Micronésia'},{code:'NR',name:'🇳🇷 Nauru'},{code:'NZ',name:'🇳🇿 Nova Zelândia'},{code:'PW',name:'🇵🇼 Palau'},
+  {code:'PG',name:'🇵🇬 Papua-Nova Guiné'},{code:'WS',name:'🇼🇸 Samoa'},{code:'SB',name:'🇸🇧 Ilhas Salomão'},{code:'TO',name:'🇹🇴 Tonga'},
+  {code:'TV',name:'🇹🇻 Tuvalu'},{code:'VU',name:'🇻🇺 Vanuatu'},
+  // TERRITÓRIOS / MERCADOS
+  {code:'HK',name:'🇭🇰 Hong Kong'},{code:'MO',name:'🇲🇴 Macau'},{code:'PR',name:'🇵🇷 Porto Rico'},{code:'GL',name:'🇬🇱 Groenlândia'},
+  {code:'FO',name:'🇫🇴 Ilhas Faroe'},{code:'AW',name:'🇦🇼 Aruba'},{code:'CW',name:'🇨🇼 Curaçao'},{code:'NC',name:'🇳🇨 Nova Caledônia'},
+  {code:'PF',name:'🇵🇫 Polinésia Francesa'},{code:'GU',name:'🇬🇺 Guam'},{code:'KY',name:'🇰🇾 Ilhas Cayman'},
+  {code:'VI',name:'🇻🇮 Ilhas Virgens (EUA)'},{code:'VG',name:'🇻🇬 Ilhas Virgens (Reino Unido)'}
+];
+
+function buildCountryOptions(fieldId, query, includeGlobal) {
+  const list = document.getElementById(fieldId + '_list');
+  if (!list) return;
+  const q = (query||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  const filtered = COUNTRY_LIST.filter(c => {
+    if (!includeGlobal && c.code === 'WORLD') return false;
+    const name = c.name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+    const code = c.code.toLowerCase();
+    return !q || name.includes(q) || code.includes(q);
+  });
+  if (filtered.length === 0) {
+    list.innerHTML = '<div class="country-option-no-result">Nenhum país encontrado</div>';
+    return;
+  }
+  const current = document.getElementById(fieldId) ? document.getElementById(fieldId).value : '';
+  list.innerHTML = filtered.map(c =>
+    `<div class="country-option${c.code===current?' selected':''}" onclick="selectCountry('${fieldId}','${c.code}','${c.name}');event.stopPropagation()">${c.name}</div>`
+  ).join('');
+}
+
+function toggleCountryDropdown(fieldId) {
+  const dd = document.getElementById(fieldId + '_dropdown');
+  if (!dd) return;
+  const isOpen = dd.classList.contains('open');
+  // Close all other dropdowns
+  document.querySelectorAll('.country-dropdown.open').forEach(el => el.classList.remove('open'));
+  if (!isOpen) {
+    dd.classList.add('open');
+    const filter = document.getElementById(fieldId + '_filter');
+    if (filter) { filter.value = ''; filter.focus(); }
+    const includeGlobal = ['certCountry','chartCountry'].includes(fieldId);
+    buildCountryOptions(fieldId, '', includeGlobal);
+  }
+}
+
+function filterCountries(fieldId, query) {
+  const includeGlobal = ['certCountry','chartCountry'].includes(fieldId);
+  buildCountryOptions(fieldId, query, includeGlobal);
+}
+
+function selectCountry(fieldId, code, name) {
+  const hidden = document.getElementById(fieldId);
+  const display = document.getElementById(fieldId + '_display');
+  const dd = document.getElementById(fieldId + '_dropdown');
+  if (hidden) hidden.value = code;
+  if (display) display.value = name;
+  if (dd) dd.classList.remove('open');
+}
+
+function getCountryName(code) {
+  if (!code) return '';
+  const c = COUNTRY_LIST.find(x => x.code === code);
+  return c ? c.name : code;
+}
+
+// Close dropdowns when clicking outside
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.country-select-wrapper')) {
+    document.querySelectorAll('.country-dropdown.open').forEach(el => el.classList.remove('open'));
+  }
+});
+
+// Init all country selects on load
+(function initCountrySelects() {
+  const ids = ['artistCountry','streamCountry','vendaCountry','certCountry','chartCountry','newArtistCountry'];
+  ids.forEach(id => {
+    const hidden = document.getElementById(id);
+    const display = document.getElementById(id + '_display');
+    if (hidden && display && !display.value) {
+      const found = COUNTRY_LIST.find(c => c.code === hidden.value);
+      if (found) display.value = found.name;
+    }
+  });
+})();
 
 </script>
 </body>
